@@ -1,9 +1,21 @@
 import React from "react";
+import { useEffect, useState } from "react";
 import { signOut } from "next-auth/react";
+import { usePathname, useSearchParams } from "next/navigation";
+import Link from "next/link";
 function Nav({ name, email, image }) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [path, setPath] = useState("");
+  useEffect(() => {
+    //  url = pathname + searchParams.toString();
+    // the above line get the url with the query
+    setPath(pathname);
+  }, [pathname, searchParams]);
   const menuItems = [
     {
-      label: "dashboard",
+      label: "Dashboard",
+      url: "/dashboard",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -22,7 +34,8 @@ function Nav({ name, email, image }) {
       ),
     },
     {
-      label: "products",
+      label: "Products",
+      url: "/products",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -41,7 +54,9 @@ function Nav({ name, email, image }) {
       ),
     },
     {
-      label: "categories",
+      label: "Categories",
+      url: "/categories",
+
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -60,7 +75,8 @@ function Nav({ name, email, image }) {
       ),
     },
     {
-      label: "orders",
+      label: "Orders",
+      url: "/orders",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -79,7 +95,9 @@ function Nav({ name, email, image }) {
       ),
     },
     {
-      label: "admins",
+      label: "Admins",
+      url: "/admins",
+
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -98,7 +116,8 @@ function Nav({ name, email, image }) {
       ),
     },
     {
-      label: "settings",
+      label: "Settings",
+      url: "/settings",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -125,7 +144,7 @@ function Nav({ name, email, image }) {
   return (
     <div>
       <div className="flex h-screen flex-col justify-between border-e bg-white">
-        <div className="px-4 py-6">
+        <div className="p-4">
           <img
             className="w-16 "
             src="https://res.cloudinary.com/dqkyatgoy/image/upload/v1685277800/Nader%20Express/logo_wjbyiz.svg"
@@ -133,14 +152,19 @@ function Nav({ name, email, image }) {
           />
 
           <nav aria-label="Main Nav" className="mt-6 flex flex-col space-y-1">
-            {menuItems.map(({ label, icon }) => {
+            {menuItems.map(({ label, icon, url }) => {
               return (
-                <a
-                  href={"/" + label}
-                  className="flex items-center gap-2 rounded-lg bg-gray-100 px-4 py-2 text-gray-700 capitalize"
+                <Link
+                  key={label}
+                  href={url}
+                  className={`${
+                    path.includes(label.toLocaleLowerCase())
+                      ? "bg-blue-700 text-white"
+                      : "text-gray-700 bg-gray-100"
+                  } flex items-center gap-2 rounded-lg  px-4 py-2`}
                 >
                   {icon} <span className="text-sm font-medium"> {label} </span>
-                </a>
+                </Link>
               );
             })}
           </nav>

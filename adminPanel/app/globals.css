@@ -1,3 +1,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+#react-select-5-input {
+  border: none !important;
+  outline: none !important;
+  outline-offset: 0 !important;
+}
+/* .css-t3ipsp-control {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+} */
+.css-166bipr-Input input {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.css-qbdosj-Input input {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
