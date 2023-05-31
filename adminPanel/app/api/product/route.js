@@ -11,10 +11,12 @@ export async function GET(request) {
   await mongooseConnect();
   if (request.nextUrl?.searchParams?.get("id")) {
     return NextResponse.json(
-      await Product.findOne({ _id: request.nextUrl?.searchParams?.get("id") })
+      await Product.findOne({
+        _id: request.nextUrl?.searchParams?.get("id"),
+      })
     );
   }
-  return NextResponse.json(await Product.find({}));
+  return NextResponse.json(await Product.find({}).sort({ _id: -1 }));
 }
 export async function POST(request) {
   const session = await getServerSession(authOptions);

@@ -143,7 +143,7 @@ function Nav({ name, email, image }) {
   ];
   return (
     <div>
-      <div className="flex h-screen flex-col justify-between border-e bg-white">
+      <div className="flex fixed h-screen flex-col justify-between border-e bg-white">
         <div className="p-4">
           <img
             className="w-16 "

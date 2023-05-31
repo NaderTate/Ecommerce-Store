@@ -2,21 +2,14 @@ import React from "react";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import axios from "axios";
-function ProductCard({ _id, Title, Description, Price, Img }) {
+function ProductCard({ _id, Title, Description, Price, Img, deleteItem }) {
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const deleteProduct = async () => {
-    await axios.delete("/api/product?id=" + _id).then((res) => {
-      if (res.data.success) window.location.reload();
-    });
-  };
-
   return (
     <div>
-      <div className="flex gap-3 relative border-2 border-b-0 border-r-0">
+      <div className="flex gap-3 relative border-2 pr-1 rounded-md">
         <div className="relative w-24 h-24">
           <Link href={`/products/${_id}`}>
-            <Image className="object-contain" fill src={Img} />
+            <Image className="object-cover rounded-l-md" fill src={Img} />
           </Link>
         </div>
         <div>
@@ -31,7 +24,7 @@ function ProductCard({ _id, Title, Description, Price, Img }) {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="w-6 h-6 absolute right-0 top-0"
+            className="w-6 h-6 absolute right-1 top-1"
           >
             <path
               strokeLinecap="round"
@@ -41,7 +34,7 @@ function ProductCard({ _id, Title, Description, Price, Img }) {
           </svg>
         </Link>
         {confirmDelete ? (
-          <div className="flex absolute bottom-0 right-0 gap-3">
+          <div className="flex absolute bottom-1 right-1 gap-3">
             <div
               onClick={() => {
                 setConfirmDelete(false);
@@ -52,7 +45,7 @@ function ProductCard({ _id, Title, Description, Price, Img }) {
             </div>
 
             <div
-              onClick={deleteProduct}
+              onClick={deleteItem}
               className="bg-red-700 text-white px-3 py-1 rounded-md cursor-pointer"
             >
               Delete
@@ -68,7 +61,7 @@ function ProductCard({ _id, Title, Description, Price, Img }) {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="red"
-            className="w-6 h-6 absolute bottom-0 right-0 cursor-pointer"
+            className="w-6 h-6 absolute bottom-1 right-1 cursor-pointer"
           >
             <path
               strokeLinecap="round"

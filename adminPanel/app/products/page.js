@@ -4,13 +4,33 @@ import NavLayout from "../components/NavLayout";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import ProductCard from "../components/ProductCard";
+import RiseLoader from "react-spinners/RiseLoader";
 export default function Home() {
   const [products, setProducts] = useState([]);
-  useEffect(() => {
+  const [loading, setLoading] = useState(false);
+  const getProducts = () => {
+    setProducts([]);
+    setLoading(true);
     axios.get("/api/product").then((response) => {
       setProducts(response.data);
+      setLoading(false);
     });
+  };
+
+  useEffect(() => {
+    getProducts();
   }, []);
+  const deleteProduct = async (id) => {
+    setLoading(true);
+    await axios.delete("/api/product?id=" + id).then((res) => {
+      if (res.data.success) {
+        // setDeleted(true);
+        // setProducts((current) => current.filter((product) => product._id != id));
+        // setDeleted(false);
+      }
+      getProducts();
+    });
+  };
   return (
     <>
       <NavLayout>
@@ -20,17 +40,25 @@ export default function Home() {
         >
           New
         </Link>
-        <div className="grid grid-cols-2 border-b-2 border-r-2 mt-4">
+        <div className="grid grid-cols-2 mt-4 gap-4">
           {products.map(({ _id, Title, Images, Description, Price }) => {
             return (
               <ProductCard
                 {...{ Title, Description, Price, _id }}
-                Img={Images[0]}
+                Img={Images[0]?.img}
+                deleteItem={() => {
+                  deleteProduct(_id);
+                }}
               />
             );
           })}
         </div>
       </NavLayout>
+      {loading && (
+        <div className="absolute bottom-1 right-1">
+          <RiseLoader color="#1D4ED8" size={7} />
+        </div>
+      )}
     </>
   );
 }
