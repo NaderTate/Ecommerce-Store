@@ -6,19 +6,35 @@
   outline: none !important;
   outline-offset: 0 !important;
 }
-/* .css-t3ipsp-control {
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-} */
 .css-166bipr-Input input {
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
 }
-
 .css-qbdosj-Input input {
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
+}
+.description {
+  display: block; /* or inline-block */
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  overflow: hidden;
+  max-height: 2.6em;
+  line-height: 1.3em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.title {
+  display: block; /* or inline-block */
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  overflow: hidden;
+  max-height: 1.3em;
+  line-height: 1.3em;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
 }

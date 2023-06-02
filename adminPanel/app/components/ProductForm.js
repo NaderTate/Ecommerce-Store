@@ -1,54 +1,15 @@
 import axios from "axios";
 import React from "react";
 import Select from "react-select";
-import { useDrag, useDrop } from "react-dnd";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import RiseLoader from "react-spinners/RiseLoader";
 import Skeleton from "./Skeleton";
-const Card = ({ src, title, id, index, moveImage, deleteImage }) => {
-  const ref = React.useRef(null);
-  const [, drop] = useDrop({
-    accept: "image",
-    hover: (item, monitor) => {
-      if (!ref.current) {
-        return;
-      }
-      const dragIndex = item.index;
-      const hoverIndex = index;
-      if (dragIndex === hoverIndex) {
-        return;
-      }
-      const hoverBoundingRect = ref.current?.getBoundingClientRect();
-      const hoverMiddleY =
-        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-      const clientOffset = monitor.getClientOffset();
-      const hoverClientY = clientOffset.y - hoverBoundingRect.top;
-      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-        return;
-      }
-      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
-        return;
-      }
-      moveImage(dragIndex, hoverIndex);
-      item.index = hoverIndex;
-    },
-  });
-  const [{ isDragging }, drag] = useDrag({
-    type: "image",
-    item: () => {
-      return { id, index };
-    },
-    collect: (monitor) => {
-      return {
-        isDragging: monitor.isDragging(),
-      };
-    },
-  });
-  const opacity = isDragging ? 0 : 1;
-  drag(drop(ref));
+import { ReactSortable } from "react-sortablejs";
+
+const Card = ({ src, title, deleteImage }) => {
   return (
-    <div ref={ref} style={{ opacity }} className="relative ">
+    <div className="relative ">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -83,11 +44,6 @@ function ProductForm({
   Images,
 }) {
   const router = useRouter();
-  const categories = [
-    { value: 1, label: "Mobile" },
-    { value: 2, label: "Tables" },
-    { value: 3, label: "Home appliances" },
-  ];
   const Colors = [
     { value: 1, label: "Red" },
     { value: 2, label: "Green" },
@@ -102,15 +58,16 @@ function ProductForm({
   const [loading, setLoading] = useState(false);
   const [missingData, setMissingData] = useState(true);
   const [uploading, setUploading] = useState(false);
-  const moveImage = React.useCallback((dragIndex, hoverIndex) => {
-    setImages((prevCards) => {
-      const clonedCards = [...prevCards];
-      const removedItem = clonedCards.splice(dragIndex, 1)[0];
-      clonedCards.splice(hoverIndex, 0, removedItem);
-      return clonedCards;
+  const [uploadFile, setUploadFile] = useState([]);
+  const [allCategories, setAllCategories] = useState([]);
+  useEffect(() => {
+    axios.get("/api/category").then((res) => {
+      setAllCategories(res.data.data);
     });
   }, []);
-  const [uploadFile, setUploadFile] = useState([]);
+  function updateImagesOrder(images) {
+    setImages(images);
+  }
   const handleUpload = async (e) => {
     setUploading(true);
     e.preventDefault();
@@ -193,7 +150,7 @@ function ProductForm({
     } else {
       setMissingData(false);
     }
-  }, [title, price, description, images, categories]);
+  }, [title, price, description, images, allCategories]);
   return (
     <div>
       <div className="">
@@ -245,10 +202,10 @@ function ProductForm({
                 <label htmlFor="categories">Categories</label>
                 <Select
                   placeholder="Categories"
-                  value={categories.filter((obj) =>
+                  value={allCategories.filter((obj) =>
                     Categories.includes(obj.label)
                   )} // set selected values
-                  options={categories}
+                  options={allCategories}
                   onChange={(e) => {
                     setCategories(
                       Array.isArray(e) ? e.map((x) => x.label) : []
@@ -282,25 +239,25 @@ function ProductForm({
           </div>
         </form>
       </div>
+      <ReactSortable
+        list={images}
+        className="flex flex-wrap gap-1"
+        setList={updateImagesOrder}
+      >
+        {images.map((image) => (
+          <Card
+            src={image.img}
+            title={image.title}
+            deleteImage={() => {
+              deleteImg(image.id);
+            }}
+          />
+        ))}
+      </ReactSortable>
       <div className="flex gap-5 flex-wrap">
-        {React.Children.toArray(
-          images.map((image, index) => (
-            <Card
-              src={image.img}
-              title={image.title}
-              id={image.id}
-              index={index}
-              moveImage={moveImage}
-              deleteImage={() => {
-                deleteImg(image.id);
-              }}
-            />
-          ))
-        )}
-
         {uploadFile.length > 0 &&
           uploading &&
-          Array.from(uploadFile).map((item) => {
+          Array.from(uploadFile).map(() => {
             return (
               <div className="w-32 h-32">
                 <h1>

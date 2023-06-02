@@ -142,8 +142,8 @@ function Nav({ name, email, image }) {
     },
   ];
   return (
-    <div>
-      <div className="flex fixed h-screen flex-col justify-between border-e bg-white">
+    <div className="">
+      <div className=" h-screen flex-col justify-between border-e bg-white w-[200px] fixed left-0 top-0 hidden sm:flex">
         <div className="p-4">
           <img
             className="w-16 "
@@ -222,6 +222,9 @@ function Nav({ name, email, image }) {
             </div>
           </div>
         </div>
+      </div>
+      <div className="sm:hidden fixed top-1 left-1 bg-white p-2 rounded-full border-2">
+        hi
       </div>
     </div>
   );

@@ -6,16 +6,16 @@ function ProductCard({ _id, Title, Description, Price, Img, deleteItem }) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   return (
     <div>
-      <div className="flex gap-3 relative border-2 pr-1 rounded-md">
-        <div className="relative w-24 h-24">
+      <div className="flex gap-3 relative border-2 pr-1 rounded-md ">
+        <div className="relative  min-w-[6rem] min-h-[6rem]">
           <Link href={`/products/${_id}`}>
-            <Image className="object-cover rounded-l-md" fill src={Img} />
+            <Image className="object-cover rounded-l-md " fill src={Img} />
           </Link>
         </div>
         <div>
-          <p className="font-semibold">{Title}</p>
-          <p>{Description}</p>
-          <p>{Price}$</p>
+          <p className="font-semibold title">{Title}</p>
+          <p className="description text-sm">{Description}</p>
+          <p className="absolute bottom-1 font-bold">{Price}$</p>
         </div>
         <Link href={`/products/edit/${_id}`}>
           <svg

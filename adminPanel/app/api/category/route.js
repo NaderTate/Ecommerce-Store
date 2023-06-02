@@ -1,4 +1,4 @@
-import Product from "@/app/modules/Product";
+import Category from "@/app/modules/Category";
 import { mongooseConnect } from "@/lib/mongoose";
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
@@ -16,18 +16,19 @@ export async function GET(request) {
   const sk = request.nextUrl?.searchParams?.get("page") || 1;
   if (request.nextUrl?.searchParams?.get("id")) {
     return NextResponse.json(
-      await Product.findOne({
+      await Category.findOne({
         _id: request.nextUrl?.searchParams?.get("id"),
       })
     );
   }
-  await Product.countDocuments({});
+  await Category.countDocuments({});
   return NextResponse.json({
-    data: await Product.find({})
+    data: await Category.find({})
+      .populate("Parent")
       .sort({ _id: -1 })
       .skip((sk - 1) * 20)
       .limit(20),
-    count: await Product.countDocuments({}),
+    count: await Category.countDocuments({}),
   });
 }
 export async function POST(request) {
@@ -37,7 +38,10 @@ export async function POST(request) {
   }
   await mongooseConnect();
   const data = await request.json();
-  await Product.create(data);
+  await Category.create({
+    ...data,
+    value: (await Category.countDocuments({})) + 1,
+  });
   return NextResponse.json({ success: true });
 }
 export async function PUT(request) {
@@ -47,7 +51,10 @@ export async function PUT(request) {
   }
   await mongooseConnect();
   const data = await request.json();
-  await Product.updateOne({ _id: data._id }, data);
+  await Category.updateOne({ _id: data._id }, data);
+  if (!data.Parent) {
+    await Category.updateOne({ _id: data._id }, { $unset: { Parent: "" } });
+  }
   return NextResponse.json({ success: true });
 }
 export async function DELETE(request) {
@@ -57,7 +64,7 @@ export async function DELETE(request) {
   }
   await mongooseConnect();
   if (request.nextUrl?.searchParams?.get("id")) {
-    await Product.deleteOne({ _id: request.nextUrl?.searchParams?.get("id") });
+    await Category.deleteOne({ _id: request.nextUrl?.searchParams?.get("id") });
     return NextResponse.json({ success: true });
   }
   return NextResponse.json({ success: false });
