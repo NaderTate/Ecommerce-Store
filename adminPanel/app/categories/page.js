@@ -138,14 +138,14 @@ function page({ searchParams }) {
       return [...prev, { name: "", values: "" }];
     });
   }
-  function handlePropertyNameChange(index, newName) {
+  function handlePropertyNameChange(index, property, newName) {
     setProperties((prev) => {
       const properties = [...prev];
       properties[index].name = newName;
       return properties;
     });
   }
-  function handlePropertyValuesChange(index, newValues) {
+  function handlePropertyValuesChange(index, property, newValues) {
     setProperties((prev) => {
       const properties = [...prev];
       properties[index].values = newValues;

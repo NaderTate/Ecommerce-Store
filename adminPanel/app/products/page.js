@@ -1,56 +1,25 @@
-"use client";
 import Link from "next/link";
 import NavLayout from "../components/NavLayout";
-import { useState, useEffect } from "react";
-import axios from "axios";
 import ProductCard from "../components/ProductCard";
 import RiseLoader from "react-spinners/RiseLoader";
-export default function Home({ searchParams }) {
+import { getProducts } from "@/lib/products";
+const pagenateArr = (arr, p) => {
+  let newArr = [];
+  arr.forEach((element) => {
+    if (Math.abs(element - p) <= 2) {
+      newArr = [...newArr, element];
+    }
+  });
+  return newArr;
+};
+export default async function Home({ searchParams }) {
   const sk = searchParams.page || 1;
   const search = searchParams.search ? searchParams.search : "";
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [count, setCount] = useState(null);
-  const [pages, setPages] = useState(null);
-  const [Arr, setArr] = useState();
-  const getProducts = async () => {
-    setProducts([]);
-    setLoading(true);
-    const res = await axios.get("/api/product?page=" + sk);
-    setProducts(res.data.data);
-    setCount(res.data.count);
-    setPages(
-      Array.from({ length: Math.ceil(res.data.count / 20) }, (_, i) => i + 1)
-    );
-    const pagenateArr = (arr, p) => {
-      let newArr = [];
-      arr.forEach((element) => {
-        if (Math.abs(element - p) <= 2) {
-          newArr = [...newArr, element];
-        }
-      });
-      return newArr;
-    };
-    setArr(
-      pagenateArr(
-        Array.from({ length: Math.ceil(res.data.count / 20) }, (_, i) => i + 1),
-        sk
-      )
-    );
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    getProducts();
-  }, []);
-  const deleteProduct = async (id) => {
-    setLoading(true);
-    await axios.delete("/api/product?id=" + id).then((res) => {
-      if (res.data.success) {
-        getProducts();
-      }
-    });
-  };
+  const { products } = await getProducts();
+  const count = products?.length;
+  const pages = Array.from({ length: Math.ceil(count / 20) }, (_, i) => i + 1);
+  const Arr = pagenateArr(pages, sk);
+  // console.log(products);
   return (
     <>
       <NavLayout>
@@ -60,16 +29,14 @@ export default function Home({ searchParams }) {
         >
           New
         </Link>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-5 mt-4 gap-4">
-          {products.map(({ _id, Title, Images, Description, Price }) => {
+          {products?.map(({ id, Title, Images, Description, Price }) => {
             return (
               <ProductCard
-                key={_id}
-                {...{ Title, Description, Price, _id }}
+                key={id}
+                {...{ Title, Description, Price, id }}
                 Img={Images[0]?.img}
-                deleteItem={() => {
-                  deleteProduct(_id);
-                }}
               />
             );
           })}
@@ -128,7 +95,7 @@ export default function Home({ searchParams }) {
           </ol>
         )}
       </NavLayout>
-      {loading && (
+      {!products && (
         <div className="absolute bottom-1 right-1">
           <RiseLoader color="#1D4ED8" size={7} />
         </div>

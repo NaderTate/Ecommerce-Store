@@ -1,14 +1,16 @@
+"use client";
 import React from "react";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-function ProductCard({ _id, Title, Description, Price, Img, deleteItem }) {
+import { deleteProductAction } from "../_actions";
+function ProductCard({ id, Title, Description, Price, Img }) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   return (
     <div>
       <div className="flex gap-3 relative border-2 pr-1 rounded-md ">
         <div className="relative  min-w-[6rem] min-h-[6rem]">
-          <Link href={`/products/${_id}`}>
+          <Link href={`/products/${id}`}>
             <Image className="object-cover rounded-l-md " fill src={Img} />
           </Link>
         </div>
@@ -17,7 +19,7 @@ function ProductCard({ _id, Title, Description, Price, Img, deleteItem }) {
           <p className="description text-sm">{Description}</p>
           <p className="absolute bottom-1 font-bold">{Price}$</p>
         </div>
-        <Link href={`/products/edit/${_id}`}>
+        <Link href={`/products/edit?id=${id}`}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -45,7 +47,9 @@ function ProductCard({ _id, Title, Description, Price, Img, deleteItem }) {
             </div>
 
             <div
-              onClick={deleteItem}
+              onClick={async () => {
+                await deleteProductAction(id);
+              }}
               className="bg-red-700 text-white px-3 py-1 rounded-md cursor-pointer"
             >
               Delete

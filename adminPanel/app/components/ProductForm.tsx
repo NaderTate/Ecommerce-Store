@@ -1,13 +1,15 @@
+"use client";
 import axios from "axios";
 import React from "react";
 import Select from "react-select";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import RiseLoader from "react-spinners/RiseLoader";
 import Skeleton from "./Skeleton";
 import { ReactSortable } from "react-sortablejs";
-
-const Card = ({ src, title, deleteImage }) => {
+import PropTypes, { InferProps } from "prop-types";
+import { createProductAction, updateProductAction } from "@/app/_actions";
+function Card({ src, title, deleteImage }: InferProps<typeof Card.propTypes>) {
   return (
     <div className="relative ">
       <svg
@@ -26,23 +28,39 @@ const Card = ({ src, title, deleteImage }) => {
         />
       </svg>
 
-      <img
-        src={src}
-        alt={title}
-        className="rounded-md object-cover w-32 h-32 "
-      />
+      {src && title && (
+        <img
+          src={src}
+          alt={title}
+          className="rounded-md object-cover w-32 h-32 "
+        />
+      )}
     </div>
   );
+}
+Card.propTypes = {
+  src: PropTypes.string,
+  title: PropTypes.string,
+  deleteImage: PropTypes.any,
+};
+ProductForm.propTypes = {
+  id: PropTypes.string,
+  Title: PropTypes.string,
+  Price: PropTypes.number,
+  Description: PropTypes.string,
+  Categories: PropTypes.array,
+  Colors: PropTypes.array,
+  Images: PropTypes.array,
 };
 function ProductForm({
-  _id,
+  id,
   Title,
   Price,
   Description,
   Categories: currentCategories,
   Colors: currentColors,
   Images,
-}) {
+}: InferProps<typeof ProductForm.propTypes>) {
   const router = useRouter();
   const Colors = [
     { value: 1, label: "Red" },
@@ -51,24 +69,59 @@ function ProductForm({
   ];
   const [Categories, setCategories] = useState(currentCategories || []);
   const [colors, setColors] = useState(currentColors || []);
-  const [title, setTitle] = useState(Title || null);
-  const [price, setPrice] = useState(Price || null);
-  const [description, setDescription] = useState(Description || null);
+  const [title, setTitle] = useState(Title || "");
+  const [price, setPrice] = useState(Number(Price) || 0);
+  const [description, setDescription] = useState(Description || "");
   const [images, setImages] = useState(Images || []);
   const [loading, setLoading] = useState(false);
   const [missingData, setMissingData] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [uploadFile, setUploadFile] = useState([]);
   const [allCategories, setAllCategories] = useState([]);
+  const [isPending, startTransition] = useTransition();
+
+  async function action() {
+    if (id) {
+      setLoading(true);
+      startTransition(
+        async () =>
+          await updateProductAction(
+            id,
+            title,
+            price,
+            images,
+            description,
+            [{ title: "Rev1" }],
+            Categories,
+            colors
+          )
+      );
+      setLoading(false);
+      router.push("/products");
+    } else {
+      setLoading(true);
+      await createProductAction(
+        title,
+        price,
+        images,
+        description,
+        [{ title: "Rev1" }],
+        Categories,
+        colors
+      );
+      setLoading(false);
+      router.push("/products");
+    }
+  }
   useEffect(() => {
     axios.get("/api/category").then((res) => {
       setAllCategories(res.data.data);
     });
   }, []);
-  function updateImagesOrder(images) {
+  function updateImagesOrder(images: any) {
     setImages(images);
   }
-  const handleUpload = async (e) => {
+  const handleUpload = async (e: any) => {
     setUploading(true);
     e.preventDefault();
     for (let i = 0; i <= uploadFile.length; i++) {
@@ -84,13 +137,13 @@ function ProductForm({
         .then((response) => {
           setUploadFile((current) =>
             current.filter(
-              (file) =>
+              (file: any) =>
                 file.name.split(".")[0] != response.data.original_filename
             )
           );
 
           console.log(response);
-          setImages((oldImages) => [
+          setImages((oldImages: any) => [
             ...oldImages,
             {
               img: response.data.secure_url,
@@ -105,10 +158,10 @@ function ProductForm({
     }
     setUploading(false);
   };
-  const deleteImg = (id) => {
-    setImages((current) => current.filter((img) => img.id != id));
+  const deleteImg = (id: any) => {
+    setImages((current: any) => current.filter((img: any) => img.id != id));
   };
-  const saveProduct = async (e) => {
+  const saveProduct = async (e: any) => {
     setLoading(true);
     e.preventDefault();
     const data = {
@@ -119,30 +172,15 @@ function ProductForm({
       Categories,
       Colors: colors,
     };
-    if (_id) {
-      // update
-      const req = await axios.put("/api/product/", { ...data, _id });
-      if (req.data.success) {
-        setLoading(false);
-        router.push("/products");
-      }
-    } else {
-      // create
-      const req = await axios.post("/api/product/", data);
-      if (req.data.success) {
-        setLoading(false);
-        router.push("/products");
-      }
-    }
   };
   useEffect(() => {
     if (
       !title ||
       title.length < 1 ||
       !price ||
-      price.length < 1 ||
+      price == 0 ||
       !description ||
-      description.length < 1 ||
+      description == "" ||
       Categories.length < 1 ||
       !Categories
     ) {
@@ -154,7 +192,7 @@ function ProductForm({
   return (
     <div>
       <div className="">
-        <form onSubmit={saveProduct} className="space-y-4">
+        <form className="space-y-4">
           <div className="grid grid-cols-5 justify-between gap-5">
             <div className="col-span-4">
               <label htmlFor="title">Product name</label>
@@ -177,8 +215,9 @@ function ProductForm({
                 placeholder="Price"
                 type="number"
                 id="price"
-                onChange={(e) => {
-                  setPrice(e.target.value);
+                onChange={(e: any) => {
+                  setPrice(Number(e.target.value));
+                  console.log(typeof price);
                 }}
               />
             </div>
@@ -190,7 +229,7 @@ function ProductForm({
                 defaultValue={description}
                 className="w-full rounded-lg border-gray-200 p-3 text-sm"
                 placeholder="Description"
-                rows="5"
+                rows={5}
                 id="description"
                 onChange={(e) => {
                   setDescription(e.target.value);
@@ -202,13 +241,13 @@ function ProductForm({
                 <label htmlFor="categories">Categories</label>
                 <Select
                   placeholder="Categories"
-                  value={allCategories.filter((obj) =>
+                  value={allCategories.filter((obj: any) =>
                     Categories.includes(obj.label)
                   )} // set selected values
                   options={allCategories}
                   onChange={(e) => {
                     setCategories(
-                      Array.isArray(e) ? e.map((x) => x.label) : []
+                      Array.isArray(e) ? e.map((x: any) => x.label) : []
                     );
                   }}
                   isMulti
@@ -234,104 +273,104 @@ function ProductForm({
               </div>
             </div>
           </div>
-          <div className="flex gap-5">
-            <h1>Images:</h1>
+          <h1>Images:</h1>
+          <div className="flex gap-5 flex-wrap">
+            <ReactSortable
+              list={images}
+              className="flex flex-wrap gap-5"
+              setList={updateImagesOrder}
+            >
+              {images.map((image: any) => (
+                <Card
+                  key={image.id}
+                  src={image.img}
+                  title={image.title}
+                  deleteImage={() => {
+                    deleteImg(image.id);
+                  }}
+                />
+              ))}
+            </ReactSortable>
+
+            {uploadFile.length > 0 &&
+              uploading &&
+              Array.from(uploadFile).map(() => {
+                return (
+                  <div className="w-32 h-32">
+                    <h1>
+                      <Skeleton />
+                    </h1>
+                  </div>
+                );
+              })}
+            <label htmlFor="files" className="">
+              <div
+                className={`${
+                  uploading ? "cursor-not-allowed" : "cursor-pointer "
+                } bg-gray-300 relative rounded-md w-32 h-32 `}
+              >
+                <div className="">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className={`"w-6 h-6 mx-auto absolute top-10 -right-[50%] -left-[50%] `}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
+                    />
+                  </svg>
+                  {uploadFile.length > 0 ? (
+                    <button
+                      disabled={uploading}
+                      className="bg-blue-700 rounded-b-md text-white absolute bottom-0 w-full text-sm py-2 "
+                      onClick={handleUpload}
+                    >
+                      {uploading
+                        ? "Uploading..."
+                        : `Upload ${uploadFile.length} image${
+                            uploadFile.length == 1 ? "" : "s"
+                          }`}
+                    </button>
+                  ) : (
+                    <p className="text-center absolute bottom-0 -right-[50%] -left-[50%]">
+                      {images.length > 0 ? "Upload more" : "Upload"}
+                    </p>
+                  )}
+                  <input
+                    disabled={uploading}
+                    className="hidden"
+                    id="files"
+                    multiple
+                    type="file"
+                    title=" "
+                    onChange={(event: any) => {
+                      setUploadFile(Array.from(event.target.files));
+                      console.log(event);
+                    }}
+                  />
+                </div>
+              </div>
+            </label>
           </div>
         </form>
       </div>
-      <ReactSortable
-        list={images}
-        className="flex flex-wrap gap-1"
-        setList={updateImagesOrder}
-      >
-        {images.map((image) => (
-          <Card
-            src={image.img}
-            title={image.title}
-            deleteImage={() => {
-              deleteImg(image.id);
-            }}
-          />
-        ))}
-      </ReactSortable>
-      <div className="flex gap-5 flex-wrap">
-        {uploadFile.length > 0 &&
-          uploading &&
-          Array.from(uploadFile).map(() => {
-            return (
-              <div className="w-32 h-32">
-                <h1>
-                  <Skeleton />
-                </h1>
-              </div>
-            );
-          })}
-        <label htmlFor="files" className="">
-          <div
-            className={`${
-              uploading ? "cursor-not-allowed" : "cursor-pointer "
-            } bg-gray-300 relative rounded-md w-32 h-32 `}
-          >
-            <div className="">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className={`"w-6 h-6 mx-auto absolute top-10 -right-[50%] -left-[50%] `}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
-                />
-              </svg>
-              {uploadFile.length > 0 ? (
-                <button
-                  disabled={uploading}
-                  className="bg-blue-700 rounded-b-md text-white absolute bottom-0 w-full text-sm py-2 "
-                  onClick={handleUpload}
-                >
-                  {uploading
-                    ? "Uploading..."
-                    : `Upload ${uploadFile.length} image${
-                        uploadFile.length == 1 ? "" : "s"
-                      }`}
-                </button>
-              ) : (
-                <p className="text-center absolute bottom-0 -right-[50%] -left-[50%]">
-                  {images.length > 0 ? "Upload more" : "Upload"}
-                </p>
-              )}
-              <input
-                disabled={uploading}
-                className="hidden"
-                id="files"
-                multiple
-                type="file"
-                title=" "
-                onChange={(event) => {
-                  setUploadFile(Array.from(event.target.files));
-                  console.log(event);
-                }}
-              />
-            </div>
-          </div>
-        </label>
-      </div>
       <div className={`mt-[108px]`}>
         <button
-          disabled={missingData || loading}
+          //   disabled={missingData || loading}
           type="submit"
           className={`rounded-t-lg bg-blue-700 tracking-widest w-24 h-10 font-medium text-white ${
             (missingData || loading) && "cursor-not-allowed"
           }`}
-          onClick={saveProduct}
+          onClick={action}
         >
           {loading ? (
             <RiseLoader color="#ffffff" size={7} />
-          ) : _id ? (
+          ) : id ? (
             "Update"
           ) : (
             "Add"
