@@ -54,6 +54,7 @@ window.fetch = async function (...args) {
   }
 };
 
-export default function () {
+export default function Loader() {
   return null;
 }
+Loader.displayName = "Loader";

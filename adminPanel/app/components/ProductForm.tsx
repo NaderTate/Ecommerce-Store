@@ -79,7 +79,6 @@ function ProductForm({
   const [uploadFile, setUploadFile] = useState([]);
   const [allCategories, setAllCategories] = useState([]);
   const [isPending, startTransition] = useTransition();
-
   async function action() {
     if (id) {
       setLoading(true);
@@ -128,7 +127,6 @@ function ProductForm({
       const formData = new FormData();
       formData.append("file", uploadFile[i]);
       formData.append("upload_preset", "etttajb9");
-
       await axios
         .post(
           "https://api.cloudinary.com/v1_1//dqkyatgoy/image/upload",
@@ -141,8 +139,6 @@ function ProductForm({
                 file.name.split(".")[0] != response.data.original_filename
             )
           );
-
-          console.log(response);
           setImages((oldImages: any) => [
             ...oldImages,
             {
@@ -160,18 +156,6 @@ function ProductForm({
   };
   const deleteImg = (id: any) => {
     setImages((current: any) => current.filter((img: any) => img.id != id));
-  };
-  const saveProduct = async (e: any) => {
-    setLoading(true);
-    e.preventDefault();
-    const data = {
-      Title: title,
-      Price: price,
-      Description: description,
-      Images: images,
-      Categories,
-      Colors: colors,
-    };
   };
   useEffect(() => {
     if (
@@ -294,9 +278,9 @@ function ProductForm({
 
             {uploadFile.length > 0 &&
               uploading &&
-              Array.from(uploadFile).map(() => {
+              Array.from(uploadFile).map(({ id }) => {
                 return (
-                  <div className="w-32 h-32">
+                  <div key={id} className="w-32 h-32">
                     <h1>
                       <Skeleton />
                     </h1>
@@ -361,7 +345,7 @@ function ProductForm({
       </div>
       <div className={`mt-[108px]`}>
         <button
-          //   disabled={missingData || loading}
+          disabled={missingData || loading}
           type="submit"
           className={`rounded-t-lg bg-blue-700 tracking-widest w-24 h-10 font-medium text-white ${
             (missingData || loading) && "cursor-not-allowed"

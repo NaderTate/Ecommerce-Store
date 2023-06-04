@@ -94,7 +94,7 @@ const CategoryCard = ({ image, label, remove, Edit }) => {
     </div>
   );
 };
-function page({ searchParams }) {
+function Page({ searchParams }) {
   const [newCat, setNewCat] = useState(false);
   const [title, setTitle] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -351,11 +351,8 @@ function page({ searchParams }) {
                 </button>
                 {properties.length > 0 &&
                   properties.map((property, index) => (
-                    <div>
-                      <div
-                        key={index}
-                        className="flex flex-col lg:flex-row lg:items-center gap-1 mb-2"
-                      >
+                    <div key={index}>
+                      <div className="flex flex-col lg:flex-row lg:items-center gap-1 mb-2">
                         <input
                           type="text"
                           value={property.name}
@@ -499,7 +496,7 @@ function page({ searchParams }) {
         )}
         {categories?.length == 0 && (
           <div className="flex justify-center items-center h-[80vh] ">
-            You haven't added any categories yet
+            You haven&apos;t added any categories yet
           </div>
         )}
       </NavLayout>
@@ -507,4 +504,4 @@ function page({ searchParams }) {
   );
 }
 
-export default page;
+export default Page;

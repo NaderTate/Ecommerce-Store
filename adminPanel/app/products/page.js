@@ -3,21 +3,22 @@ import NavLayout from "../components/NavLayout";
 import ProductCard from "../components/ProductCard";
 import RiseLoader from "react-spinners/RiseLoader";
 import { getProducts } from "@/lib/products";
-const pagenateArr = (arr, p) => {
-  let newArr = [];
-  arr.forEach((element) => {
-    if (Math.abs(element - p) <= 2) {
-      newArr = [...newArr, element];
-    }
-  });
-  return newArr;
-};
+
 export default async function Home({ searchParams }) {
   const sk = searchParams.page || 1;
   const search = searchParams.search ? searchParams.search : "";
   const { products } = await getProducts();
   const count = products?.length;
   const pages = Array.from({ length: Math.ceil(count / 20) }, (_, i) => i + 1);
+  const pagenateArr = (arr, p) => {
+    let newArr = [];
+    arr.forEach((element) => {
+      if (Math.abs(element - p) <= 2) {
+        newArr = [...newArr, element];
+      }
+    });
+    return newArr;
+  };
   const Arr = pagenateArr(pages, sk);
   // console.log(products);
   return (
