@@ -2,13 +2,7 @@ import prisma from "./prisma";
 
 export async function getProducts() {
   try {
-    const products = await prisma.product.findMany({
-      orderBy: [
-        {
-          id: "desc",
-        },
-      ],
-    });
+    const products = await prisma.product.findMany();
     return { products };
   } catch (error) {
     return { error };
