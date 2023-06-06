@@ -1,9 +1,18 @@
 import prisma from "./prisma";
 
-export async function getProducts() {
+export async function getProducts(sk: number, take: number) {
   try {
-    const products = await prisma.product.findMany();
-    return { products };
+    const count = await prisma.product.count();
+    const products = await prisma.product.findMany({
+      orderBy: [
+        {
+          id: "desc",
+        },
+      ],
+      take,
+      skip: (sk - 1) * take,
+    });
+    return { products, count };
   } catch (error) {
     return { error };
   }
@@ -13,6 +22,7 @@ export async function createProduct(
   Title: string,
   Price: number,
   Images: Array<object>,
+  mainImg: string,
   Description: string,
   Reviews: Array<object>,
   Categories: Array<string>,
@@ -20,7 +30,16 @@ export async function createProduct(
 ) {
   try {
     const product = await prisma.product.create({
-      data: { Title, Price, Images, Description, Reviews, Categories, Colors },
+      data: {
+        Title,
+        Price,
+        Images,
+        Description,
+        Reviews,
+        Categories,
+        mainImg,
+        Colors,
+      },
     });
     return { product };
   } catch (error) {
@@ -42,6 +61,7 @@ export async function updateProduct(
   Title: string,
   Price: number,
   Images: Array<object>,
+  mainImg: string,
   Description: string,
   Reviews: Array<object>,
   Categories: Array<string>,
@@ -50,7 +70,16 @@ export async function updateProduct(
   try {
     const product = await prisma.product.update({
       where: { id },
-      data: { Title, Price, Images, Description, Reviews, Categories, Colors },
+      data: {
+        Title,
+        Price,
+        Images,
+        mainImg,
+        Description,
+        Reviews,
+        Categories,
+        Colors,
+      },
     });
     return { product };
   } catch (error) {

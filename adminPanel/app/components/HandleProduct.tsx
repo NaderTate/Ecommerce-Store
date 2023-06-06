@@ -43,7 +43,7 @@ Card.propTypes = {
   title: PropTypes.string,
   deleteImage: PropTypes.any,
 };
-ProductForm.propTypes = {
+HandleProduct.propTypes = {
   id: PropTypes.string,
   Title: PropTypes.string,
   Price: PropTypes.number,
@@ -52,7 +52,7 @@ ProductForm.propTypes = {
   Colors: PropTypes.array,
   Images: PropTypes.array,
 };
-function ProductForm({
+function HandleProduct({
   id,
   Title,
   Price,
@@ -60,7 +60,8 @@ function ProductForm({
   Categories: currentCategories,
   Colors: currentColors,
   Images,
-}: InferProps<typeof ProductForm.propTypes>) {
+}: InferProps<typeof HandleProduct.propTypes>) {
+  const router = useRouter();
   const Colors = [
     { value: 1, label: "Red" },
     { value: 2, label: "Green" },
@@ -96,8 +97,7 @@ function ProductForm({
           )
       );
       setLoading(false);
-
-      window.location.href = "/products";
+      //   router.push("/products");
     } else {
       setLoading(true);
       await createProductAction(
@@ -111,7 +111,7 @@ function ProductForm({
         colors
       );
       setLoading(false);
-      window.location.href = "/products";
+      //   router.push("/products");
     }
   }
   useEffect(() => {
@@ -179,7 +179,7 @@ function ProductForm({
   }, [title, price, description, images]);
   return (
     <div>
-      <div className="">
+      <div className="w-[90vw] absolute">
         <form className="space-y-4">
           <div className="grid grid-cols-5 justify-between gap-5">
             <div className="col-span-4">
@@ -369,4 +369,4 @@ function ProductForm({
   );
 }
 
-export default ProductForm;
+export default HandleProduct;

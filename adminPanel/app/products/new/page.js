@@ -1,4 +1,3 @@
-"use client";
 import NavLayout from "@/app/components/NavLayout";
 import ProductForm from "@/app/components/ProductForm";
 

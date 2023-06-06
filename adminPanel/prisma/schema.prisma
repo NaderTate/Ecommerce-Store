@@ -16,9 +16,21 @@ model Product {
   Price Int
   Description String @default("")
   Images     Json[] @default([])
+  mainImg   String
   Categories String[] @default([])
   Colors     String[] @default([])
   Reviews    Json[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Category {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  label String
+  value Int 
+  Image   String
+  Properties Json[]
+  Parent String 
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }

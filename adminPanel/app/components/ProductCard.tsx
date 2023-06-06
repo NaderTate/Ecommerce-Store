@@ -3,23 +3,30 @@ import React from "react";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Product } from "@prisma/client";
 import { deleteProductAction } from "../_actions";
-function ProductCard({ id, Title, Description, Price, Img }) {
+
+const ProductCard = ({ product }: { product: Product }) => {
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   return (
     <div>
       <div className="flex gap-3 relative border-2 pr-1 rounded-md ">
         <div className="relative  min-w-[6rem] min-h-[6rem]">
-          <Link href={`/products/${id}`}>
-            <Image className="object-cover rounded-l-md " fill src={Img} />
-          </Link>
+          <Image
+            alt={product.Title}
+            src={product.mainImg}
+            fill
+            className="object-cover rounded-l-md"
+          />
         </div>
+
         <div>
-          <p className="font-semibold title">{Title}</p>
-          <p className="description text-sm">{Description}</p>
-          <p className="absolute bottom-1 font-bold">{Price}$</p>
+          <p className="font-semibold title">{product?.Title}</p>
+          <p className="description text-sm">{product?.Description}</p>
+          <p className="absolute bottom-1 font-bold">{product?.Price}$</p>
         </div>
-        <Link href={`/products/edit?id=${id}`}>
+        <Link href={`/products/edit?id=${product?.id}`}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -48,11 +55,14 @@ function ProductCard({ id, Title, Description, Price, Img }) {
 
             <div
               onClick={async () => {
-                await deleteProductAction(id);
+                setDeleting(true);
+                await deleteProductAction(product?.id);
+                setDeleting(false);
+                setConfirmDelete(false);
               }}
               className="bg-red-700 text-white px-3 py-1 rounded-md cursor-pointer"
             >
-              Delete
+              {deleting ? "Deleting..." : "Delete"}
             </div>
           </div>
         ) : (
@@ -77,6 +87,6 @@ function ProductCard({ id, Title, Description, Price, Img }) {
       </div>
     </div>
   );
-}
+};
 
 export default ProductCard;

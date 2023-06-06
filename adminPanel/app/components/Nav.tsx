@@ -1,9 +1,19 @@
+"use client";
 import React from "react";
 import { useEffect, useState } from "react";
 import { signOut } from "next-auth/react";
 import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
-function Nav({ name, email, image }) {
+import ThemeSwitcher from "./ThemeSwitcher";
+function Nav({
+  name,
+  email,
+  image,
+}: {
+  name: string;
+  email: string;
+  image: string;
+}) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [path, setPath] = useState("");
@@ -143,7 +153,7 @@ function Nav({ name, email, image }) {
   ];
   return (
     <div className="">
-      <div className=" h-screen flex-col justify-between border-e bg-white w-[200px] fixed left-0 top-0 hidden sm:flex">
+      <div className=" h-screen flex-col justify-between border-e  w-[200px] fixed left-0 top-0 hidden sm:flex">
         <div className="p-4">
           <img
             className="w-16 "
@@ -152,29 +162,41 @@ function Nav({ name, email, image }) {
           />
 
           <nav aria-label="Main Nav" className="mt-6 flex flex-col space-y-1">
-            {menuItems.map(({ label, icon, url }) => {
-              return (
-                <Link
-                  key={label}
-                  href={url}
-                  className={`${
-                    path.includes(label.toLocaleLowerCase())
-                      ? "bg-blue-700 text-white"
-                      : "text-gray-700 bg-gray-100"
-                  } flex items-center gap-2 rounded-lg  px-4 py-2`}
-                >
-                  {icon} <span className="text-sm font-medium"> {label} </span>
-                </Link>
-              );
-            })}
+            {menuItems.map(
+              ({
+                label,
+                icon,
+                url,
+              }: {
+                label: string;
+                icon: any;
+                url: any;
+              }) => {
+                return (
+                  <Link
+                    key={label}
+                    href={url}
+                    className={`${
+                      path.includes(label.toLocaleLowerCase())
+                        ? "bg-blue-700 text-white"
+                        : "text-gray-700 bg-gray-100"
+                    } flex items-center gap-2 rounded-lg  px-4 py-2`}
+                  >
+                    {icon}
+                    <span className="text-sm font-medium"> {label} </span>
+                  </Link>
+                );
+              }
+            )}
+            <ThemeSwitcher />
           </nav>
         </div>
         <div className="group relative">
           <div className="sticky inset-x-0 bottom-0 border-t border-gray-100 ">
-            <div className="group-hover:opacity-0 transition duration-300 flex items-center gap-2 bg-white p-4 hover:bg-gray-50">
+            <div className="group-hover:opacity-0 transition duration-300 flex items-center gap-2  p-4 ">
               <img
                 loading="lazy"
-                alt="Man"
+                alt="User"
                 src={image}
                 className="h-10 w-10 rounded-full object-cover"
               />
@@ -223,7 +245,7 @@ function Nav({ name, email, image }) {
           </div>
         </div>
       </div>
-      <div className="sm:hidden fixed top-1 left-1 bg-white p-2 rounded-full border-2">
+      <div className="sm:hidden fixed top-1 left-1  p-2 rounded-full border-2">
         hi
       </div>
     </div>
