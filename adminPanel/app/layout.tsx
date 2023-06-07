@@ -1,4 +1,5 @@
 import "./globals.css";
+import "./styles.scss";
 import { Inter } from "next/font/google";
 import Provider from "./components/Provider";
 import Theme from "./components/Theme";

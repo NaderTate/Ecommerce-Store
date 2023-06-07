@@ -3,7 +3,6 @@ import axios from "axios";
 import React from "react";
 import Select from "react-select";
 import { useEffect, useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
 import RiseLoader from "react-spinners/RiseLoader";
 import Skeleton from "./Skeleton";
 import { ReactSortable } from "react-sortablejs";
@@ -49,6 +48,7 @@ ProductForm.propTypes = {
   Price: PropTypes.number,
   Description: PropTypes.string,
   Categories: PropTypes.array,
+  allCategories: PropTypes.any,
   Colors: PropTypes.array,
   Images: PropTypes.array,
 };
@@ -58,6 +58,7 @@ function ProductForm({
   Price,
   Description,
   Categories: currentCategories,
+  allCategories,
   Colors: currentColors,
   Images,
 }: InferProps<typeof ProductForm.propTypes>) {
@@ -76,7 +77,6 @@ function ProductForm({
   const [missingData, setMissingData] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [uploadFile, setUploadFile] = useState([]);
-  const [allCategories, setAllCategories] = useState([]);
   const [isPending, startTransition] = useTransition();
   async function action() {
     if (id) {
@@ -96,7 +96,6 @@ function ProductForm({
           )
       );
       setLoading(false);
-
       window.location.href = "/products";
     } else {
       setLoading(true);
@@ -114,11 +113,7 @@ function ProductForm({
       window.location.href = "/products";
     }
   }
-  useEffect(() => {
-    axios.get("/api/category").then((res) => {
-      setAllCategories(res.data.data);
-    });
-  }, []);
+
   function updateImagesOrder(images: any) {
     setImages(images);
   }
@@ -168,9 +163,9 @@ function ProductForm({
       !description ||
       description == "" ||
       !images ||
-      images.length < 1
-      // Categories.length < 1 ||
-      // !Categories
+      images.length < 1 ||
+      Categories.length < 1 ||
+      !Categories
     ) {
       setMissingData(true);
     } else {
@@ -181,7 +176,7 @@ function ProductForm({
     <div>
       <div className="">
         <form className="space-y-4">
-          <div className="grid grid-cols-5 justify-between gap-5">
+          <div className="md:grid grid-cols-5 justify-between gap-5">
             <div className="col-span-4">
               <label htmlFor="title">Product name</label>
               <input
@@ -210,7 +205,7 @@ function ProductForm({
               />
             </div>
           </div>
-          <div className="grid grid-cols-5 justify-between gap-5">
+          <div className="md:grid grid-cols-5 justify-between gap-5">
             <div className="col-span-4">
               <label htmlFor="description">Description</label>
               <textarea
@@ -227,37 +222,41 @@ function ProductForm({
             <div>
               <div className="mb-5">
                 <label htmlFor="categories">Categories</label>
-                <Select
-                  placeholder="Categories"
-                  value={allCategories.filter((obj: any) =>
-                    Categories.includes(obj.label)
-                  )} // set selected values
-                  options={allCategories}
-                  onChange={(e) => {
-                    setCategories(
-                      Array.isArray(e) ? e.map((x: any) => x.label) : []
-                    );
-                  }}
-                  isMulti
-                  isClearable
-                  instanceId={5}
-                  className=""
-                />
+                <div className="text-black">
+                  <Select
+                    placeholder="Categories"
+                    value={allCategories.filter((obj: any) =>
+                      Categories.includes(obj.label)
+                    )} // set selected values
+                    options={allCategories}
+                    onChange={(e) => {
+                      setCategories(
+                        Array.isArray(e) ? e.map((x: any) => x.label) : []
+                      );
+                    }}
+                    isMulti
+                    isClearable
+                    instanceId={5}
+                    className=""
+                  />
+                </div>
               </div>
               <div className="">
                 <label htmlFor="categories">Colors</label>
-                <Select
-                  placeholder="Colors"
-                  value={Colors.filter((obj) => colors.includes(obj.label))} // set selected values
-                  options={Colors}
-                  onChange={(e) => {
-                    setColors(Array.isArray(e) ? e.map((x) => x.label) : []);
-                  }}
-                  isMulti
-                  isClearable
-                  instanceId={5}
-                  className=""
-                />
+                <div className="text-black">
+                  <Select
+                    placeholder="Colors"
+                    value={Colors.filter((obj) => colors.includes(obj.label))} // set selected values
+                    options={Colors}
+                    onChange={(e) => {
+                      setColors(Array.isArray(e) ? e.map((x) => x.label) : []);
+                    }}
+                    isMulti
+                    isClearable
+                    instanceId={5}
+                    className=""
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -297,7 +296,7 @@ function ProductForm({
                   uploading ? "cursor-not-allowed" : "cursor-pointer "
                 } bg-gray-300 relative rounded-md w-32 h-32 `}
               >
-                <div className="">
+                <div className="text-black">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"

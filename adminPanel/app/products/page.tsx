@@ -26,12 +26,6 @@ export default async function Home({ searchParams }: any) {
     <>
       {/* @ts-ignore*/}
       <NavLayout>
-        {/* <Link
-          className=" rounded-lg bg-blue-700 tracking-widest px-5 py-3 font-medium text-white "
-          href="/products/new"
-        >
-          New
-        </Link> */}
         <Link
           className=" rounded-lg bg-blue-700 tracking-widest px-5 py-3 font-medium text-white "
           href={"/products/new"}
