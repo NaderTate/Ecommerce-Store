@@ -25,7 +25,8 @@ export async function createProductAction(
   Description: string,
   Reviews: Array<object>,
   Categories: Array<string>,
-  Colors: Array<string>
+  Colors: Array<string>,
+  Properties: object
 ) {
   await createProduct(
     Title,
@@ -35,7 +36,8 @@ export async function createProductAction(
     Description,
     Reviews,
     Categories,
-    Colors
+    Colors,
+    Properties
   );
   revalidatePath("/products");
 }
@@ -48,7 +50,8 @@ export async function updateProductAction(
   Description: string,
   Reviews: Array<object>,
   Categories: Array<string>,
-  Colors: Array<string>
+  Colors: Array<string>,
+  Properties: object
 ) {
   await updateProduct(
     id,
@@ -59,7 +62,8 @@ export async function updateProductAction(
     Description,
     Reviews,
     Categories,
-    Colors
+    Colors,
+    Properties
   );
   revalidatePath("/products");
 }

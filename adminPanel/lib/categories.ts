@@ -34,11 +34,13 @@ export async function createCategory(
   Parent: string
 ) {
   try {
-    const count = (await prisma.category.findMany()).length;
+    const x = new Date(Date.now());
+    const y = x.getTime();
+    const value = Math.floor(y + Math.random() * 200);
     const category = await prisma.category.create({
       data: {
         label,
-        value: count + 1,
+        value,
         Image,
         Properties,
         Parent,

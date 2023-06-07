@@ -8,6 +8,7 @@ import Skeleton from "./Skeleton";
 import { ReactSortable } from "react-sortablejs";
 import PropTypes, { InferProps } from "prop-types";
 import { createProductAction, updateProductAction } from "@/app/_actions";
+import Dropzone from "./Dropzone";
 function Card({ src, title, deleteImage }: InferProps<typeof Card.propTypes>) {
   return (
     <div className="relative ">
@@ -51,6 +52,7 @@ ProductForm.propTypes = {
   allCategories: PropTypes.any,
   Colors: PropTypes.array,
   Images: PropTypes.array,
+  Properties: PropTypes.any,
 };
 function ProductForm({
   id,
@@ -60,6 +62,7 @@ function ProductForm({
   Categories: currentCategories,
   allCategories,
   Colors: currentColors,
+  Properties: assignedProperties,
   Images,
 }: InferProps<typeof ProductForm.propTypes>) {
   const Colors = [
@@ -77,7 +80,11 @@ function ProductForm({
   const [missingData, setMissingData] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [uploadFile, setUploadFile] = useState([]);
+  const [properties, setProperties]: any = useState([]);
   const [isPending, startTransition] = useTransition();
+  const [productProperty, setProductProperty]: any = useState(
+    assignedProperties || {}
+  );
   async function action() {
     if (id) {
       setLoading(true);
@@ -92,11 +99,12 @@ function ProductForm({
             description,
             [{ title: "Rev1" }],
             Categories,
-            colors
+            colors,
+            productProperty
           )
       );
       setLoading(false);
-      window.location.href = "/products";
+      // window.location.href = "/products";
     } else {
       setLoading(true);
       await createProductAction(
@@ -107,50 +115,17 @@ function ProductForm({
         description,
         [{ title: "Rev1" }],
         Categories,
-        colors
+        colors,
+        productProperty
       );
       setLoading(false);
-      window.location.href = "/products";
+      // window.location.href = "/products";
     }
   }
 
   function updateImagesOrder(images: any) {
     setImages(images);
   }
-  const handleUpload = async (e: any) => {
-    setUploading(true);
-    e.preventDefault();
-    for (let i = 0; i <= uploadFile.length; i++) {
-      const formData = new FormData();
-      formData.append("file", uploadFile[i]);
-      formData.append("upload_preset", "etttajb9");
-      await axios
-        .post(
-          "https://api.cloudinary.com/v1_1//dqkyatgoy/image/upload",
-          formData
-        )
-        .then((response) => {
-          setUploadFile((current) =>
-            current.filter(
-              (file: any) =>
-                file.name.split(".")[0] != response.data.original_filename
-            )
-          );
-          setImages((oldImages: any) => [
-            ...oldImages,
-            {
-              img: response.data.secure_url,
-              id: response.data.asset_id,
-              title: response.data.original_filename,
-            },
-          ]);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-    setUploading(false);
-  };
   const deleteImg = (id: any) => {
     setImages((current: any) => current.filter((img: any) => img.id != id));
   };
@@ -172,16 +147,44 @@ function ProductForm({
       setMissingData(false);
     }
   }, [title, price, description, images]);
+  useEffect(() => {
+    if (Categories.length > 0) {
+      const props: Array<any> = [];
+      Categories.map((cat) => {
+        props.push(allCategories.find(({ label }: any) => label == cat));
+        setProperties(props);
+      });
+      const propductProps: any = {};
+      props.map((prop) => {
+        if (prop.Properties.length > 0) {
+          return prop.Properties.map((prop: any) => {
+            propductProps[prop.name] = "";
+            setProductProperty(propductProps);
+          });
+        }
+      });
+    } else {
+      setProperties([]);
+      setProductProperty({});
+    }
+  }, [Categories]);
+  const handleProductProperty = (name: string, value: string) => {
+    setProductProperty((prev: any) => {
+      const newProductProps: any = { ...prev };
+      newProductProps[name] = value;
+      return newProductProps;
+    });
+  };
   return (
     <div>
-      <div className="">
+      <div>
         <form className="space-y-4">
           <div className="md:grid grid-cols-5 justify-between gap-5">
-            <div className="col-span-4">
+            <div className="col-span-3">
               <label htmlFor="title">Product name</label>
               <input
                 defaultValue={title}
-                className="w-full rounded-lg border-gray-200 p-3 text-sm"
+                className="w-full rounded-lg dark:border-0 border-gray-200 border-2 p-3 text-sm"
                 placeholder="Product name"
                 type="text"
                 id="title"
@@ -190,11 +193,11 @@ function ProductForm({
                 }}
               />
             </div>
-            <div>
+            <div className="col-span-2">
               <label htmlFor="price">Price ($)</label>
               <input
                 defaultValue={price}
-                className="w-full rounded-lg border-gray-200 p-3 text-sm"
+                className="w-full rounded-lg border-gray-200 p-3 text-sm dark:border-0 border-2"
                 placeholder="Price"
                 type="number"
                 id="price"
@@ -206,11 +209,11 @@ function ProductForm({
             </div>
           </div>
           <div className="md:grid grid-cols-5 justify-between gap-5">
-            <div className="col-span-4">
+            <div className="col-span-3">
               <label htmlFor="description">Description</label>
               <textarea
                 defaultValue={description}
-                className="w-full rounded-lg border-gray-200 p-3 text-sm"
+                className="w-full rounded-lg border-gray-200 p-3 text-sm  dark:border-0 border-2"
                 placeholder="Description"
                 rows={5}
                 id="description"
@@ -219,7 +222,7 @@ function ProductForm({
                 }}
               ></textarea>
             </div>
-            <div>
+            <div className="col-span-2">
               <div className="mb-5">
                 <label htmlFor="categories">Categories</label>
                 <div className="text-black">
@@ -237,11 +240,10 @@ function ProductForm({
                     isMulti
                     isClearable
                     instanceId={5}
-                    className=""
                   />
                 </div>
               </div>
-              <div className="">
+              <div>
                 <label htmlFor="categories">Colors</label>
                 <div className="text-black">
                   <Select
@@ -254,13 +256,76 @@ function ProductForm({
                     isMulti
                     isClearable
                     instanceId={5}
-                    className=""
                   />
                 </div>
               </div>
             </div>
           </div>
+          <div className="flex flex-wrap gap-3">
+            {properties.length > 0 &&
+              properties.map((prop: any) => {
+                return prop.Properties.map((property: any) => {
+                  return (
+                    <>
+                      <h1 key={property.name}>{property.name}</h1>
+                      <select
+                        className="rounded-md border-gray-200  dark:border-0 border-2"
+                        value={productProperty[property.name] || ""}
+                        onChange={(e: any) => {
+                          handleProductProperty(property.name, e.target.value);
+                        }}
+                      >
+                        <option value="">Select value:</option>
+                        {property.values.split(",")?.map((v: string) => {
+                          return (
+                            <option key={v} value={v}>
+                              {v}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </>
+                  );
+                });
+              })}
+          </div>
+
           <h1>Images:</h1>
+          <Dropzone
+            handleImages={async (x: any) => {
+              setUploadFile(x);
+              setUploading(true);
+              for (let i = 0; i < x.length; i++) {
+                const formData = new FormData();
+                formData.append("file", x[i]);
+                formData.append("upload_preset", "etttajb9");
+                await axios
+                  .post(process.env.CLOUDINARY_URL || "", formData)
+                  .then((response) => {
+                    setUploadFile((current) =>
+                      current.filter(
+                        (file: any) =>
+                          file.name.split(".")[0] !=
+                          response.data.original_filename
+                      )
+                    );
+                    setImages((oldImages: any) => [
+                      ...oldImages,
+                      {
+                        img: response.data.secure_url,
+                        id: response.data.asset_id,
+                        title: response.data.original_filename,
+                      },
+                    ]);
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                  });
+              }
+              setUploading(false);
+            }}
+            className="p-16 mt-5 border rounded-md border-neutral-200"
+          />
           <div className="flex gap-5 flex-wrap">
             <ReactSortable
               list={images}
@@ -282,15 +347,10 @@ function ProductForm({
             {uploadFile.length > 0 &&
               uploading &&
               Array.from(uploadFile).map(({ id }) => {
-                return (
-                  <div key={id} className="w-32 h-32">
-                    <h1>
-                      <Skeleton />
-                    </h1>
-                  </div>
-                );
+                return <Skeleton key={id} width="w-32" height="h-32" />;
               })}
-            <label htmlFor="files" className="">
+
+            {/* <label htmlFor="files">
               <div
                 className={`${
                   uploading ? "cursor-not-allowed" : "cursor-pointer "
@@ -334,7 +394,6 @@ function ProductForm({
                     id="files"
                     multiple
                     type="file"
-                    title=" "
                     onChange={(event: any) => {
                       setUploadFile(Array.from(event.target.files));
                       console.log(event);
@@ -342,7 +401,7 @@ function ProductForm({
                   />
                 </div>
               </div>
-            </label>
+            </label> */}
           </div>
         </form>
       </div>

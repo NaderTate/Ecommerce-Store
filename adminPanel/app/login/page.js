@@ -21,8 +21,8 @@ const SignInButton = () => {
 };
 function page() {
   return (
-    <div>
-      <section className="bg-white">
+    <div className="bg-white min-h-screen">
+      <section className="">
         <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
           <aside className="relative block h-16 lg:order-last lg:col-span-5 lg:h-full xl:col-span-6">
             <img

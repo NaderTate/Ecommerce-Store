@@ -20,6 +20,7 @@ model Product {
   Categories String[] @default([])
   Colors     String[] @default([])
   Reviews    Json[]
+  Properties Json
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }

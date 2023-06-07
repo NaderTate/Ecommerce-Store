@@ -26,7 +26,8 @@ export async function createProduct(
   Description: string,
   Reviews: Array<object>,
   Categories: Array<string>,
-  Colors: Array<string>
+  Colors: Array<string>,
+  Properties: object
 ) {
   try {
     const product = await prisma.product.create({
@@ -39,6 +40,7 @@ export async function createProduct(
         Categories,
         mainImg,
         Colors,
+        Properties,
       },
     });
     return { product };
@@ -65,7 +67,8 @@ export async function updateProduct(
   Description: string,
   Reviews: Array<object>,
   Categories: Array<string>,
-  Colors: Array<string>
+  Colors: Array<string>,
+  Properties: object
 ) {
   try {
     const product = await prisma.product.update({
@@ -79,6 +82,7 @@ export async function updateProduct(
         Reviews,
         Categories,
         Colors,
+        Properties,
       },
     });
     return { product };

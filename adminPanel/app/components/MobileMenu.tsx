@@ -26,7 +26,7 @@ function MobileMenu({
     setPath(pathname);
   }, [pathname, searchParams]);
   return (
-    <div>
+    <div className="">
       <div
         className={`menuBtn  ${isMenuOpen ? "closer" : null}`}
         onClick={() => {
@@ -74,7 +74,7 @@ function MobileMenu({
           }
         )}
         <ThemeSwitcher />
-        <div className=" absolute bottom-0 w-full">
+        <div className=" fixed bottom-0 w-full">
           <div className="sticky inset-x-0 bottom-0 border-t border-gray-100 ">
             <div className=" flex items-center gap-x-2  p-4 ">
               {/* @ts-ignore*/}
