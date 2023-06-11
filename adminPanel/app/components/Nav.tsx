@@ -202,10 +202,15 @@ function Nav({
                 className="h-10 w-10 rounded-full object-cover"
               />
               <div>
-                <p className="text-xs">
-                  <strong className="block font-medium">{name}</strong>
-                  <span> {email} </span>
-                </p>
+                <div className="text-xs">
+                  <strong className="block font-medium max-w-[120px] overflow-ellipsis whitespace-nowrap overflow-hidden">
+                    {name}
+                  </strong>
+                  <p className="max-w-[120px] overflow-ellipsis whitespace-nowrap overflow-hidden">
+                    {" "}
+                    {email}{" "}
+                  </p>
+                </div>
               </div>
             </div>
             <div className="flex justify-around w-full opacity-0 group-hover:opacity-100 absolute top-6">

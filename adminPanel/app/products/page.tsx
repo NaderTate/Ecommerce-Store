@@ -8,10 +8,15 @@ export const revalidate = 0;
 export default async function Home({ searchParams }: any) {
   const sk = searchParams.page || 1;
   const search = searchParams.search ? searchParams.search : "";
-  const { products } = await getProducts(sk, 20);
+  // await new Promise((resolve) => setTimeout(resolve, 1000000));
+  const itemsToShow = 30;
+  const { products } = await getProducts(sk, itemsToShow);
   const { count } = await getProducts(0, 0);
   const number = count || 1;
-  const pages = Array.from({ length: Math.ceil(number / 20) }, (_, i) => i + 1);
+  const pages = Array.from(
+    { length: Math.ceil(number / itemsToShow) },
+    (_, i) => i + 1
+  );
   const pagenateArr = (arr: Array<number>, p: number) => {
     let newArr: Array<number> = [];
     arr.forEach((element: any) => {
@@ -28,10 +33,17 @@ export default async function Home({ searchParams }: any) {
       <NavLayout>
         <Link
           className=" rounded-lg bg-blue-700 tracking-widest px-5 py-3 font-medium text-white "
-          href={"/products/new"}
+          href={{ pathname: "/products/new" }}
         >
           New
         </Link>
+        <p className="mt-5">
+          Displaying {(sk - 1) * itemsToShow}-
+          {(number - (sk - 1) * itemsToShow) / itemsToShow > 1
+            ? sk * itemsToShow
+            : number}{" "}
+          of {count} products
+        </p>
         <div className="flex flex-col min-h-[90vh]">
           <div className="grow">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-5 mt-4 gap-4 ">
@@ -43,8 +55,11 @@ export default async function Home({ searchParams }: any) {
           {pages && Arr && (
             <ol className="flex justify-center gap-1 mt-16 text-sm font-medium">
               <li>
-                <a
-                  href={`/products?page=${pages.at(0)}&search=${search}`}
+                <Link
+                  href={{
+                    pathname: "/products",
+                    query: { page: pages.at(0), search: search },
+                  }}
                   className="inline-flex items-center justify-center w-8 h-8 border border-gray-100 rounded-full hover:bg-slate-400/50 transition "
                 >
                   <svg
@@ -59,13 +74,17 @@ export default async function Home({ searchParams }: any) {
                       clipRule="evenodd"
                     />
                   </svg>
-                </a>
+                </Link>
               </li>
               {Arr &&
                 Arr.map((page: any) => (
                   <li key={page}>
                     <Link
-                      href={`/products?page=${page}&search=${search}`}
+                      href={{
+                        pathname: "/products",
+                        query: { page: page, search: search },
+                      }}
+                      // href={`/products?page=${page}&search=${search}`}
                       className="inline-flex items-center justify-center w-8 h-8 border border-gray-100 rounded-full hover:bg-slate-400/50 transition"
                     >
                       {page}
@@ -74,7 +93,10 @@ export default async function Home({ searchParams }: any) {
                 ))}
               <li>
                 <Link
-                  href={`/products?page=${pages.at(-1)}&search=${search}`}
+                  href={{
+                    pathname: "/products",
+                    query: { page: pages.at(-1), search: search },
+                  }}
                   className="inline-flex items-center justify-center w-8 h-8 border border-gray-100 rounded-full hover:bg-slate-400/50 transition"
                 >
                   <svg
@@ -92,12 +114,6 @@ export default async function Home({ searchParams }: any) {
                 </Link>
               </li>
             </ol>
-          )}
-
-          {!products && (
-            <div className="absolute bottom-1 right-1">
-              <RiseLoader color="#1D4ED8" size={7} />
-            </div>
           )}
         </div>
       </NavLayout>

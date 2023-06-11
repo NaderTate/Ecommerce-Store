@@ -3,10 +3,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { signOut } from "next-auth/react";
-
 import ThemeSwitcher from "./ThemeSwitcher";
 import Image from "next/image";
-
 function MobileMenu({
   menuItems,
   name,
@@ -51,31 +49,33 @@ function MobileMenu({
       </div>
       <nav
         aria-label="Main Nav"
-        className={`pt-16 flex flex-col space-y-1 px-5 menuOverlay dark:bg-[#121212] ${
+        className={`pt-16 mt-1 rounded-md border border-b border-white menuOverlay dark:bg-[#121212] ${
           isMenuOpen ? "show" : null
         } `}
       >
-        {menuItems.map(
-          ({ label, icon, url }: { label: string; icon: any; url: any }) => {
-            return (
-              <Link
-                key={label}
-                href={url}
-                className={`${
-                  path.includes(label.toLocaleLowerCase())
-                    ? "bg-blue-700 text-white"
-                    : "text-gray-700 bg-gray-100"
-                } flex items-center gap-2 rounded-lg  px-4 py-2`}
-              >
-                {icon}
-                <span className="text-sm font-medium"> {label} </span>
-              </Link>
-            );
-          }
-        )}
-        <ThemeSwitcher />
-        <div className=" fixed bottom-0 w-full">
-          <div className="sticky inset-x-0 bottom-0 border-t border-gray-100 ">
+        <div className="px-5 flex flex-col space-y-1 ">
+          {menuItems.map(
+            ({ label, icon, url }: { label: string; icon: any; url: any }) => {
+              return (
+                <Link
+                  key={label}
+                  href={url}
+                  className={`${
+                    path.includes(label.toLocaleLowerCase())
+                      ? "bg-blue-700 text-white"
+                      : "text-gray-700 bg-gray-100"
+                  } flex items-center gap-2 rounded-lg  px-4 py-2`}
+                >
+                  {icon}
+                  <span className="text-sm font-medium"> {label} </span>
+                </Link>
+              );
+            }
+          )}
+          <ThemeSwitcher />
+        </div>
+        <div className=" absolute bottom-0 w-full">
+          <div className="w-full border-t border-gray-100 ">
             <div className=" flex items-center gap-x-2  p-4 ">
               {/* @ts-ignore*/}
               <Link href={"/profile"} className=" flex items-center gap-x-2  ">
@@ -104,7 +104,7 @@ function MobileMenu({
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="red"
-                  className="w-8 h-8   mr-10"
+                  className="w-8 h-8   mr-5"
                 >
                   <path
                     strokeLinecap="round"

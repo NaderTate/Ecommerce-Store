@@ -2,13 +2,14 @@
 import axios from "axios";
 import React from "react";
 import Select from "react-select";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import RiseLoader from "react-spinners/RiseLoader";
-import Skeleton from "./Skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ReactSortable } from "react-sortablejs";
 import PropTypes, { InferProps } from "prop-types";
-import { createProductAction, updateProductAction } from "@/app/_actions";
 import Dropzone from "./Dropzone";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 function Card({ src, title, deleteImage }: InferProps<typeof Card.propTypes>) {
   return (
     <div className="relative ">
@@ -18,7 +19,7 @@ function Card({ src, title, deleteImage }: InferProps<typeof Card.propTypes>) {
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="red"
-        className="w-6 h-6 absolute right-0 top-0 bg-white/50 cursor-pointer"
+        className="w-6 h-6 absolute right-0 top-0 bg-white/50 cursor-pointer z-[2]"
         onClick={deleteImage}
       >
         <path
@@ -29,11 +30,15 @@ function Card({ src, title, deleteImage }: InferProps<typeof Card.propTypes>) {
       </svg>
 
       {src && title && (
-        <img
-          src={src}
-          alt={title}
-          className="rounded-md object-cover w-32 h-32 "
-        />
+        <div className="relative h-32 w-32">
+          <Image
+            fill
+            sizes="(max-width: 470px) 40vw,(max-width: 640px)25vw,(max-width :810px)17vw,10vw"
+            src={src}
+            alt={title}
+            className="rounded-md object-cover "
+          />
+        </div>
       )}
     </div>
   );
@@ -53,6 +58,8 @@ ProductForm.propTypes = {
   Colors: PropTypes.array,
   Images: PropTypes.array,
   Properties: PropTypes.any,
+  createProduct: PropTypes.any,
+  updateProduct: PropTypes.any,
 };
 function ProductForm({
   id,
@@ -64,11 +71,28 @@ function ProductForm({
   Colors: currentColors,
   Properties: assignedProperties,
   Images,
+  createProduct,
+  updateProduct,
 }: InferProps<typeof ProductForm.propTypes>) {
   const Colors = [
     { value: 1, label: "Red" },
     { value: 2, label: "Green" },
     { value: 3, label: "Black" },
+    { value: 4, label: "Yellow" },
+    { value: 5, label: "White" },
+    { value: 6, label: "Blue" },
+    { value: 7, label: "Violet" },
+    { value: 8, label: "Indigo" },
+    { value: 9, label: "Purple" },
+    { value: 10, label: "Orange" },
+    { value: 11, label: "Brown" },
+    { value: 12, label: "Pink" },
+    { value: 13, label: "Silver" },
+    { value: 14, label: "Gray" },
+    { value: 15, label: "Beige" },
+    { value: 16, label: "Turquoise" },
+    { value: 17, label: "RGB" },
+    { value: 18, label: "Transparent" },
   ];
   const [Categories, setCategories] = useState(currentCategories || []);
   const [colors, setColors] = useState(currentColors || []);
@@ -81,62 +105,62 @@ function ProductForm({
   const [uploading, setUploading] = useState(false);
   const [uploadFile, setUploadFile] = useState([]);
   const [properties, setProperties]: any = useState([]);
-  const [isPending, startTransition] = useTransition();
   const [productProperty, setProductProperty]: any = useState(
     assignedProperties || {}
   );
+  const router = useRouter();
+
   async function action() {
     if (id) {
       setLoading(true);
-      startTransition(
-        async () =>
-          await updateProductAction(
-            id,
-            title,
-            price,
-            images,
-            images[0].img,
-            description,
-            [{ title: "Rev1" }],
-            Categories,
-            colors,
-            productProperty
-          )
-      );
+      await updateProduct({
+        id,
+        Title: title,
+        Price: price,
+        Images: images,
+        mainImg: images[0].img,
+        Description: description,
+        Reviews: [{ title: "Rev1" }],
+        Categories,
+        Colors: colors,
+        Properties: productProperty,
+      });
+
       setLoading(false);
-      // window.location.href = "/products";
+      router.push("/products");
+      router.refresh();
     } else {
       setLoading(true);
-      await createProductAction(
-        title,
-        price,
-        images,
-        images[0].img,
-        description,
-        [{ title: "Rev1" }],
+      await createProduct({
+        Title: title,
+        Price: price,
+        Images: images,
+        mainImg: images[0].img,
+        Description: description,
+        Reviews: [{ title: "Rev1" }],
         Categories,
-        colors,
-        productProperty
-      );
+        Colors: colors,
+        Properties: productProperty,
+      });
       setLoading(false);
-      // window.location.href = "/products";
+      router.push("/products");
+      router.refresh();
     }
   }
-
+  // This function is used by the Reactsortable to sort the images by dragging them and set the images array to our new sorted array
   function updateImagesOrder(images: any) {
     setImages(images);
   }
   const deleteImg = (id: any) => {
     setImages((current: any) => current.filter((img: any) => img.id != id));
   };
+  // If there's missing data, set the missing data to true which disables the upload/update button
   useEffect(() => {
     if (
       !title ||
       title.length < 1 ||
       !price ||
       price == 0 ||
-      !description ||
-      description == "" ||
       !images ||
       images.length < 1 ||
       Categories.length < 1 ||
@@ -146,7 +170,8 @@ function ProductForm({
     } else {
       setMissingData(false);
     }
-  }, [title, price, description, images]);
+  }, [title, price, description, images, Categories]);
+  // When we select a category, we want the properties of this category to appear so we can choose their values, for example if I choose the "mobiles" category, I want to be able to choose what brand, how much storage, ram ,etc..
   useEffect(() => {
     if (Categories.length > 0) {
       const props: Array<any> = [];
@@ -154,20 +179,23 @@ function ProductForm({
         props.push(allCategories.find(({ label }: any) => label == cat));
         setProperties(props);
       });
+      // if I choose/remove a category I want to show/remove it's corresponding properties
       const propductProps: any = {};
       props.map((prop) => {
         if (prop.Properties.length > 0) {
           return prop.Properties.map((prop: any) => {
-            propductProps[prop.name] = "";
+            propductProps[prop.name] = productProperty[prop.name] || "";
             setProductProperty(propductProps);
           });
         }
       });
     } else {
+      // If no category is selected, clear our properties
       setProperties([]);
       setProductProperty({});
     }
-  }, [Categories]);
+  }, [Categories, allCategories]);
+  // Handles the change in the properties
   const handleProductProperty = (name: string, value: string) => {
     setProductProperty((prev: any) => {
       const newProductProps: any = { ...prev };
@@ -266,9 +294,18 @@ function ProductForm({
               properties.map((prop: any) => {
                 return prop.Properties.map((property: any) => {
                   return (
-                    <>
-                      <h1 key={property.name}>{property.name}</h1>
-                      <select
+                    <div key={property.name}>
+                      <h1>{property.name}</h1>
+                      <input
+                        className="h-12 px-2 rounded-md border-gray-200  dark:border-0 border-2"
+                        onChange={(e: any) => {
+                          handleProductProperty(property.name, e.target.value);
+                        }}
+                        value={productProperty[property.name] || ""}
+                        type="text"
+                        placeholder="Value"
+                      />
+                      {/* <select
                         className="rounded-md border-gray-200  dark:border-0 border-2"
                         value={productProperty[property.name] || ""}
                         onChange={(e: any) => {
@@ -283,15 +320,15 @@ function ProductForm({
                             </option>
                           );
                         })}
-                      </select>
-                    </>
+                      </select> */}
+                    </div>
                   );
                 });
               })}
           </div>
-
           <h1>Images:</h1>
           <Dropzone
+            // this function loops over the images passed from the dropzone component and upload them to cloudinary one by one
             handleImages={async (x: any) => {
               setUploadFile(x);
               setUploading(true);
@@ -300,7 +337,10 @@ function ProductForm({
                 formData.append("file", x[i]);
                 formData.append("upload_preset", "etttajb9");
                 await axios
-                  .post(process.env.CLOUDINARY_URL || "", formData)
+                  .post(
+                    "https://api.cloudinary.com/v1_1//dqkyatgoy/image/upload",
+                    formData
+                  )
                   .then((response) => {
                     setUploadFile((current) =>
                       current.filter(
@@ -327,9 +367,10 @@ function ProductForm({
             className="p-16 mt-5 border rounded-md border-neutral-200"
           />
           <div className="flex gap-5 flex-wrap">
+            {/* ReactSortable allows us to rearrange images by dragging them */}
             <ReactSortable
               list={images}
-              className="flex flex-wrap gap-5"
+              className="flex flex-wrap gap-5 justify-center mx-2"
               setList={updateImagesOrder}
             >
               {images.map((image: any) => (
@@ -343,13 +384,13 @@ function ProductForm({
                 />
               ))}
             </ReactSortable>
-
+            {/* Display a number of skeletons corresponding to the number of images being uploaded */}
             {uploadFile.length > 0 &&
               uploading &&
               Array.from(uploadFile).map(({ id }) => {
-                return <Skeleton key={id} width="w-32" height="h-32" />;
+                return <Skeleton key={id} className="w-32 h-32 bg-gray-500" />;
               })}
-
+            {/* I used this button to upload images before I switched to the dropzone component */}
             {/* <label htmlFor="files">
               <div
                 className={`${
@@ -426,5 +467,4 @@ function ProductForm({
     </div>
   );
 }
-
 export default ProductForm;

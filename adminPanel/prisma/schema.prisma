@@ -13,7 +13,7 @@ datasource db {
 model Product {
   id    String @id @default(auto()) @map("_id") @db.ObjectId
   Title String
-  Price Int
+  Price Float
   Description String @default("")
   Images     Json[] @default([])
   mainImg   String
@@ -34,4 +34,11 @@ model Category {
   Parent String 
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+}
+model Admin{
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  email String
+  name String
+  image String
+
 }

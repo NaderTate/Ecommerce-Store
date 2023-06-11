@@ -2,25 +2,29 @@
 import React from "react";
 import { useState } from "react";
 import axios from "axios";
-import Skeleton from "./Skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 import { RiseLoader } from "react-spinners";
-import { createCategoryAction, updataCategoryAction } from "../_actions";
 import { Category } from "@prisma/client";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 function Categories({
   category,
   allCategories,
+  createCategory,
+  updateCategory,
 }: {
   category: Category;
   allCategories: any;
+  createCategory: any;
+  updateCategory: any;
 }) {
   const [title, setTitle] = useState(category.label);
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [categories, setCategories] = useState([]);
   const [img, setImg] = useState(category.Image);
   const [parent, setParent] = useState(category.Parent);
   const [properties, setProperties]: any = useState(category.Properties);
-  const [exists, setExists] = useState(false);
+  const router = useRouter();
   function addProperty() {
     setProperties((prev: any) => {
       return [...prev, { name: "", values: "" }];
@@ -34,20 +38,21 @@ function Categories({
     setProperties((prev: any) => {
       const properties = [...prev];
       properties[index].name = newName;
+      properties[index].values = "";
       return properties;
     });
   }
-  function handlePropertyValuesChange(
-    index: number,
-    property: any,
-    newValues: Array<string>
-  ) {
-    setProperties((prev: any) => {
-      const properties = [...prev];
-      properties[index].values = newValues;
-      return properties;
-    });
-  }
+  // function handlePropertyValuesChange(
+  //   index: number,
+  //   property: any,
+  //   newValues: Array<string>
+  // ) {
+  //   setProperties((prev: any) => {
+  //     const properties = [...prev];
+  //     properties[index].values = newValues;
+  //     return properties;
+  //   });
+  // }
   function removeProperty(indexToRemove: number) {
     setProperties((prev: any) => {
       return [...prev].filter((p, pIndex) => {
@@ -61,7 +66,7 @@ function Categories({
         <label htmlFor="title">Category name:</label>
         <form className="flex gap-3 lg:items-end mb-2 flex-col lg:flex-row items-start">
           <input
-            className="w-full rounded-lg border-gray-200 p-3 text-sm h-12"
+            className="w-full rounded-lg dark:border-0 border-gray-200 border-2 p-3 text-sm h-12"
             placeholder="eg: Kitchen tools"
             type="text"
             id="title"
@@ -73,7 +78,7 @@ function Categories({
           <select
             name=""
             id=""
-            className="rounded-md h-12"
+            className="rounded-md h-12 dark:border-0 border-gray-200 border-2"
             value={parent || ""}
             onChange={(e: any) => {
               setParent(e.target.value);
@@ -152,8 +157,16 @@ function Categories({
               </div>
             </div>
           </label>
-          {img && <img src={img} className="w-28 rounded-md" />}
-          {uploading && <Skeleton height="h-20" width="w-28" />}
+          {img && (
+            <Image
+              alt="Image"
+              width={128}
+              height={128}
+              src={img}
+              className="rounded-md object-contain"
+            />
+          )}
+          {uploading && <Skeleton className="h-20 w-28 bg-gray-500" />}
         </form>
 
         <div className="mb-2">
@@ -175,15 +188,15 @@ function Categories({
                   <input
                     type="text"
                     value={property.name}
-                    className="mb-0 rounded-md h-12 px-2 w-full  "
+                    className="mb-0 rounded-md h-12 px-2 w-full dark:border-0 border-gray-200 border-2 "
                     onChange={(ev: any) =>
                       handlePropertyNameChange(index, property, ev.target.value)
                     }
                     placeholder="property name (example: storage)"
                   />
-                  <input
+                  {/* <input
                     type="text"
-                    className="mb-0 h-12  px-2 rounded-md w-full "
+                    className="mb-0 h-12  px-2 rounded-md w-full dark:border-0 border-gray-200 border-2"
                     onChange={(ev: any) =>
                       handlePropertyValuesChange(
                         index,
@@ -193,7 +206,7 @@ function Categories({
                     }
                     value={property.values}
                     placeholder="values, comma separated (64GB, 128GB)"
-                  />
+                  /> */}
                   <div>
                     <svg
                       onClick={() => removeProperty(index)}
@@ -220,16 +233,22 @@ function Categories({
           onClick={async () => {
             setLoading(true);
             if (category.id == "") {
-              await createCategoryAction(title, img, properties, parent);
+              await createCategory({
+                label: title,
+                Image: img,
+                Properties: properties,
+                Parent: parent,
+              });
             } else {
-              await updataCategoryAction(
-                category.id,
-                title,
-                img,
-                properties,
-                parent
-              );
-              window.location.href = "/categories";
+              await updateCategory({
+                id: category.id,
+                label: title,
+                Image: img,
+                Properties: properties,
+                Parent: parent,
+              });
+              router.push("/categories");
+              router.refresh();
             }
             setTitle("");
             setImg("");

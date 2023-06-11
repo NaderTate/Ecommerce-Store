@@ -2,14 +2,14 @@
 import React from "react";
 import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
+import Image from "next/image";
 const SignInButton = () => {
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl");
+  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
   return (
     <button
       onClick={() => signIn("google", { callbackUrl })}
       className="group relative inline-block overflow-hidden border border-indigo-600 px-8 py-3 focus:outline-none focus:ring"
-      href="/download"
     >
       <span className="absolute inset-y-0 left-0 w-[2px] bg-indigo-600 transition-all group-hover:w-full group-active:bg-indigo-500"></span>
 
@@ -25,10 +25,12 @@ function page() {
       <section className="">
         <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
           <aside className="relative block h-16 lg:order-last lg:col-span-5 lg:h-full xl:col-span-6">
-            <img
+            <Image
+              fill
+              sizes="(max-width: 1023px) 100vw, 50vw"
               alt="Pattern"
               src="https://images.unsplash.com/photo-1605106702734-205df224ecce?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
-              className="absolute inset-0 h-full w-full object-cover"
+              className=" inset-0 h-full w-full object-cover"
             />
           </aside>
 
@@ -38,8 +40,10 @@ function page() {
           >
             <div className="max-w-xl lg:max-w-3xl">
               <a className="block text-blue-600" href="/">
-                <span className="sr-only">Home</span>
-                <img
+                <Image
+                  width={100}
+                  height={100}
+                  sizes=""
                   src="https://res.cloudinary.com/dqkyatgoy/image/upload/v1685277800/Nader%20Express/logo_wjbyiz.svg"
                   alt=""
                 />

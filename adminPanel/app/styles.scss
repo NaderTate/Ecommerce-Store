@@ -16,14 +16,14 @@
   transition: all 450ms ease-in-out;
   &.closer {
     &:nth-child(1) {
-      transform: rotate(45deg) translate(13px, -12px);
+      transform: rotate(45deg) translate(17px, -12px);
       width: 20px;
     }
     &:nth-child(2) {
       transform: translateX(8px);
     }
     &:nth-child(3) {
-      transform: rotate(-45deg) translate(13px, 12px);
+      transform: rotate(-45deg) translate(17px, 12px);
       width: 20px;
     }
   }

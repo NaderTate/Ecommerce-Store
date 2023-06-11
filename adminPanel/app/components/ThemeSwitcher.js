@@ -6,7 +6,7 @@ const ThemeSwitcher = () => {
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     setMounted(true);
-  });
+  }, []);
   if (!mounted) return null;
   return (
     <div className="flex gap-3">

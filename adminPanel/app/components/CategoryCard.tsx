@@ -7,8 +7,8 @@ import Link from "next/link";
 const CategoryCard = ({ category }: { category: Category }) => {
   const [confirmDelete, setConfirmDelete] = useState(false);
   return (
-    <div className="flex flex-col gap-1 relative border-2 rounded-md ">
-      <div className="relative  w-[10rem] h-[10rem]">
+    <div className="flex flex-col gap-1 relative border-2 rounded-md   max-w-[10rem] max-h-[12rem]">
+      <div className="relative  w-[156px] h-[156px]">
         <Image
           alt={category.label}
           className="object-cover rounded-t-md"
@@ -16,14 +16,18 @@ const CategoryCard = ({ category }: { category: Category }) => {
           src={category.Image}
         />
       </div>
-      <p className="font-semibold title text-center mb-1">{category.label}</p>
+      <p className="font-semibold max-w-[10rem]   overflow-ellipsis whitespace-nowrap overflow-hidden text-center ">
+        {category.label}
+      </p>
       <p
         className="absolute top-0 left-0 bg-white/70 rounded-br-md border-black dark:text-black cursor-default"
         title="39 products"
       >
         39
       </p>
-      <Link href={`/categories/edit?id=${category.id}`}>
+      <Link
+        href={{ pathname: "/categories/edit", query: { id: category?.id } }}
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"

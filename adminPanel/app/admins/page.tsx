@@ -1,19 +1,16 @@
 import React from "react";
 import NavLayout from "../components/NavLayout";
-import Categories from "../components/Categories";
-import CategoryCard from "../components/CategoryCard";
-import { getCategories } from "@/lib/categories";
+import { getAdmins } from "@/lib/admins";
 import Link from "next/link";
-import { createCategoryAction, updataCategoryAction } from "../_actions";
-import { revalidatePath } from "next/cache";
+import AddAdmin from "@/app/components/AddAdmin";
+import AdminCard from "../components/AdminCard";
 async function page({ searchParams }: any) {
   const itemsToShow = 30;
   const sk = searchParams.page || 1;
   const search = searchParams.search ? searchParams.search : "";
-  const { categories } = await getCategories(sk, itemsToShow);
-  const allCategories = (await getCategories(1, 999999)).categories;
-  const { count } = await getCategories(0, 0);
-  const number = count || 1;
+  const { admins } = await getAdmins(sk, itemsToShow);
+  const { count } = await getAdmins(0, 0);
+  const number = count || 0;
   const pages = Array.from(
     { length: Math.ceil(number / itemsToShow) },
     (_, i) => i + 1
@@ -28,6 +25,7 @@ async function page({ searchParams }: any) {
     return newArr;
   };
   const Arr = pagenateArr(pages, sk);
+
   return (
     <NavLayout>
       <div className="flex flex-col min-h-[90vh]">
@@ -54,57 +52,7 @@ async function page({ searchParams }: any) {
           </summary>
 
           <nav aria-label="Teams Nav" className="mt-2 ">
-            <Categories
-              createCategory={async ({
-                label,
-                Image,
-                Properties,
-                Parent,
-              }: {
-                label: string;
-                Image: string;
-                Properties: any;
-                Parent: string;
-              }) => {
-                "use server";
-                await createCategoryAction(label, Image, Properties, Parent);
-                revalidatePath("/categories");
-              }}
-              updateCategory={async ({
-                id,
-                label,
-                Image,
-                Properties,
-                Parent,
-              }: {
-                id: string;
-                label: string;
-                Image: string;
-                Properties: any;
-                Parent: string;
-              }) => {
-                "use server";
-                await updataCategoryAction(
-                  id,
-                  label,
-                  Image,
-                  Properties,
-                  Parent
-                );
-                revalidatePath("/categories");
-              }}
-              allCategories={allCategories}
-              category={{
-                id: "",
-                label: "",
-                Image: "",
-                value: 0,
-                Properties: [],
-                Parent: "",
-                createdAt: new Date(Date.now()),
-                updatedAt: new Date(Date.now()),
-              }}
-            />
+            <AddAdmin />
           </nav>
         </details>
         <p className="mt-5">
@@ -112,12 +60,12 @@ async function page({ searchParams }: any) {
           {(number - (sk - 1) * itemsToShow) / itemsToShow > 1
             ? sk * itemsToShow
             : number}{" "}
-          of {count} categories
+          of {count} admins
         </p>
         <div className="grow">
-          <div className="flex flex-wrap justify-center sm:justify-between gap-5 mt-5">
-            {categories?.map((category) => {
-              return <CategoryCard key={category.id} category={category} />;
+          <div className="flex flex-wrap gap-5 mt-5">
+            {admins?.map((admin) => {
+              return <AdminCard key={admin?.id} admin={admin} />;
             })}
           </div>
         </div>
@@ -126,7 +74,7 @@ async function page({ searchParams }: any) {
             <li>
               <Link
                 href={{
-                  pathname: "/categories",
+                  pathname: "/admins",
                   query: { page: pages.at(0), search: search },
                 }}
                 className="inline-flex items-center justify-center w-8 h-8 border border-gray-100 rounded-full hover:bg-slate-400/50 transition "
@@ -150,7 +98,7 @@ async function page({ searchParams }: any) {
                 <li key={page}>
                   <Link
                     href={{
-                      pathname: "/categories",
+                      pathname: "/admins",
                       query: { page: page, search: search },
                     }}
                     className="inline-flex items-center justify-center w-8 h-8 border border-gray-100 rounded-full hover:bg-slate-400/50 transition"
@@ -162,7 +110,7 @@ async function page({ searchParams }: any) {
             <li>
               <Link
                 href={{
-                  pathname: "/categories",
+                  pathname: "/admins",
                   query: { page: pages.at(-1), search: search },
                 }}
                 className="inline-flex items-center justify-center w-8 h-8 border border-gray-100 rounded-full hover:bg-slate-400/50 transition"
