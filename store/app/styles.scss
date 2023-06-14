@@ -1,0 +1,63 @@
+.menuBtn {
+  position: fixed;
+  z-index: 4;
+  left: 8px;
+  top: 8px;
+  cursor: pointer;
+  transition: all 450ms ease-in-out;
+  &.closer {
+    transform: rotate(-180deg);
+  }
+}
+.btnLine {
+  width: 28px;
+  height: 4px;
+  margin: 0 0 5px 0;
+  background-color: #ffffff;
+  transition: all 450ms ease-in-out;
+  &.closer {
+    background-color: #ffffff;
+    &:nth-child(1) {
+      transform: rotate(-45deg) translate(4px, 5px);
+      width: 20px;
+    }
+    &:nth-child(2) {
+      transform: translateX(8px);
+    }
+    &:nth-child(3) {
+      transform: rotate(45deg) translate(4px, -5px);
+      width: 20px;
+    }
+  }
+}
+.menuOverlay {
+  z-index: 3;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: white;
+  height: 80vh;
+  width: 55vw;
+  transform: translateX(-100%);
+  transition: all 500ms ease-in-out;
+  &.show {
+    background-color: #304054;
+    transform: translateX(0%);
+  }
+  nav {
+    padding-top: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    a {
+      height: 30px;
+      text-decoration: none;
+      color: #ffffff;
+      cursor: pointer;
+      transition: all 150ms ease-in-out;
+    }
+  }
+  @media (max-width: 500px) {
+    width: 100vw;
+  }
+}
