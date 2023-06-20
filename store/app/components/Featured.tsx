@@ -6,7 +6,7 @@ function Featured() {
           <h1 className="font-bold text-2xl sm:text-4xl tracking-widest text-center rounded-md dark:backdrop-blur-0">
             Mover. Maker. <br /> Boundary breaker.
           </h1>
-          <h1 className="hidden sm:block text-center sm:px-36 tracking-widest font-bold backdrop-blur-sm rounded-md dark:backdrop-blur-0">
+          <h1 className="hidden sm:block text-center sm:px-36 tracking-widest font-bold backdrop-blur-sms rounded-md dark:backdrop-blur-0">
             Supercharged by M2 Pro or M2 Max, MacBook Pro takes its power and
             efficiency further than ever. It delivers exceptional performance
             whether it’s plugged in or not, and now has even longer battery

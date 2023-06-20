@@ -1,4 +1,4 @@
-import prisma from "./prisma";
+import { prisma } from "./prisma";
 export async function getCategoryById(id: string) {
   try {
     const category = await prisma.category.findUnique({ where: { id } });

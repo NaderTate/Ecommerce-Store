@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 0 0% 90%;
     --foreground: 222.2 47.4% 11.2%;
 
     --muted: 210 40% 96.1%;
@@ -82,4 +82,80 @@
 body {
   width: 100vw;
   overflow-x: hidden;
+}
+.title {
+  display: block; /* or inline-block */
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  overflow: hidden;
+  max-height: 1.3em;
+  line-height: 1.3em;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+.HomeSlider .swiper-slide {
+  width: auto !important;
+}
+
+.mySwiper2 .swiper-slide img {
+  height: 100%;
+  margin: auto;
+  width: 100%;
+}
+@media only screen and (min-width: 768px) {
+  .thumbs .swiper-wrapper .swiper-slide {
+    width: auto !important;
+  }
+  .thumbs .swiper-slide {
+    height: auto !important;
+  }
+
+  .thumbs .swiper-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .thumbs {
+    width: 50px;
+  }
+}
+.thumbs .swiper-slide {
+  height: 100%;
+}
+@media only screen and (max-width: 768px) {
+  .thumbs .swiper-slide {
+    height: auto !important;
+  }
+  .thumbs {
+    height: 20%;
+    box-sizing: border-box;
+    padding: 10px 0;
+  }
+}
+.mySwiper2 {
+  height: 80%;
+  width: 100%;
+}
+.mySwiper2 .swiper-slide {
+  height: auto;
+}
+
+.thumbs .swiper-wrapper .swiper-slide img {
+  width: auto;
+  height: 100%;
+  object-fit: cover;
+}
+.thumbs .swiper-slide {
+  width: 25%;
+  opacity: 0.4;
+}
+.thumbs .swiper-slide-thumb-active {
+  opacity: 1;
+}
+.thumbs .swiper-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }

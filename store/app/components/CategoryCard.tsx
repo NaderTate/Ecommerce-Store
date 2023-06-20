@@ -1,36 +1,34 @@
 import Link from "next/link";
 import React from "react";
-import { Product } from "@prisma/client";
+import { Category } from "@prisma/client";
 import Image from "next/image";
-function ProductCard({
-  product,
+function CategoryCard({
+  category,
   width,
   height,
 }: {
-  product: Product;
+  category: Category;
   width: string;
   height: string;
 }) {
   return (
     <div className={`${width}`}>
-      <Link href={{ pathname: `/products/${product.id}` }}>
+      <Link href={{ pathname: `/categories/${category.id}` }}>
         <div className={`relative ${width} ${height}`}>
           <Image
             fill
-            src={product.mainImg}
+            src={category.Image}
             className="object-cover rounded-md "
-            alt={product.Title}
+            alt={category.label}
           />
         </div>
       </Link>
       <p
         className={`overflow-ellipsis whitespace-nowrap overflow-hidden text-xs`}
       >
-        {product.Title}
+        {category.label}
       </p>
-      <div className="text-xs">${product.Price}</div>
     </div>
   );
 }
-
-export default ProductCard;
+export default CategoryCard;

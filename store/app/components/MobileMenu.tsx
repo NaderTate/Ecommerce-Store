@@ -1,16 +1,14 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useState } from "react";
 import Image from "next/image";
+import ThemeButton from "./ThemeButton";
+import { MagnifyingGlassIcon, HomeModernIcon } from "@heroicons/react/24/solid";
 function MobileMenu() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const [path, setPath] = useState("");
-  useEffect(() => {
-    setPath(pathname);
-  }, [pathname, searchParams]);
+  const itemStyle =
+    "p-2 w-full dark:bg-[#3B3B3B] bg-white flex flex-col items-center rounded-md font-bold tracking-widest";
+
   return (
     <div className="">
       <div
@@ -37,12 +35,55 @@ function MobileMenu() {
       </div>
       <nav
         aria-label="Main Nav"
-        className={`pt-16 mt-1 rounded-md border border-b border-white menuOverlay dark:bg-[#121212] ${
+        className={`pt-16 mt-1 rounded-md border border-b border-white bg-[#efefef] menuOverlay dark:bg-[#121212] ${
           isMenuOpen ? "show" : null
         } `}
       >
-        <div className="px-5 flex flex-col space-y-1 ">
-          {/* <ThemeSwitcher /> */}
+        <div className="px-1 flex flex-col justify-center items-center space-y-2 ">
+          <div className="relative">
+            <form action="">
+              <input
+                type="text"
+                placeholder="Search anything..."
+                className="rounded-md py-1 px-3 dark:border-none border border-gray-400"
+                // onChange={Search}
+                // onClick={() => {
+                //   setShow(true);
+                // }}
+              />
+              <button
+                type="submit"
+                // onClick={handleSubmit}
+              ></button>
+            </form>
+            <span className="absolute inset-y-0 inline-flex items-center right-4">
+              <MagnifyingGlassIcon className="w-6 h-6 cursor-pointer" />
+            </span>
+          </div>
+          <div className={itemStyle}>
+            <div className="flex gap-1">
+              <h1>Home</h1>
+              <HomeModernIcon />
+            </div>
+          </div>
+          <div className={itemStyle}>
+            <h1>Trending </h1>
+
+            <a href="/" className=" font-normal ">
+              Women&apos;s Fashion
+            </a>
+          </div>
+          <div className={itemStyle}>
+            <h1>Hot Deals</h1>
+            <a href="/" className=" font-normal ">
+              Fitness Equimpents
+            </a>
+            <a href="/" className=" font-normal ">
+              Pearl Jewelery
+            </a>
+          </div>
+          <div> </div>
+          <ThemeButton />
         </div>
       </nav>
     </div>

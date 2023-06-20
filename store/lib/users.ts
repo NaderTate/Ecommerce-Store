@@ -1,4 +1,4 @@
-import prisma from "./prisma";
+import { prisma } from "./prisma";
 
 export async function getUsers(sk: number, take: number) {
   try {
@@ -65,15 +65,21 @@ export async function updateUserInfo(
   Image: string
 ) {
   try {
-    const user = await prisma.user.update({
-      where: { UserId },
-      data: {
-        Name,
-        Email,
-        Image,
-      },
-    });
-    return { user };
+    if (!(await getUserById(UserId)).user) {
+      const user = await prisma.user.create({
+        data: {
+          UserId,
+          Name,
+          Email,
+          Image,
+          Cart: [],
+          Orders: [],
+          WhishList: [],
+          Address: {},
+        },
+      });
+      return { user };
+    }
   } catch (error) {
     return { error };
   }

@@ -1,4 +1,4 @@
-import prisma from "./prisma";
+import { prisma } from "./prisma";
 
 export async function getProducts(sk: number, take: number) {
   try {
@@ -55,6 +55,17 @@ export async function getProductById(ids: Array<string>) {
       where: { id: { in: ids } },
     });
     return { product };
+  } catch (error) {
+    return { error };
+  }
+}
+export async function getProductByCategory(category: string, limit?: number) {
+  try {
+    const products = await prisma.product.findMany({
+      where: { Categories: { has: category } },
+      take: limit || 4,
+    });
+    return { products };
   } catch (error) {
     return { error };
   }
