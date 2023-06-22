@@ -1,13 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { Category, Product } from "@prisma/client";
-import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-const Divider = () => {
-  return (
-    <hr className="border border-t border-[#030711] w-full dark:border-white/70 my-1" />
-  );
-};
+import Image from "next/image";
 const Card = (product: Product) => {
   return (
     <div>
@@ -36,29 +31,31 @@ const starReviews: Array<string> = [
   "https://res.cloudinary.com/dqkyatgoy/image/upload/v1687294114/Nader%20Express/2s_bsbrgl.svg",
   "https://res.cloudinary.com/dqkyatgoy/image/upload/v1687293658/Nader%20Express/Frame_1_utki4s.svg",
 ];
-async function search({ searchParams }: any) {
-  const search = searchParams.s || "";
+const Divider = () => {
+  return (
+    <hr className="border border-t border-[#030711] w-full dark:border-white/70 my-1" />
+  );
+};
+async function page({
+  params: { category },
+  searchParams,
+}: {
+  params: { category: string };
+  searchParams: any;
+}) {
+  const sk = searchParams.page || 1;
+  const itemsToShow = 30;
   const min = Number(searchParams.min) || 0;
   const max = Number(searchParams.max) || 9999999;
   const sort = searchParams.sort || "id";
-  const sk = searchParams.page || 1;
-  const itemsToShow = 30;
-  const results = await prisma.product.findMany({
+
+  const products = await prisma.product.findMany({
     where: {
-      OR: [
-        {
-          Title: { contains: search, mode: "insensitive" },
-        },
-        {
-          Categories: {
-            hasSome: search.charAt(0).toUpperCase() + search.slice(1),
-          },
-        },
-        { Colors: { hasSome: search } },
-        { Description: { contains: search, mode: "insensitive" } },
-      ],
+      Categories: { hasSome: category.replace(/%20/g, " ") },
       AND: [{ Price: { gt: min } }, { Price: { lt: max } }],
     },
+    take: itemsToShow,
+    skip: (sk - 1) * itemsToShow,
     orderBy: [
       sort == "id"
         ? {
@@ -72,65 +69,21 @@ async function search({ searchParams }: any) {
             Price: "desc",
           },
     ],
-    take: itemsToShow,
-    skip: (sk - 1) * itemsToShow,
-    // select: { Title: true },
   });
-  const count = (
-    await prisma.product.findMany({
-      where: {
-        OR: [
-          {
-            Title: { contains: search, mode: "insensitive" },
-          },
-          {
-            Categories: {
-              hasSome: search.charAt(0).toUpperCase() + search.slice(1),
-            },
-          },
-          { Colors: { hasSome: search } },
-          { Description: { contains: search, mode: "insensitive" } },
-        ],
-        AND: [{ Price: { gt: min } }, { Price: { lt: max } }],
-      },
-      orderBy: [
-        {
-          Price: "desc",
-        },
-      ],
-    })
-  ).length;
 
-  const allData = await prisma.product.findMany({
-    where: {
-      OR: [
-        {
-          Title: { contains: search, mode: "insensitive" },
-        },
-        {
-          Categories: {
-            hasSome: search.charAt(0).toUpperCase() + search.slice(1),
-          },
-        },
-        { Colors: { hasSome: search } },
-        { Description: { contains: search, mode: "insensitive" } },
-      ],
-    },
-    orderBy: [
-      {
-        Price: "desc",
-      },
-    ],
+  const allProducts = await prisma.product.findMany({
+    where: { Categories: { hasSome: category.replace(/%20/g, " ") } },
+    orderBy: [{ Price: "desc" }],
   });
-  const highestPrice: any = allData.at(0)?.Price;
-  const lowestPrice: any = allData.at(-1)?.Price;
+  const highestPrice: any = allProducts.at(0)?.Price;
+  const lowestPrice: any = allProducts.at(-1)?.Price;
   const difference: number = Math.floor(highestPrice - lowestPrice);
   const segment = Math.floor(difference / 5);
   const firstPrice = Math.ceil(lowestPrice + segment);
   const secondPrice = Math.floor(segment * 2);
   const thirdPrice = Math.floor(segment * 3);
   const fourthPrice = Math.floor(segment * 4);
-
+  const count = allProducts.length;
   const pages = Array.from(
     { length: Math.ceil(count / itemsToShow) },
     (_, i) => i + 1
@@ -145,20 +98,22 @@ async function search({ searchParams }: any) {
     return newArr;
   };
   const Arr = pagenateArr(pages, sk);
-  const category = await prisma.category.findFirst({
-    where: {
-      label: { contains: search, mode: "insensitive" },
-    },
+  let similarCategories: Array<Category> = [];
+  const categoryInfo = await prisma.category.findFirst({
+    where: { label: category.replace(/%20/g, " ") },
   });
-  let allCategories: Array<Category> = [];
-  if (category) {
-    if (category.Parent.length > 0) {
-      allCategories = await prisma.category.findMany({
-        where: { Parent: category.Parent },
+  if (categoryInfo) {
+    if (categoryInfo.Parent.length > 0) {
+      similarCategories = await prisma.category.findMany({
+        where: { Parent: categoryInfo.Parent },
       });
+      const parentInfo = await prisma.category.findUnique({
+        where: { id: categoryInfo.Parent },
+      });
+      if (parentInfo) similarCategories.unshift(parentInfo);
     } else {
-      allCategories = await prisma.category.findMany({
-        where: { Parent: category.id },
+      similarCategories = await prisma.category.findMany({
+        where: { Parent: categoryInfo.id },
       });
     }
   }
@@ -171,32 +126,24 @@ async function search({ searchParams }: any) {
           : count}{" "}
         of {count} results
       </p>
-      {count < 1 && (
-        <p className="mt-10">
-          Couldn`&apos;t find what you`&apos;re looking for, try using different
-          keywords
-        </p>
-      )}
       {count > 0 && (
         <div className="flex">
           <div className="min-w-[180px] hidden md:block mr-5">
             <div className="font-bold">Price</div>
             <div className="flex flex-col items-start">
-              {firstPrice != 0 && (
-                <Link
-                  href={{
-                    pathname: "/search",
-                    query: { s: search, max: firstPrice },
-                  }}
-                >
-                  Under ${firstPrice}
-                </Link>
-              )}
+              <Link
+                href={{
+                  pathname: `/categories/${category.replace(/%20/g, " ")}`,
+                  query: { max: firstPrice },
+                }}
+              >
+                Under ${firstPrice}
+              </Link>
               {firstPrice != 0 && secondPrice != 0 && (
                 <Link
                   href={{
-                    pathname: "/search",
-                    query: { s: search, min: firstPrice, max: secondPrice },
+                    pathname: `/categories/${category.replace(/%20/g, " ")}`,
+                    query: { min: firstPrice, max: secondPrice },
                   }}
                 >
                   ${firstPrice} to ${secondPrice}
@@ -205,8 +152,8 @@ async function search({ searchParams }: any) {
               {secondPrice != 0 && thirdPrice != 0 && (
                 <Link
                   href={{
-                    pathname: "/search",
-                    query: { s: search, min: secondPrice, max: thirdPrice },
+                    pathname: `/categories/${category.replace(/%20/g, " ")}`,
+                    query: { min: secondPrice, max: thirdPrice },
                   }}
                 >
                   ${secondPrice} to ${thirdPrice}
@@ -215,8 +162,8 @@ async function search({ searchParams }: any) {
               {thirdPrice != 0 && fourthPrice != 0 && (
                 <Link
                   href={{
-                    pathname: "/search",
-                    query: { s: search, min: thirdPrice, max: fourthPrice },
+                    pathname: `/categories/${category.replace(/%20/g, " ")}`,
+                    query: { min: thirdPrice, max: fourthPrice },
                   }}
                 >
                   ${thirdPrice} to ${fourthPrice}
@@ -225,8 +172,8 @@ async function search({ searchParams }: any) {
               {fourthPrice != 0 && (
                 <Link
                   href={{
-                    pathname: "/search",
-                    query: { s: search, min: fourthPrice },
+                    pathname: `/categories/${category.replace(/%20/g, " ")}`,
+                    query: { min: fourthPrice },
                   }}
                 >
                   Above ${fourthPrice}
@@ -257,24 +204,33 @@ async function search({ searchParams }: any) {
                   <div className="flex flex-col">
                     <Link
                       href={{
-                        pathname: "/search",
-                        query: { s: search, min, max, sort: "id" },
+                        pathname: `/categories/${category.replace(
+                          /%20/g,
+                          " "
+                        )}`,
+                        query: { min, max, sort: "id" },
                       }}
                     >
                       Latest (default)
                     </Link>
                     <Link
                       href={{
-                        pathname: "/search",
-                        query: { s: search, min, max, sort: "PD" },
+                        pathname: `/categories/${category.replace(
+                          /%20/g,
+                          " "
+                        )}`,
+                        query: { min, max, sort: "PD" },
                       }}
                     >
                       Price (Hight to low)
                     </Link>
                     <Link
                       href={{
-                        pathname: "/search",
-                        query: { s: search, min, max, sort: "PA" },
+                        pathname: `/categories/${category.replace(
+                          /%20/g,
+                          " "
+                        )}`,
+                        query: { min, max, sort: "PA" },
                       }}
                     >
                       Price (Low to high)
@@ -284,10 +240,11 @@ async function search({ searchParams }: any) {
               </details>
               <Divider />
               <div className="">
-                {allCategories.length > 0 && (
+                {similarCategories.length > 0 && (
                   <div className="flex flex-col">
                     <div className="font-bold">Discover more in:</div>
-                    {allCategories.map(({ label }) => {
+
+                    {similarCategories.map(({ label }) => {
                       return (
                         <Link
                           key={label}
@@ -316,19 +273,25 @@ async function search({ searchParams }: any) {
             </div>
           </div>
           <div className="flex md:flex-row md:flex-wrap gap-5 flex-col">
-            {results?.map((product) => {
+            {products?.map((product) => {
               return <Card key={product.id} {...product} />;
             })}
           </div>
         </div>
+      )}
+      {count < 1 && (
+        <p className="mt-10">
+          Couldn`&apos;t find what you`&apos;re looking for, try using different
+          keywords
+        </p>
       )}
       {pages && Arr && (
         <ol className="flex justify-center gap-1 mt-16 text-sm font-medium">
           <li>
             <Link
               href={{
-                pathname: "/search",
-                query: { page: pages.at(0), s: search, sort, min, max },
+                pathname: `/categories/${category.replace(/%20/g, " ")}`,
+                query: { page: pages.at(0), sort, min, max },
               }}
               className="inline-flex items-center justify-center w-8 h-8 border border-gray-100 rounded-full hover:bg-slate-400/50 transition "
             >
@@ -351,8 +314,8 @@ async function search({ searchParams }: any) {
               <li key={page}>
                 <Link
                   href={{
-                    pathname: "/search",
-                    query: { page: page, s: search, sort, min, max },
+                    pathname: `/categories/${category.replace(/%20/g, " ")}`,
+                    query: { page: page, sort, min, max },
                   }}
                   className="inline-flex items-center justify-center w-8 h-8 border border-gray-100 rounded-full hover:bg-slate-400/50 transition"
                 >
@@ -363,8 +326,8 @@ async function search({ searchParams }: any) {
           <li>
             <Link
               href={{
-                pathname: "/search",
-                query: { page: pages.at(-1), s: search, sort, min, max },
+                pathname: `/categories/${category.replace(/%20/g, " ")}`,
+                query: { page: pages.at(-1), sort, min, max },
               }}
               className="inline-flex items-center justify-center w-8 h-8 border border-gray-100 rounded-full hover:bg-slate-400/50 transition"
             >
@@ -388,4 +351,4 @@ async function search({ searchParams }: any) {
   );
 }
 
-export default search;
+export default page;

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 function HomeCategories({ categories }: { categories: any }) {
   return (
@@ -19,8 +20,10 @@ function HomeCategories({ categories }: { categories: any }) {
                   key={id}
                   className="bg-white dark:bg-black/30 p-2 rounded-md"
                 >
-                  <h1>{label}</h1>
-                  <img src={Image} alt="" />
+                  <Link href={{ pathname: `/categories/${label}` }}>
+                    <h1>{label}</h1>
+                    <img src={Image} alt="" />
+                  </Link>
                   <button className="text-xs">Shop now</button>
                 </div>
               );

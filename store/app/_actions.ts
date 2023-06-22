@@ -10,7 +10,13 @@ import {
   updateCategory,
   deleteCategory,
 } from "@/lib/categories";
-import { addToCart, createUser, deleteUser, updateUserInfo } from "@/lib/users";
+import {
+  addToCart,
+  addToFavorites,
+  createUser,
+  deleteUser,
+  updateUserInfo,
+} from "@/lib/users";
 import { revalidatePath } from "next/cache";
 // ******************* Products Actions *********************************
 
@@ -131,6 +137,10 @@ export async function updateUserInfoAction(
 }
 export async function addToCartAction(UserId: string, Item: object) {
   await addToCart(UserId, Item);
+  revalidatePath("/");
+}
+export async function addToFavoritesAction(UserId: string, Item: object) {
+  await addToFavorites(UserId, Item);
   revalidatePath("/");
 }
 export async function deleteUserAction(id: string) {

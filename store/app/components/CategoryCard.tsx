@@ -13,7 +13,7 @@ function CategoryCard({
 }) {
   return (
     <div className={`${width}`}>
-      <Link href={{ pathname: `/categories/${category.id}` }}>
+      <Link href={{ pathname: `/categories/${category.label}` }}>
         <div className={`relative ${width} ${height}`}>
           <Image
             fill

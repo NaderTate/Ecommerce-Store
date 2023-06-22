@@ -26,11 +26,13 @@ import CategoryCard from "./CategoryCard";
 export default function Header({
   count,
   cart,
+  Whishlist,
   newArrivals,
   Discover,
 }: {
   count: number;
   cart: Array<object>;
+  Whishlist: Array<object>;
   newArrivals: Array<object>;
   Discover: Array<object>;
 }) {
@@ -135,7 +137,15 @@ export default function Header({
             <NavigationMenuItem>
               <div className="mx-5">
                 <SignedIn>
-                  <UserButton afterSignOutUrl={pathname} />
+                  <UserButton
+                    userProfileMode="navigation"
+                    userProfileUrl={
+                      typeof window !== "undefined"
+                        ? `${window.location.origin}/account`
+                        : undefined
+                    }
+                    afterSignOutUrl={pathname}
+                  />
                 </SignedIn>
                 <SignedOut>
                   <SignInButton redirectUrl={pathname} mode="modal">
@@ -152,23 +162,25 @@ export default function Header({
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <div className="p-5">
-                    <div className="flex flex-wrap w-[750px] gap-5 mb-5">
-                      {cart.map((product: any) => {
-                        return (
-                          <ProductCard
-                            key={product.id}
-                            product={product}
-                            width="w-24"
-                            height="h-24"
-                          />
-                        );
-                      })}
+                    <div className="flex flex-wrap min-w-[750px] gap-5 mb-5">
+                      {Whishlist.length > 0
+                        ? Whishlist.map((product: any) => {
+                            return (
+                              <ProductCard
+                                key={product.id}
+                                product={product}
+                                width="w-24"
+                                height="h-24"
+                              />
+                            );
+                          })
+                        : "Your whish list is empty :("}
                     </div>
                     <Link
                       className="font-bold tracking-wider"
                       href={{ pathname: "/cart" }}
                     >
-                      Review and checkout
+                      Manage your whish list
                     </Link>
                   </div>
                 </NavigationMenuContent>
@@ -186,16 +198,18 @@ export default function Header({
                 <NavigationMenuContent>
                   <div className="p-5">
                     <div className="flex flex-wrap w-[750px] gap-5 mb-5">
-                      {cart.map((product: any) => {
-                        return (
-                          <ProductCard
-                            key={product.id}
-                            product={product}
-                            width="w-24"
-                            height="h-24"
-                          />
-                        );
-                      })}
+                      {cart.length > 0
+                        ? cart.map((product: any) => {
+                            return (
+                              <ProductCard
+                                key={product.id}
+                                product={product}
+                                width="w-24"
+                                height="h-24"
+                              />
+                            );
+                          })
+                        : "Your cart is empty :("}
                     </div>
                     <Link
                       className="font-bold tracking-wider"

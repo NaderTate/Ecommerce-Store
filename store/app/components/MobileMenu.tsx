@@ -4,8 +4,12 @@ import { useState } from "react";
 import Image from "next/image";
 import ThemeButton from "./ThemeButton";
 import { MagnifyingGlassIcon, HomeModernIcon } from "@heroicons/react/24/solid";
+import { useRouter } from "next/navigation";
 function MobileMenu() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchTerms, setSearchTerms] = useState("");
+  const router = useRouter();
+
   const itemStyle =
     "p-2 w-full dark:bg-[#3B3B3B] bg-white flex flex-col items-center rounded-md font-bold tracking-widest";
 
@@ -46,6 +50,9 @@ function MobileMenu() {
                 type="text"
                 placeholder="Search anything..."
                 className="rounded-md py-1 px-3 dark:border-none border border-gray-400"
+                onChange={(e) => {
+                  setSearchTerms(e.target.value);
+                }}
                 // onChange={Search}
                 // onClick={() => {
                 //   setShow(true);
@@ -53,6 +60,12 @@ function MobileMenu() {
               />
               <button
                 type="submit"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (searchTerms.length > 2) {
+                    router.push(`/search?s=${searchTerms}`);
+                  }
+                }}
                 // onClick={handleSubmit}
               ></button>
             </form>

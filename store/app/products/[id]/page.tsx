@@ -37,6 +37,17 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
     where: { Categories: { hasSome: product?.Categories } },
   });
   const { userId } = auth();
+  let favs;
+  if (userId) {
+    favs = await prisma.user.findFirst({
+      where: {
+        AND: [{ UserId: userId }, { WhishList: { has: { id: product?.id } } }],
+      },
+      select: { WhishList: true },
+    });
+    console.log(favs?.WhishList);
+    // const favs = user?.WhishList
+  }
   return (
     <div>
       <div className="p-10">
@@ -52,10 +63,16 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
               <StarRating rating={4.5} />
               <span>2,731 ratings</span>
             </div>
-            <p className="font-bold text-xl">${product?.Price}</p>
+            $<span className="font-bold text-xl">{product?.Price}</span>
             <div>
-              {userId && product?.id ? (
-                <BuyOptions userId={userId} id={product?.id} />
+              {userId && product ? (
+                <BuyOptions
+                  favorites={favs?.WhishList}
+                  userId={userId}
+                  id={product?.id}
+                  mainImg={product.mainImg}
+                  title={product.Title}
+                />
               ) : (
                 <LoginToBuy />
               )}

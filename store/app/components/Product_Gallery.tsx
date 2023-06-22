@@ -9,7 +9,6 @@ import "swiper/css/navigation";
 import "swiper/css/thumbs";
 export default function Product_Gallery({ gallery }: { gallery: any }) {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
-
   return (
     <div className="flex flex-col-reverse md:flex-row">
       <div>
@@ -33,6 +32,7 @@ export default function Product_Gallery({ gallery }: { gallery: any }) {
                 alt={`Product gallery ${item.id}`}
                 width={450}
                 height={450}
+                className="rounded-md"
               />
             </SwiperSlide>
           ))}
@@ -55,7 +55,7 @@ export default function Product_Gallery({ gallery }: { gallery: any }) {
               alt={`Product gallery ${item.id}`}
               width={450}
               height={450}
-              className="object-cover h-full"
+              className="object-cover h-full rounded-md"
             />
           </SwiperSlide>
         ))}
