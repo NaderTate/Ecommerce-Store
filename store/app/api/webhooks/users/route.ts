@@ -1,4 +1,4 @@
-import { updateUserInfo } from "@/lib/users";
+import { createUserAfterAuth } from "@/lib/users";
 import { IncomingHttpHeaders } from "http";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
@@ -28,7 +28,7 @@ async function handler(request: Request) {
     const { id, ...attributes } = evt.data;
     console.log(id);
     console.log(attributes);
-    await updateUserInfo(
+    await createUserAfterAuth(
       id,
       attributes.first_name + " " + attributes.last_name,
       attributes.email_addresses[0].email_address,

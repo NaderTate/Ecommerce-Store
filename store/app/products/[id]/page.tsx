@@ -45,7 +45,7 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
       },
       select: { WhishList: true },
     });
-    console.log(favs?.WhishList);
+    // console.log(favs?.WhishList);
     // const favs = user?.WhishList
   }
   return (
@@ -65,17 +65,21 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
             </div>
             $<span className="font-bold text-xl">{product?.Price}</span>
             <div>
-              {userId && product ? (
-                <BuyOptions
-                  favorites={favs?.WhishList}
-                  userId={userId}
-                  id={product?.id}
-                  mainImg={product.mainImg}
-                  title={product.Title}
-                />
-              ) : (
-                <LoginToBuy />
-              )}
+              {product &&
+                (userId ? (
+                  <BuyOptions
+                    favorites={favs?.WhishList}
+                    userId={userId}
+                    id={product?.id}
+                    mainImg={product.mainImg}
+                    title={product.Title}
+                  />
+                ) : (
+                  <LoginToBuy
+                    mainImg={product?.mainImg}
+                    title={product?.Title}
+                  />
+                ))}
               <div className="flex flex-wrap gap-5 mt-10">
                 {product?.Properties &&
                   Object.keys(product?.Properties).map(function (key) {

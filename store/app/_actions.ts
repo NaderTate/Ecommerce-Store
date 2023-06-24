@@ -4,6 +4,9 @@ import {
   updateProduct,
   deleteProduct,
   getProductById,
+  removeFromCart,
+  saveToLater,
+  updateQuantity,
 } from "@/lib/products";
 import {
   createCategory,
@@ -11,12 +14,12 @@ import {
   deleteCategory,
 } from "@/lib/categories";
 import {
-  addToCart,
-  addToFavorites,
   createUser,
   deleteUser,
+  updateAddress,
   updateUserInfo,
 } from "@/lib/users";
+import { addToCart, addToFavorites } from "@/lib/products";
 import { revalidatePath } from "next/cache";
 // ******************* Products Actions *********************************
 
@@ -74,9 +77,29 @@ export async function updateProductAction(
   );
   revalidatePath("/products");
 }
-export async function deleteProductAction(id: string) {
-  await deleteProduct(id);
-  revalidatePath("/products");
+export async function addToCartAction(UserId: string, Item: { id: string }) {
+  await addToCart(UserId, Item);
+  revalidatePath("/");
+}
+export async function addToFavoritesAction(UserId: string, Item: object) {
+  await addToFavorites(UserId, Item);
+  revalidatePath("/");
+}
+export async function removeFromCartAction(UserId: string, id: string) {
+  await removeFromCart(UserId, id);
+  revalidatePath("/cart");
+}
+export async function saveToLaterAction(UserId: string, id: string) {
+  await saveToLater(UserId, id);
+  revalidatePath("/cart");
+}
+export async function updateQuantityAction(
+  UserId: string,
+  id: string,
+  quantity: number
+) {
+  await updateQuantity(UserId, id, quantity);
+  revalidatePath("/cart");
 }
 // ******************* Categories Actions *********************************
 
@@ -130,17 +153,17 @@ export async function updateUserInfoAction(
   UserId: string,
   Name: string,
   Email: string,
+  Phone: number,
+  Gender: string,
+  BirthDate: string,
   Image: string
 ) {
-  await updateUserInfo(UserId, Name, Email, Image);
+  await updateUserInfo(UserId, Name, Email, Phone, Gender, BirthDate, Image);
   revalidatePath("/");
 }
-export async function addToCartAction(UserId: string, Item: object) {
-  await addToCart(UserId, Item);
-  revalidatePath("/");
-}
-export async function addToFavoritesAction(UserId: string, Item: object) {
-  await addToFavorites(UserId, Item);
+
+export async function updateAddressAction(UserId: string, Address: object) {
+  await updateAddress(UserId, Address);
   revalidatePath("/");
 }
 export async function deleteUserAction(id: string) {

@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { prisma } from "./prisma";
 
 export async function getUsers(sk: number, take: number) {
@@ -34,6 +35,9 @@ export async function createUser(
         UserId,
         Name,
         Email,
+        Gender: "",
+        Phone: 0,
+        BirthDate: "",
         Image,
         Cart,
         Orders,
@@ -58,7 +62,47 @@ export async function getUserById(UserId: string) {
   }
 }
 
+export async function updateAddress(UserId: string, Address: object) {
+  try {
+    var json = [{ ...Address }] as Prisma.JsonArray;
+    const user = await prisma.user.update({
+      where: { UserId },
+      data: {
+        Address: json,
+      },
+    });
+    return { user };
+  } catch (error) {
+    return { error };
+  }
+}
 export async function updateUserInfo(
+  UserId: string,
+  Name: string,
+  Email: string,
+  Phone: number,
+  Gender: string,
+  BirthDate: string,
+  Image: string
+) {
+  try {
+    const user = await prisma.user.update({
+      where: { UserId },
+      data: {
+        Name,
+        Email,
+        Gender,
+        Phone,
+        BirthDate,
+        Image,
+      },
+    });
+    return { user };
+  } catch (error) {
+    return { error };
+  }
+}
+export async function createUserAfterAuth(
   UserId: string,
   Name: string,
   Email: string,
@@ -71,6 +115,9 @@ export async function updateUserInfo(
           UserId,
           Name,
           Email,
+          Gender: "",
+          Phone: 0,
+          BirthDate: "",
           Image,
           Cart: [],
           Orders: [],
@@ -84,55 +131,7 @@ export async function updateUserInfo(
     return { error };
   }
 }
-export async function addToCart(UserId: string, Item: object) {
-  try {
-    const user = await prisma.user.update({
-      where: { UserId },
-      data: {
-        Cart: { push: Item },
-      },
-    });
-    return { user };
-  } catch (error) {
-    return { error };
-  }
-}
-export async function addToFavorites(UserId: string, Item: any) {
-  try {
-    const WhishList: Array<string> = [];
-    const filtered: Array<object> = [];
-    const WhishList_: any = await prisma.user.findFirst({
-      where: { UserId },
-      select: { WhishList: true },
-    });
-    WhishList_.WhishList?.map(({ id }: { id: string }) => {
-      WhishList.push(id);
-    });
-    if (WhishList.includes(Item.id)) {
-      WhishList_.WhishList?.map(({ id }: { id: string }) => {
-        if (id != Item.id) filtered.push({ id });
-      });
-      await prisma.user.update({
-        where: { UserId },
-        data: {
-          WhishList: {
-            set: filtered,
-          },
-        },
-      });
-    } else {
-      await prisma.user.update({
-        where: { UserId },
-        data: {
-          WhishList: { push: Item },
-        },
-      });
-      return { success: true };
-    }
-  } catch (error) {
-    return { error };
-  }
-}
+
 export async function deleteUser(UserId: string) {
   try {
     const user = await prisma.user.delete({

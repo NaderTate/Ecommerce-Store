@@ -8,7 +8,6 @@ generator client {
 datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
-  
 }
 
 model Product {
@@ -39,14 +38,17 @@ model Category {
 
 model User {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  UserId    String @unique
+  UserId    String   @unique
   Name      String
   Email     String
+  Phone     Int
+  BirthDate String
+  Gender    String
   Image     String
   Cart      Json[]
   Orders    Json[]
   WhishList Json[]
-  Address   Json
+  Address   Json?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

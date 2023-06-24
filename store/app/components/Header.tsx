@@ -1,7 +1,8 @@
 "use client";
 import * as React from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { SignInButton, UserButton } from "@clerk/nextjs";
+import { SignInButton } from "@clerk/nextjs";
 import { SignedIn, SignedOut } from "@clerk/nextjs/app-beta/client";
 import MobileMenu from "./MobileMenu";
 import { useRouter } from "next/navigation";
@@ -23,18 +24,21 @@ import ThemeButton from "./ThemeButton";
 import { usePathname } from "next/navigation";
 import ProductCard from "./ProductCard";
 import CategoryCard from "./CategoryCard";
+import AccountLinksMenu from "./AccountLinksMenu";
 export default function Header({
   count,
   cart,
   Whishlist,
   newArrivals,
   Discover,
+  userImage,
 }: {
   count: number;
-  cart: Array<object>;
+  cart: any;
   Whishlist: Array<object>;
   newArrivals: Array<object>;
   Discover: Array<object>;
+  userImage: string;
 }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -137,7 +141,7 @@ export default function Header({
             <NavigationMenuItem>
               <div className="mx-5">
                 <SignedIn>
-                  <UserButton
+                  {/* <UserButton
                     userProfileMode="navigation"
                     userProfileUrl={
                       typeof window !== "undefined"
@@ -145,7 +149,17 @@ export default function Header({
                         : undefined
                     }
                     afterSignOutUrl={pathname}
-                  />
+                  /> */}
+                  <Link href={{ pathname: "/account" }}>
+                    <div className="relative w-7 h-7">
+                      <Image
+                        fill
+                        src={userImage}
+                        className="rounded-full"
+                        alt=""
+                      />
+                    </div>
+                  </Link>
                 </SignedIn>
                 <SignedOut>
                   <SignInButton redirectUrl={pathname} mode="modal">
@@ -190,25 +204,36 @@ export default function Header({
               {/* Cart */}
               <NavigationMenuItem>
                 <NavigationMenuTrigger>
-                  <div className="relative p-2">
+                  <div className="relative p-3">
                     <ShoppingCartIcon className="w-6 h-6 " />
-                    <span className="absolute bottom-0 right-0">{count}</span>
+                    <span className="absolute bottom-0 right-0 bg-black/50 rounded-full text-white w-5 h-5 text-xs flex items-center justify-center">
+                      {count}
+                    </span>
                   </div>
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <div className="p-5">
                     <div className="flex flex-wrap w-[750px] gap-5 mb-5">
                       {cart.length > 0
-                        ? cart.map((product: any) => {
-                            return (
-                              <ProductCard
-                                key={product.id}
-                                product={product}
-                                width="w-24"
-                                height="h-24"
-                              />
-                            );
-                          })
+                        ? cart.map(
+                            ({
+                              product,
+                              quantity,
+                            }: {
+                              product: any;
+                              quantity: number;
+                            }) => {
+                              return (
+                                <ProductCard
+                                  key={product.id}
+                                  product={product}
+                                  width="w-24"
+                                  height="h-24"
+                                  quantity={quantity}
+                                />
+                              );
+                            }
+                          )
                         : "Your cart is empty :("}
                     </div>
                     <Link
@@ -229,9 +254,9 @@ export default function Header({
       {/* Mobile stuff */}
       <div className="block md:hidden">
         <div className="absolute flex top-2 items-center right-2 z-[4] gap-2">
-          <SignedIn>
+          {/* <SignedIn>
             <UserButton afterSignOutUrl="/" />
-          </SignedIn>
+          </SignedIn> */}
           <SignedOut>
             <SignInButton mode="modal">
               <button>Sign in</button>
@@ -243,6 +268,7 @@ export default function Header({
               <span className="absolute bottom-0 right-0">{count}</span>
             </div>
           </SignedIn>
+          <AccountLinksMenu userImage={userImage} />
         </div>
         <MobileMenu />
       </div>

@@ -103,6 +103,137 @@ export async function updateProduct(
     return { error };
   }
 }
+export async function addToCart(UserId: string, Item: { id: string }) {
+  try {
+    const user = await prisma.user.findFirst({ where: { UserId } });
+    const item = user?.Cart.filter((obj: any) => {
+      return obj?.id === Item.id;
+    });
+    if (item) {
+      if (item.length > 0) {
+        const cartItems: any = user?.Cart;
+        const itemIndex: number = cartItems?.findIndex(
+          (obj: any) => obj.id == Item.id
+        );
+        cartItems[itemIndex].quantity = cartItems[itemIndex].quantity + 1;
+        await prisma.user.update({
+          where: { UserId },
+          data: {
+            Cart: { set: cartItems },
+          },
+        });
+      } else {
+        await prisma.user.update({
+          where: { UserId },
+          data: {
+            Cart: { push: { id: Item.id, quantity: 1 } },
+          },
+        });
+      }
+    }
+  } catch (error) {
+    return { error };
+  }
+}
+export async function addToFavorites(UserId: string, Item: any) {
+  try {
+    const user = await prisma.user.findFirst({
+      where: { UserId },
+      select: { WhishList: true },
+    });
+    const WhishList = user?.WhishList;
+    if (WhishList?.find((ID: any) => ID.id == Item.id)) {
+      const updatedWhishlist = WhishList?.filter((ID: any) => ID.id != Item.id);
+      await prisma.user.update({
+        where: { UserId },
+        data: {
+          WhishList: {
+            set: updatedWhishlist,
+          },
+        },
+      });
+    } else {
+      await prisma.user.update({
+        where: { UserId },
+        data: {
+          WhishList: { push: Item },
+        },
+      });
+      return { success: true };
+    }
+  } catch (error) {
+    return { error };
+  }
+}
+export async function removeFromCart(UserId: string, id: string) {
+  try {
+    const user = await prisma.user.findFirst({
+      where: { UserId },
+      select: { Cart: true },
+    });
+    const currentCart = user?.Cart;
+    const updatedCart = currentCart?.filter((ID: any) => ID.id != id);
+
+    await prisma.user.update({
+      where: { UserId },
+      data: {
+        Cart: { set: updatedCart },
+      },
+    });
+  } catch (error) {
+    return { error };
+  }
+}
+export async function updateQuantity(
+  UserId: string,
+  id: string,
+  quantity: number
+) {
+  try {
+    const user = await prisma.user.findFirst({
+      where: { UserId },
+      select: { Cart: true },
+    });
+    const Cart: any = user?.Cart;
+    const itemIndex: number = Cart?.findIndex((obj: any) => obj.id == id);
+    Cart[itemIndex].quantity = quantity;
+    await prisma.user.update({
+      where: { UserId },
+      data: {
+        Cart: { set: Cart },
+      },
+    });
+  } catch (error) {
+    return { error };
+  }
+}
+export async function saveToLater(UserId: string, id: string) {
+  try {
+    const user = await prisma.user.findFirst({
+      where: { UserId },
+      select: { Cart: true, WhishList: true },
+    });
+    const currentCart = user?.Cart;
+    const updatedCart = currentCart?.filter((ID: any) => ID.id != id);
+    const WhishList = user?.WhishList;
+    if (!WhishList?.find((ID: any) => ID.id == id)) {
+      await prisma.user.update({
+        where: { UserId },
+        data: {
+          WhishList: { push: { id } },
+        },
+      });
+    }
+    await prisma.user.update({
+      where: { UserId },
+      data: {
+        Cart: { set: updatedCart },
+      },
+    });
+  } catch (error) {
+    return { error };
+  }
+}
 export async function deleteProduct(id: string) {
   try {
     const product = await prisma.product.delete({

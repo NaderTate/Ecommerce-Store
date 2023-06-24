@@ -1,15 +1,16 @@
 import Link from "next/link";
-import React from "react";
 import { Product } from "@prisma/client";
 import Image from "next/image";
 function ProductCard({
   product,
   width,
   height,
+  quantity,
 }: {
   product: Product;
   width: string;
   height: string;
+  quantity?: number;
 }) {
   return (
     <div className={`${width}`}>
@@ -21,6 +22,11 @@ function ProductCard({
             className="object-cover rounded-md "
             alt={product.Title}
           />
+          {quantity && (
+            <span className="absolute top-0 right-0 bg-black/50 rounded-bl-md text-white p-[2px]">
+              {quantity}
+            </span>
+          )}
         </div>
       </Link>
       <p
