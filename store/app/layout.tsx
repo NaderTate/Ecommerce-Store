@@ -3,6 +3,7 @@ import "./styles.scss";
 import { Inter } from "next/font/google";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import "react-toastify/dist/ReactToastify.css";
 const inter = Inter({ subsets: ["latin"] });
 import Providers from "./Provider";
 import { ClerkProvider } from "@clerk/nextjs";
@@ -21,7 +22,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const { userId } = auth();
-  let count;
   let cartProducts: Array<Product>;
   let sortedCart: Array<any> = [];
   const whishList: Array<string> = [];
@@ -30,7 +30,6 @@ export default async function RootLayout({
   let user: any;
   if (userId) {
     user = (await getUserById(userId)).user;
-    count = user?.Cart.length;
     user?.Cart.map((item: any) => {
       cart.push(item?.id);
     });
@@ -42,9 +41,6 @@ export default async function RootLayout({
           .quantity,
       });
     });
-    // console.log(cartProducts);
-    // cartProducts?.slice(-3);
-    // console.log(cartProducts);
     user?.WhishList.map((item: any) => {
       whishList.push(item?.id);
     });
@@ -68,7 +64,6 @@ export default async function RootLayout({
                 cart={sortedCart.reverse() || []}
                 Whishlist={whishListProducts || []}
                 // cart={cartProducts?.slice(0, 12) || []}
-                count={count || 0}
               />
               <div className="grow mt-7 md:mt-0 w-screen overflow-hidden">
                 {children}

@@ -1,16 +1,23 @@
+"use client";
 import Link from "next/link";
 import { Product } from "@prisma/client";
 import Image from "next/image";
+import { addToCartAction } from "../_actions";
+
 function ProductCard({
   product,
   width,
   height,
   quantity,
+  cartPage = false,
+  userId,
 }: {
   product: Product;
   width: string;
   height: string;
   quantity?: number;
+  cartPage?: boolean;
+  userId?: string;
 }) {
   return (
     <div className={`${width}`}>
@@ -35,6 +42,14 @@ function ProductCard({
         {product.Title}
       </p>
       <div className="text-xs">${product.Price}</div>
+      {cartPage && (
+        <button
+          onClick={() => addToCartAction(userId || "", { id: product.id })}
+          className="text-xs bg-blue-700 rounded-md px-2 text-center tracking-tighter cursor-pointer text-white"
+        >
+          Add to cart
+        </button>
+      )}
     </div>
   );
 }

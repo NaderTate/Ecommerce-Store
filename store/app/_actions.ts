@@ -14,8 +14,10 @@ import {
   deleteCategory,
 } from "@/lib/categories";
 import {
+  SendToWhatsApp,
   createUser,
   deleteUser,
+  placeOrder,
   updateAddress,
   updateUserInfo,
 } from "@/lib/users";
@@ -164,6 +166,31 @@ export async function updateUserInfoAction(
 
 export async function updateAddressAction(UserId: string, Address: object) {
   await updateAddress(UserId, Address);
+  revalidatePath("/");
+}
+export async function placeOrderAction(
+  UserId: string,
+  Products: Array<{ id: string; quantity: number }>,
+  OrderTotal: number,
+  PaymentMethod: string,
+  Address: object,
+  IsCompleted: boolean
+) {
+  await placeOrder(
+    UserId,
+    Products,
+    OrderTotal,
+    PaymentMethod,
+    Address,
+    IsCompleted
+  );
+  revalidatePath("/");
+}
+export async function SendToWhatsAppAction(
+  OrderTotal: number,
+  Products: Array<{ id: string; quantity: number }>
+) {
+  await SendToWhatsApp(OrderTotal, Products);
   revalidatePath("/");
 }
 export async function deleteUserAction(id: string) {

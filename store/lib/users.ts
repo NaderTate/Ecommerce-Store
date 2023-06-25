@@ -1,5 +1,8 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "./prisma";
+import { v4 as uuidv4 } from "uuid";
+import { getProductById } from "./products";
+import axios from "axios";
 
 export async function getUsers(sk: number, take: number) {
   try {
@@ -127,6 +130,69 @@ export async function createUserAfterAuth(
       });
       return { user };
     }
+  } catch (error) {
+    return { error };
+  }
+}
+export async function placeOrder(
+  UserId: string,
+  Products: Array<{ id: string; quantity: number }>,
+  OrderTotal: number,
+  PaymentMethod: string,
+  Address: object,
+  IsCompleted: boolean
+) {
+  try {
+    const user = await prisma.user.update({
+      where: { UserId },
+      data: {
+        Orders: {
+          push: {
+            OrderId: uuidv4(),
+            Products,
+            OrderTotal,
+            PaymentMethod,
+            Address,
+            IsCompleted,
+          },
+        },
+      },
+    });
+
+    return { user };
+  } catch (error) {
+    return { error };
+  }
+}
+export async function SendToWhatsApp(
+  OrderTotal: number,
+  Products: Array<{ id: string; quantity: number }>
+) {
+  try {
+    const ProductsDetails: Array<{ Title: string; quantity: number }> = [];
+    const ProductIDs: Array<string> = [];
+    Products.map(({ id }) => ProductIDs.push(id));
+    const ProductDetails = await prisma.product.findMany({
+      where: { id: { in: ProductIDs } },
+      select: { id: true, Title: true },
+    });
+    Products.map(({ id, quantity }) => {
+      ProductsDetails.push({
+        Title: ProductDetails.find((product) => product.id == id)?.Title || "",
+        quantity,
+      });
+    });
+    let message = "🚨 *New Order* 🚨 %0a %0a";
+    message += "🤑🤑 " + "$" + "*" + OrderTotal + "*" + " 🤑🤑 %0a %0a";
+    ProductsDetails?.map(({ Title, quantity }) => {
+      message = message + Title + "%0a" + "Quanitity: " + quantity + "%0a %0a";
+    });
+    message =
+      message +
+      "See the full details at: %0a https://expressadmin.vercel.app/orders";
+    await axios.get(
+      `https://api.callmebot.com/whatsapp.php?phone=+201008564637&text=${message}&apikey=7206005`
+    );
   } catch (error) {
     return { error };
   }

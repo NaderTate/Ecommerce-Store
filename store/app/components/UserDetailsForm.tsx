@@ -1,12 +1,13 @@
 "use client";
 import { User } from "@prisma/client";
+import { ToastContainer, toast } from "react-toastify";
 import Image from "next/image";
 import React, { useState } from "react";
 import { useRef } from "react";
-import ClipLoader from "react-spinners/ClipLoader";
 import { updateUserInfoAction } from "../_actions";
 import axios from "axios";
 function UserDetailsForm({ userData }: { userData: User }) {
+  const notify = () => toast("Your data has been updated");
   const formRef = useRef<HTMLFormElement>(null);
   const [image, setImage] = useState(userData.Image);
   const [uploading, setUploading] = useState(false);
@@ -26,10 +27,13 @@ function UserDetailsForm({ userData }: { userData: User }) {
       birthDate,
       image
     );
+    notify();
   }
   const inputStyle = "h-10 my-2 rounded-md px-2";
   return (
     <div>
+      <ToastContainer autoClose={3000} />
+
       <div className="flex gap-5 items-end mb-2">
         <div className="relative w-24 h-24">
           <Image fill src={image} alt="User Image" className="rounded-md" />

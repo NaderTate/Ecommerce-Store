@@ -26,14 +26,12 @@ import ProductCard from "./ProductCard";
 import CategoryCard from "./CategoryCard";
 import AccountLinksMenu from "./AccountLinksMenu";
 export default function Header({
-  count,
   cart,
   Whishlist,
   newArrivals,
   Discover,
   userImage,
 }: {
-  count: number;
   cart: any;
   Whishlist: Array<object>;
   newArrivals: Array<object>;
@@ -43,6 +41,8 @@ export default function Header({
   const pathname = usePathname();
   const router = useRouter();
   const [searchTerms, setSearchTerms] = React.useState("");
+  let count: number = 0;
+  cart.map(({ quantity }: { quantity: number }) => (count = count + quantity));
   return (
     <div>
       <div className="hidden md:block">
@@ -204,9 +204,9 @@ export default function Header({
               {/* Cart */}
               <NavigationMenuItem>
                 <NavigationMenuTrigger>
-                  <div className="relative p-3">
+                  <div className="relative">
                     <ShoppingCartIcon className="w-6 h-6 " />
-                    <span className="absolute bottom-0 right-0 bg-black/50 rounded-full text-white w-5 h-5 text-xs flex items-center justify-center">
+                    <span className="absolute -bottom-3 -right-3 bg-black/50 rounded-full text-white w-5 h-5 text-xs flex items-center justify-center">
                       {count}
                     </span>
                   </div>

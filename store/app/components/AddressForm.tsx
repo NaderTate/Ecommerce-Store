@@ -1,6 +1,5 @@
 "use client";
-import { User } from "@prisma/client";
-import React from "react";
+import { ToastContainer, toast } from "react-toastify";
 import { useRef } from "react";
 import { updateAddressAction } from "../_actions";
 function UserDetailsForm({
@@ -10,11 +9,7 @@ function UserDetailsForm({
   userId: string;
   address: any;
 }) {
-  {
-    /* @ts-ignore */
-  }
-  // const country = String(userData?.Address?.country)
-  // const countray:string = String(userData?.Address["country"])
+  const notify = () => toast("Your address has been updated");
   const formRef = useRef<HTMLFormElement>(null);
   async function action(data: FormData) {
     const country = String(data.get("country"));
@@ -23,7 +18,6 @@ function UserDetailsForm({
     const building = String(data.get("building"));
     const postalCode = String(data.get("postalCode"));
     const landmark = String(data.get("landmark"));
-    // if (name == "" || email == "") return;
     await updateAddressAction(userId, {
       country,
       city,
@@ -32,10 +26,13 @@ function UserDetailsForm({
       postalCode,
       landmark,
     });
+    notify();
   }
   const inputStyle = "h-10 my-2 rounded-md px-2";
   return (
     <div>
+      <ToastContainer autoClose={3000} />
+
       <div className="flex gap-5 items-end mb-2"></div>
       <form ref={formRef} action={action}>
         <div className="grid grid-cols-1 sm:grid-cols-2 sm:gap-5 w-full">
