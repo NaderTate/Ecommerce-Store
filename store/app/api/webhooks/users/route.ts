@@ -26,8 +26,6 @@ async function handler(request: Request) {
   const eventType: EventType = evt.type;
   if (eventType === "user.created") {
     const { id, ...attributes } = evt.data;
-    console.log(id);
-    console.log(attributes);
     await createUserAfterAuth(
       id,
       attributes.first_name + " " + attributes.last_name,

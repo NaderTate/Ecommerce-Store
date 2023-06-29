@@ -16,13 +16,13 @@ function CheckoutForm({
   userId: string;
   cartItems: Array<{ id: string; quantity: number }>;
   subtotal: number;
-  address: Array<{
-    city: string;
-    street: string;
-    building: string;
-    landmark: string;
-    country: string;
-  }>;
+  address: {
+    City: string;
+    Street: string;
+    Building: string;
+    Landmark: string;
+    Country: string;
+  };
 }) {
   const [PaymentMethod, setPaymentMethod] = useState("");
   const [Shipping, setShipping] = useState(1);
@@ -30,7 +30,6 @@ function CheckoutForm({
   const [voucher, setVoucher] = useState(0);
   const total = subtotal + Shipping + CODFee;
   const orderTotal: number = total - voucher;
-  const adress_ = address[0];
   useEffect(() => {
     if (PaymentMethod == "COD") {
       setCODFee(5);
@@ -48,8 +47,8 @@ function CheckoutForm({
             </h1>
 
             <div>
-              {adress_.city}, {adress_.street} <br /> {adress_.landmark},
-              {adress_.building}
+              {address.City}, {address.Street} <br /> {address.Landmark},
+              {address.Building}
             </div>
             <button className="text-left mt-2 md:m-0">Change</button>
           </div>
@@ -111,15 +110,23 @@ function CheckoutForm({
           </div>
           <button
             onClick={async () => {
-              // await placeOrderAction(
-              //   userId,
-              //   cartItems,
-              //   orderTotal,
-              //   PaymentMethod,
-              //   adress_,
-              //   false
-              // );
-              await SendToWhatsAppAction(subtotal, cartItems);
+              await placeOrderAction(
+                userId,
+                cartItems,
+                orderTotal,
+                PaymentMethod,
+
+                false,
+                {
+                  Items: subtotal,
+                  Shipping,
+                  CODFee,
+                  Total: total,
+                  Coupon: voucher,
+                  OrderTotal: orderTotal,
+                }
+              );
+              // await SendToWhatsAppAction(subtotal, cartItems);
             }}
             className="bg-blue-700 text-white rounded-md px-3 text-xl font-bold  mt-2 tracking-wider py-2 hidden sm:block"
           >
@@ -162,8 +169,15 @@ function CheckoutForm({
                     cartItems,
                     orderTotal,
                     PaymentMethod,
-                    adress_,
-                    false
+                    false,
+                    {
+                      Items: subtotal,
+                      Shipping,
+                      CODFee,
+                      Total: total,
+                      Coupon: voucher,
+                      OrderTotal: orderTotal,
+                    }
                   );
                 }}
                 className="bg-blue-700 text-white rounded-md px-3 text-xl font-bold  mt-2 tracking-wider py-2  sm:hidden"

@@ -45,13 +45,11 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
       },
       select: { WhishList: true },
     });
-    // console.log(favs?.WhishList);
-    // const favs = user?.WhishList
   }
   return (
     <div>
       <div className="p-10">
-        <div className="md:sticky md:float-left top-2 md:w-[40vw] md:mr-10">
+        <div className="md:sticky md:float-left md:top-2 md:w-[40vw] md:mr-10">
           <Product_Gallery gallery={product?.Images} />
         </div>
         <div className="flex flex-col md:ml-10">

@@ -1,20 +1,15 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
-
-import { SunIcon, MoonIcon } from "@heroicons/react/24/solid";
-
+import { BsFillSunFill, BsFillMoonStarsFill } from "react-icons/bs";
 const ThemeSwitcher = () => {
   const { resolvedTheme, setTheme } = useTheme();
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
-
   if (!mounted) {
     return null;
   }
-
   return (
     <button
       aria-label="Toggle Dark Mode"
@@ -23,9 +18,9 @@ const ThemeSwitcher = () => {
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
     >
       {resolvedTheme === "dark" ? (
-        <SunIcon className="h-5 w-5 text-orange-300" />
+        <BsFillSunFill className="h-5 w-5 text-yellow-300" />
       ) : (
-        <MoonIcon className="h-5 w-5 text-slate-800" />
+        <BsFillMoonStarsFill className="h-5 w-5 text-slate-800" />
       )}
     </button>
   );

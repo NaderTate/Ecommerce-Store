@@ -65,9 +65,7 @@ export default async function RootLayout({
                 Whishlist={whishListProducts || []}
                 // cart={cartProducts?.slice(0, 12) || []}
               />
-              <div className="grow mt-7 md:mt-0 w-screen overflow-hidden">
-                {children}
-              </div>
+              <div className="grow mt-7 md:mt-0">{children}</div>
               <Footer />
             </div>
           </Providers>

@@ -12,19 +12,19 @@ function UserDetailsForm({
   const notify = () => toast("Your address has been updated");
   const formRef = useRef<HTMLFormElement>(null);
   async function action(data: FormData) {
-    const country = String(data.get("country"));
-    const city = String(data.get("city"));
-    const street = String(data.get("street"));
-    const building = String(data.get("building"));
-    const postalCode = String(data.get("postalCode"));
-    const landmark = String(data.get("landmark"));
+    const Country = String(data.get("country"));
+    const City = String(data.get("city"));
+    const Street = String(data.get("street"));
+    const Building = String(data.get("building"));
+    const PostalCode = Number(data.get("postalCode"));
+    const Landmark = String(data.get("landmark"));
     await updateAddressAction(userId, {
-      country,
-      city,
-      street,
-      building,
-      postalCode,
-      landmark,
+      Country,
+      City,
+      Street,
+      Building,
+      PostalCode,
+      Landmark,
     });
     notify();
   }
@@ -42,7 +42,7 @@ function UserDetailsForm({
               name="country"
               id="country"
               className={inputStyle}
-              defaultValue={address.country}
+              defaultValue={address?.Country}
             >
               <option value="Egypt">Egypt</option>
             </select>
@@ -53,7 +53,7 @@ function UserDetailsForm({
               type="text"
               name="city"
               id="city"
-              defaultValue={address.city}
+              defaultValue={address?.City}
               className={inputStyle}
             />
           </div>
@@ -64,7 +64,7 @@ function UserDetailsForm({
             type="text"
             name="street"
             placeholder="Street name"
-            defaultValue={address.street}
+            defaultValue={address?.Street}
             className={inputStyle}
           />
         </div>
@@ -74,7 +74,7 @@ function UserDetailsForm({
             <input
               type="text"
               name="building"
-              defaultValue={address.building}
+              defaultValue={address?.Building}
               placeholder="Building name"
               className={inputStyle}
             />
@@ -86,7 +86,7 @@ function UserDetailsForm({
               name="postalCode"
               id="postalCode"
               className={inputStyle}
-              defaultValue={address.postalCode}
+              defaultValue={address?.PostalCode}
             />
           </div>
         </div>
@@ -98,7 +98,7 @@ function UserDetailsForm({
             placeholder="Nearest landmark"
             // defaultValue={userData.Name}
             className={inputStyle}
-            defaultValue={address.landmark}
+            defaultValue={address?.Landmark}
           />
         </div>
         <button

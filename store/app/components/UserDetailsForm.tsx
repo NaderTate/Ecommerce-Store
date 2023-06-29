@@ -118,6 +118,7 @@ function UserDetailsForm({ userData }: { userData: User }) {
               type="email"
               name="email"
               id="email"
+              placeholder="Email address"
               defaultValue={userData.Email}
               className={inputStyle}
             />

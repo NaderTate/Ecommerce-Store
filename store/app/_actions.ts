@@ -15,7 +15,6 @@ import {
 } from "@/lib/categories";
 import {
   SendToWhatsApp,
-  createUser,
   deleteUser,
   placeOrder,
   updateAddress,
@@ -129,28 +128,7 @@ export async function deleteCategoryAction(id: string) {
   revalidatePath("/categories");
 }
 // **************************Users Action*********************************************
-export async function createUserAction(
-  UserId: string,
-  Name: string,
-  Email: string,
-  Image: string,
-  Cart: Array<object>,
-  Orders: Array<object>,
-  WhishList: Array<object>,
-  Address: object
-) {
-  await createUser(
-    UserId,
-    Name,
-    Email,
-    Image,
-    Cart,
-    Orders,
-    WhishList,
-    Address
-  );
-  revalidatePath("/");
-}
+
 export async function updateUserInfoAction(
   UserId: string,
   Name: string,
@@ -164,7 +142,17 @@ export async function updateUserInfoAction(
   revalidatePath("/");
 }
 
-export async function updateAddressAction(UserId: string, Address: object) {
+export async function updateAddressAction(
+  UserId: string,
+  Address: {
+    Country: string;
+    City: string;
+    Street: string;
+    Building: string;
+    PostalCode: number;
+    Landmark: string;
+  }
+) {
   await updateAddress(UserId, Address);
   revalidatePath("/");
 }
@@ -173,16 +161,25 @@ export async function placeOrderAction(
   Products: Array<{ id: string; quantity: number }>,
   OrderTotal: number,
   PaymentMethod: string,
-  Address: object,
-  IsCompleted: boolean
+  // Address: object,
+  IsCompleted: boolean,
+  OrderSummary: {
+    Items: number;
+    Shipping: number;
+    CODFee: number;
+    Total: number;
+    Coupon: number;
+    OrderTotal: number;
+  }
 ) {
   await placeOrder(
     UserId,
     Products,
     OrderTotal,
     PaymentMethod,
-    Address,
-    IsCompleted
+    // Address,
+    IsCompleted,
+    OrderSummary
   );
   revalidatePath("/");
 }

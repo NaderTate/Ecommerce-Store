@@ -42,3 +42,48 @@ model Admin {
   name  String
   image String
 }
+
+model User {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  UserId    String    @unique
+  Name      String
+  Email     String
+  Phone     Int
+  BirthDate String
+  Gender    String
+  Image     String
+  Cart      Json[]
+  Orders    Order[]
+  WhishList Json[]
+  Address   Address[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+model Order {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  UserId        String   @unique
+  User          User     @relation(fields: [UserId], references: [UserId])
+  PaymentMethod String
+  OrderTotal    Float
+  PlacedOn      String
+  CompletedOn   String
+  Orders        Json[]
+  IsComplete    Boolean
+  Address       Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Address {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  UserId     String   @unique
+  User       User     @relation(fields: [UserId], references: [UserId])
+  Country    String
+  City       String
+  Street     String
+  Building   String
+  PostalCode Int
+  Landmark   String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}

@@ -18,11 +18,14 @@ async function page() {
   let totalQuantity: number = 0;
   let address;
   if (userId) {
-    user = (await getUserById(userId)).user;
+    user = await prisma.user.findUnique({
+      where: { UserId: userId },
+      include: { Address: true },
+    });
     user?.Cart.map(({ id }: { id: string }) => {
       cart.push(id);
     });
-    address = user?.Address;
+    address = user?.Address[0];
     cartProducts = (await getProductById(cart)).product || [];
     cart.map((ID) => {
       sortedCart.push({

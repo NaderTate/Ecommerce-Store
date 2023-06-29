@@ -22,38 +22,6 @@ export async function getUsers(sk: number, take: number) {
   }
 }
 
-export async function createUser(
-  UserId: string,
-  Name: string,
-  Email: string,
-  Image: string,
-  Cart: Array<object>,
-  Orders: Array<object>,
-  WhishList: Array<object>,
-  Address: object
-) {
-  try {
-    const user = await prisma.user.create({
-      data: {
-        UserId,
-        Name,
-        Email,
-        Gender: "",
-        Phone: 0,
-        BirthDate: "",
-        Image,
-        Cart,
-        Orders,
-        WhishList,
-        Address,
-      },
-    });
-    return { user };
-  } catch (error) {
-    return { error };
-  }
-}
-
 export async function getUserById(UserId: string) {
   try {
     const user = await prisma.user.findUnique({
@@ -65,14 +33,22 @@ export async function getUserById(UserId: string) {
   }
 }
 
-export async function updateAddress(UserId: string, Address: object) {
+export async function updateAddress(
+  UserId: string,
+  Address: {
+    Country: string;
+    City: string;
+    Street: string;
+    Building: string;
+    PostalCode: number;
+    Landmark: string;
+  }
+) {
   try {
-    var json = [{ ...Address }] as Prisma.JsonArray;
-    const user = await prisma.user.update({
+    const user = await prisma.address.upsert({
       where: { UserId },
-      data: {
-        Address: json,
-      },
+      update: { ...Address },
+      create: { ...Address, UserId },
     });
     return { user };
   } catch (error) {
@@ -123,9 +99,17 @@ export async function createUserAfterAuth(
           BirthDate: "",
           Image,
           Cart: [],
-          Orders: [],
           WhishList: [],
-          Address: {},
+          Address: {
+            create: {
+              Country: "",
+              City: "",
+              Street: "",
+              Building: "",
+              PostalCode: 0,
+              Landmark: "",
+            },
+          },
         },
       });
       return { user };
@@ -139,27 +123,54 @@ export async function placeOrder(
   Products: Array<{ id: string; quantity: number }>,
   OrderTotal: number,
   PaymentMethod: string,
-  Address: object,
-  IsCompleted: boolean
+  IsComplete: boolean,
+  OrderSummary: {
+    Items: number;
+    Shipping: number;
+    CODFee: number;
+    Total: number;
+    Coupon: number;
+    OrderTotal: number;
+  }
 ) {
   try {
+    const IDs: Array<{ id: string }> = [];
+    Products.map(({ id }) => {
+      IDs.push({ id });
+    });
     const user = await prisma.user.update({
       where: { UserId },
       data: {
         Orders: {
-          push: {
-            OrderId: uuidv4(),
-            Products,
-            OrderTotal,
+          create: {
             PaymentMethod,
-            Address,
-            IsCompleted,
+            OrderTotal,
+            PlacedOn: new Date().toString(),
+            CompletedOn: "",
+            Orders: Products,
+            IsComplete,
+            Address: { connect: { UserId } },
+            OrderSummary,
+            Product: { connect: IDs },
           },
         },
       },
     });
 
     return { user };
+    // const data = await prisma.order.findUnique({
+    //   where: { id: "649dec2821b0bbae453f3473" },
+    //   include: { Product: { select: { Title: true } } },
+    //   // include: { User: { select: { Name: true, Email: true } } },
+    // });
+    // console.log(data);
+    // const data = await prisma.user.findUnique({
+    //   where: { id: "649d571e9acc6b265d6c10ce" },
+    //   include: {
+    //     Orders: { include: { Product: { select: { Title: true } } } },
+    //   },
+    // });
+    // console.log(data?.Orders[0].Product);
   } catch (error) {
     return { error };
   }
@@ -183,12 +194,11 @@ export async function SendToWhatsApp(
       });
     });
     let message = "🚨 *New Order* 🚨 %0a %0a";
-    message += "🤑🤑 " + "$" + "*" + OrderTotal + "*" + " 🤑🤑 %0a %0a";
+    message += "🤑 " + "$" + "*" + OrderTotal + "*" + " 🤑 %0a %0a";
     ProductsDetails?.map(({ Title, quantity }) => {
-      message = message + Title + "%0a" + "Quanitity: " + quantity + "%0a %0a";
+      message += Title + "%0a" + "Quanitity: " + quantity + "%0a %0a";
     });
-    message =
-      message +
+    message +=
       "See the full details at: %0a https://expressadmin.vercel.app/orders";
     await axios.get(
       `https://api.callmebot.com/whatsapp.php?phone=+201008564637&text=${message}&apikey=7206005`

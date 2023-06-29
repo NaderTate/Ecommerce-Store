@@ -21,6 +21,8 @@ model Product {
   Colors      String[] @default([])
   Reviews     Json[]
   Properties  Json
+  OrderIDs    String[] @db.ObjectId
+  Orders      Order[]  @relation(fields: [OrderIDs], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -37,8 +39,8 @@ model Category {
 }
 
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  UserId    String   @unique
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  UserId    String    @unique
   Name      String
   Email     String
   Phone     Int
@@ -46,9 +48,43 @@ model User {
   Gender    String
   Image     String
   Cart      Json[]
-  Orders    Json[]
+  Orders    Order[]
   WhishList Json[]
-  Address   Json?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  Address   Address[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Order {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  UserId        String    @unique
+  User          User      @relation(fields: [UserId], references: [UserId])
+  PaymentMethod String
+  OrderTotal    Float
+  PlacedOn      String
+  CompletedOn   String
+  Orders        Json[]
+  IsComplete    Boolean
+  Address       Address   @relation(fields: [AddressId], references: [id])
+  OrderSummary  Json
+  AddressId     String    @db.ObjectId
+  Product       Product[] @relation(fields: [productIDs], references: [id])
+  productIDs    String[]  @db.ObjectId
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Address {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  UserId     String   @unique
+  User       User     @relation(fields: [UserId], references: [UserId])
+  Orders     Order[]
+  Country    String
+  City       String
+  Street     String
+  Building   String
+  PostalCode Int
+  Landmark   String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
