@@ -30,6 +30,8 @@ export async function createProduct(
   Properties: object
 ) {
   try {
+    const Categories_: Array<{}> = [];
+    Categories.map((category) => Categories_.push({ label: category }));
     const product = await prisma.product.create({
       data: {
         Title,
@@ -37,7 +39,7 @@ export async function createProduct(
         Images,
         Description,
         Reviews,
-        Categories,
+        Categories: { connect: Categories_ },
         mainImg,
         Colors,
         Properties,
@@ -71,6 +73,14 @@ export async function updateProduct(
   Properties: object
 ) {
   try {
+    const Categories_: Array<{ id: string }> = [];
+    Categories.map((category) => Categories_.push({ id: category }));
+    await prisma.product.update({
+      where: { id },
+      data: {
+        Categories: { set: [] },
+      },
+    });
     const product = await prisma.product.update({
       where: { id },
       data: {
@@ -80,11 +90,13 @@ export async function updateProduct(
         mainImg,
         Description,
         Reviews,
-        Categories,
+        Categories: { connect: Categories_ },
         Colors,
         Properties,
       },
+      include: { Categories: true },
     });
+    console.log(product);
     return { product };
   } catch (error) {
     return { error };

@@ -30,7 +30,8 @@
     ".next/types/**/*.ts",
     "app/api/auth/[...nextauth]/route.js",
     "app/categories/page.tsx",
-    "app/components/Provider.js"
+    "app/components/Provider.js",
+    "test.js"
   ],
   "exclude": ["node_modules"]
 }

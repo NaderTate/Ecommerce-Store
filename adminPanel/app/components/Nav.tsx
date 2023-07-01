@@ -9,7 +9,7 @@ import MobileMenu from "./MobileMenu";
 import { GrUserAdmin } from "react-icons/gr";
 import { FaChartLine } from "react-icons/fa";
 import { BsBoxes } from "react-icons/bs";
-import { PiCurrencyDollarBold } from "react-icons/pi";
+import { PiCurrencyDollarBold, PiUsersThreeBold } from "react-icons/pi";
 import { BiCategoryAlt } from "react-icons/bi";
 import { FiSettings } from "react-icons/fi";
 function Nav({
@@ -58,9 +58,9 @@ function Nav({
       icon: <GrUserAdmin />,
     },
     {
-      label: "Settings",
-      url: "/settings",
-      icon: <FiSettings />,
+      label: "Users",
+      url: "/users",
+      icon: <PiUsersThreeBold />,
     },
   ];
   return (

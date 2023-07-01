@@ -158,19 +158,6 @@ export async function placeOrder(
     });
 
     return { user };
-    // const data = await prisma.order.findUnique({
-    //   where: { id: "649dec2821b0bbae453f3473" },
-    //   include: { Product: { select: { Title: true } } },
-    //   // include: { User: { select: { Name: true, Email: true } } },
-    // });
-    // console.log(data);
-    // const data = await prisma.user.findUnique({
-    //   where: { id: "649d571e9acc6b265d6c10ce" },
-    //   include: {
-    //     Orders: { include: { Product: { select: { Title: true } } } },
-    //   },
-    // });
-    // console.log(data?.Orders[0].Product);
   } catch (error) {
     return { error };
   }

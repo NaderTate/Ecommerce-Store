@@ -6,6 +6,7 @@ import { getProductById } from "@/lib/products";
 import { Product } from "@prisma/client";
 import Link from "next/link";
 import CheckoutForm from "../components/CheckoutForm";
+import { redirect } from "next/navigation";
 
 async function page() {
   const { userId } = auth();
@@ -41,7 +42,7 @@ async function page() {
       }
     );
     subtotal = Math.round(subtotal_ * 10) / 10;
-  }
+  } else redirect("/sign-in?redirectURL=checkout");
   return (
     <div className="sm:px-12 px-5">
       <div>

@@ -55,6 +55,7 @@ ProductForm.propTypes = {
   Description: PropTypes.string,
   Categories: PropTypes.array,
   allCategories: PropTypes.any,
+  CategoryIDs: PropTypes.array,
   Colors: PropTypes.array,
   Images: PropTypes.array,
   Properties: PropTypes.any,
@@ -67,6 +68,7 @@ function ProductForm({
   Price,
   Description,
   Categories: currentCategories,
+  CategoryIDs,
   allCategories,
   Colors: currentColors,
   Properties: assignedProperties,
@@ -94,7 +96,7 @@ function ProductForm({
     { value: 17, label: "RGB" },
     { value: 18, label: "Transparent" },
   ];
-  const [Categories, setCategories] = useState(currentCategories || []);
+  const [Categories, setCategories] = useState(CategoryIDs || []);
   const [colors, setColors] = useState(currentColors || []);
   const [title, setTitle] = useState(Title || "");
   const [price, setPrice] = useState(Number(Price) || 0);
@@ -176,11 +178,12 @@ function ProductForm({
     if (Categories.length > 0) {
       const props: Array<any> = [];
       Categories.map((cat) => {
-        props.push(allCategories.find(({ label }: any) => label == cat));
+        props.push(allCategories.find(({ id }: any) => id == cat));
         setProperties(props);
       });
       // if I choose/remove a category I want to show/remove it's corresponding properties
       const propductProps: any = {};
+      console.log(Categories);
       props.map((prop) => {
         if (prop.Properties.length > 0) {
           return prop.Properties.map((prop: any) => {
@@ -257,12 +260,13 @@ function ProductForm({
                   <Select
                     placeholder="Categories"
                     value={allCategories.filter((obj: any) =>
-                      Categories.includes(obj.label)
+                      Categories?.includes(obj.id)
                     )} // set selected values
                     options={allCategories}
                     onChange={(e) => {
+                      console.log(e);
                       setCategories(
-                        Array.isArray(e) ? e.map((x: any) => x.label) : []
+                        Array.isArray(e) ? e.map((x: any) => x.id) : []
                       );
                     }}
                     isMulti

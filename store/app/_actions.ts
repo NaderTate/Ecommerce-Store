@@ -7,12 +7,10 @@ import {
   removeFromCart,
   saveToLater,
   updateQuantity,
+  removeFromWhishlist,
+  addReview,
 } from "@/lib/products";
-import {
-  createCategory,
-  updateCategory,
-  deleteCategory,
-} from "@/lib/categories";
+
 import {
   SendToWhatsApp,
   deleteUser,
@@ -90,6 +88,10 @@ export async function removeFromCartAction(UserId: string, id: string) {
   await removeFromCart(UserId, id);
   revalidatePath("/cart");
 }
+export async function removeFromWhishlistAction(UserId: string, id: string) {
+  await removeFromWhishlist(UserId, id);
+  revalidatePath("/whishlist");
+}
 export async function saveToLaterAction(UserId: string, id: string) {
   await saveToLater(UserId, id);
   revalidatePath("/cart");
@@ -102,31 +104,16 @@ export async function updateQuantityAction(
   await updateQuantity(UserId, id, quantity);
   revalidatePath("/cart");
 }
-// ******************* Categories Actions *********************************
+export async function addReviewAction(
+  UserId: string,
+  ProductId: string,
+  Rating: number,
+  Comment: string
+) {
+  await addReview(UserId, ProductId, Rating, Comment);
+  revalidatePath("/");
+}
 
-export async function createCategoryAction(
-  label: string,
-  Image: string,
-  Properties: Array<object>,
-  Parent: string
-) {
-  await createCategory(label, Image, Properties, Parent);
-  revalidatePath("/categories");
-}
-export async function updataCategoryAction(
-  id: string,
-  label: string,
-  Image: string,
-  Properties: Array<object>,
-  Parent: string
-) {
-  await updateCategory(id, label, Image, Properties, Parent);
-  revalidatePath("/categories");
-}
-export async function deleteCategoryAction(id: string) {
-  await deleteCategory(id);
-  revalidatePath("/categories");
-}
 // **************************Users Action*********************************************
 
 export async function updateUserInfoAction(

@@ -1,8 +1,11 @@
 import React from "react";
-import { getProductByCategory } from "@/lib/products";
 import ProductCard from "./ProductCard";
-async function Deals({ title, category }: { title: string; category: string }) {
-  const { products } = await getProductByCategory(category);
+import { prisma } from "@/lib/prisma";
+async function Deals({ title, id }: { title: string; id: string }) {
+  const products = await prisma.product.findMany({
+    where: { CategoryIDs: { has: id } },
+    take: 4,
+  });
   return (
     <div className=" bg-white dark:bg-black/30 rounded-md p-3">
       <h1 className="text-center mb-2">{title}</h1>

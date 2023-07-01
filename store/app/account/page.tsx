@@ -23,6 +23,7 @@ import { Prisma } from "@prisma/client";
 import CreditCardForm from "../components/CreditCardForm";
 import PaypalForm from "../components/PaypalForm";
 import Orders from "../components/Orders";
+import { redirect } from "next/navigation";
 async function page({ searchParams }: any) {
   const { userId } = auth();
   let userData;
@@ -30,9 +31,9 @@ async function page({ searchParams }: any) {
   if (userId) {
     userData = await prisma.user.findUnique({
       where: { UserId: userId },
-      include: { Orders: true, Address: true },
+      include: { Orders: { orderBy: { id: "desc" } }, Address: true },
     });
-  }
+  } else redirect("/sign-in?redirectURL=account");
   if (
     userData?.Address &&
     typeof userData?.Address === "object" &&
@@ -44,71 +45,85 @@ async function page({ searchParams }: any) {
   const content = searchParams.content || "details";
   const linkStyle = "flex gap-2 my-4 cursor-pointer";
   return (
-    <div className="p-10">
-      <div className="font-bold text-4xl traching-widest my-5">My Account</div>
-      <div className="flex gap-10">
-        <div className="w-72 hidden md:block bg-white dark:bg-inherit px-5 rounded-md">
-          <div>
+    <div className="sm:p-10">
+      <div className="">
+        <div className="w-72 fixed">
+          <div className="font-bold text-4xl traching-widest my-5 hidden md:block">
+            My Account
+          </div>
+          <div className="hidden md:block bg-white dark:bg-inherit px-5 rounded-md">
+            <div>
+              <Link
+                className=""
+                href={{ pathname: "/account", query: { content: "details" } }}
+              >
+                <div className={linkStyle}>
+                  <UserCircleIcon className="w-6" />
+                  My Details
+                </div>
+              </Link>
+            </div>
             <Link
-              className=""
-              href={{ pathname: "/account", query: { content: "details" } }}
+              href={{ pathname: "/account", query: { content: "address" } }}
             >
               <div className={linkStyle}>
-                <UserCircleIcon className="w-6" />
-                My Details
+                <MapPinIcon className="w-6" />
+                My Address
               </div>
             </Link>
+            <Link href={{ pathname: "/account", query: { content: "orders" } }}>
+              <div className={linkStyle}>
+                <ShoppingBagIcon className="w-6" />
+                My Orders
+              </div>
+            </Link>
+            <Accordion type="single" collapsible className="w-full p-0">
+              <AccordionItem value="item-1">
+                <AccordionTrigger>
+                  <div className="flex gap-2">
+                    <CreditCardIcon className="w-6" />
+                    Payment methods
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="ml-8">
+                  <Link
+                    href={{
+                      pathname: "/account",
+                      query: { content: "credit" },
+                    }}
+                  >
+                    Credit/debit cards
+                  </Link>
+                </AccordionContent>
+                <AccordionContent className="ml-8">
+                  <Link
+                    href={{
+                      pathname: "/account",
+                      query: { content: "paypal" },
+                    }}
+                  >
+                    Paypal
+                  </Link>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+            <Link
+              href={{ pathname: "/account", query: { content: "settings" } }}
+            >
+              <div className={linkStyle}>
+                <Cog6ToothIcon className="w-6" />
+                Account Settings
+              </div>
+            </Link>
+            <SignOutButton>
+              <div className={linkStyle}>
+                <ArrowRightOnRectangleIcon className="w-6" />
+                Logout
+              </div>
+            </SignOutButton>
           </div>
-          <Link href={{ pathname: "/account", query: { content: "address" } }}>
-            <div className={linkStyle}>
-              <MapPinIcon className="w-6" />
-              My Address
-            </div>
-          </Link>
-          <Link href={{ pathname: "/account", query: { content: "orders" } }}>
-            <div className={linkStyle}>
-              <ShoppingBagIcon className="w-6" />
-              My Orders
-            </div>
-          </Link>
-          <Accordion type="single" collapsible className="w-fulls p-0">
-            <AccordionItem value="item-1">
-              <AccordionTrigger>
-                <div className="flex gap-2">
-                  <CreditCardIcon className="w-6" />
-                  Payment methods
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="ml-8">
-                <Link
-                  href={{ pathname: "/account", query: { content: "credit" } }}
-                >
-                  Credit/debit cards
-                </Link>
-              </AccordionContent>
-              <AccordionContent className="ml-8">
-                <Link
-                  href={{ pathname: "/account", query: { content: "paypal" } }}
-                >
-                  Paypal
-                </Link>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-          <Link href={{ pathname: "/account", query: { content: "settings" } }}>
-            <div className={linkStyle}>
-              <Cog6ToothIcon className="w-6" />
-              Account Settings
-            </div>
-          </Link>
-          <SignOutButton>
-            <div className={linkStyle}>
-              <ArrowRightOnRectangleIcon className="w-6" />
-              Logout
-            </div>
-          </SignOutButton>
         </div>
-        <div className="w-full md:pr-24">
+        <div className="md:ml-72">
           {content == "details" && userData && (
             <UserDetailsForm userData={userData} />
           )}

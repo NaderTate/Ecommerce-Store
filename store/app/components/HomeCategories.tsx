@@ -20,7 +20,7 @@ function HomeCategories({ categories }: { categories: any }) {
                   key={id}
                   className="bg-white dark:bg-black/30 p-2 rounded-md"
                 >
-                  <Link href={{ pathname: `/categories/${label}` }}>
+                  <Link href={{ pathname: `/categories/${id}` }}>
                     <h1>{label}</h1>
                     <img src={Image} alt="" />
                   </Link>

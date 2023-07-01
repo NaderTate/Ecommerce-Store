@@ -22,7 +22,7 @@ function Categories({
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [img, setImg] = useState(category.Image);
-  const [parent, setParent] = useState(category.Parent);
+  const [parent, setParent] = useState(category.ParentId);
   const [properties, setProperties]: any = useState(category.Properties);
   const router = useRouter();
   function addProperty() {

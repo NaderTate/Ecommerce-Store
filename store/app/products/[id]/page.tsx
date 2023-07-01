@@ -5,6 +5,7 @@ import Product_Gallery from "@/app/components/Product_Gallery";
 import Slider from "@/app/components/Slider";
 import BuyOptions from "@/app/components/BuyOptions";
 import LoginToBuy from "@/app/components/LoginToBuy";
+import ReviewForm from "@/app/components/ReviewForm";
 // export const revalidate = 60;
 // export async function generateStaticParams() {
 //   const products = await prisma.product.findMany();
@@ -32,9 +33,18 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
   // await new Promise((resolve) => setTimeout(resolve, 1000000));
   const product = await prisma.product.findUnique({
     where: { id },
+    include: {
+      Reviews: {
+        select: {
+          Comment: true,
+          Rating: true,
+          User: { select: { Name: true, Image: true } },
+        },
+      },
+    },
   });
   const relatedProducts = await prisma.product.findMany({
-    where: { Categories: { hasSome: product?.Categories } },
+    where: { CategoryIDs: { hasSome: product?.CategoryIDs } },
   });
   const { userId } = auth();
   let favs;
@@ -48,7 +58,7 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
   }
   return (
     <div>
-      <div className="p-10">
+      <div className="p-5 sm:p-10">
         <div className="md:sticky md:float-left md:top-2 md:w-[40vw] md:mr-10">
           <Product_Gallery gallery={product?.Images} />
         </div>
@@ -58,8 +68,8 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
               {product?.Title}
             </p>
             <div className="flex gap-2">
-              <StarRating rating={4.5} />
-              <span>2,731 ratings</span>
+              <StarRating rating={product?.Rating || 4.3} />
+              <span>{product?.Reviews.length} Reviews</span>
             </div>
             $<span className="font-bold text-xl">{product?.Price}</span>
             <div>
@@ -102,7 +112,30 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
       <div className="md:ml-5">
         <Slider title="You might also like" data={relatedProducts} />
       </div>
-      <div className="p-10">Reviews Here:</div>
+      <div className="p-5 sm:p-10">
+        <h1>Review the product:</h1>
+        {userId && product && (
+          <ReviewForm UserId={userId} ProductId={product.id} />
+        )}
+        <div className="space-y-5 mt-5">
+          <h1>Customers opinions:</h1>
+          {product?.Reviews.map(
+            ({ Comment, Rating, User: { Name, Image } }) => {
+              return (
+                <div>
+                  <div className="flex items-center  gap-2">
+                    <img src={Image} className="w-12 rounded-full" alt="" />
+                    <div>
+                      <StarRating rating={Rating} />
+                      <p>{Comment}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+          )}
+        </div>
+      </div>
     </div>
   );
 };

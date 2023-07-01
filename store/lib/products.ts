@@ -36,11 +36,10 @@ export async function createProduct(
         Price,
         Images,
         Description,
-        Reviews,
-        Categories,
         mainImg,
         Colors,
         Properties,
+        Rating: 5,
       },
     });
     return { product };
@@ -59,10 +58,10 @@ export async function getProductById(ids: Array<string>) {
     return { error };
   }
 }
-export async function getProductByCategory(category: string, limit?: number) {
+export async function getProductByCategoryId(id: string, limit?: number) {
   try {
     const products = await prisma.product.findMany({
-      where: { Categories: { has: category } },
+      where: { CategoryIDs: { has: id } },
       take: limit || 4,
     });
     return { products };
@@ -92,8 +91,6 @@ export async function updateProduct(
         Images,
         mainImg,
         Description,
-        Reviews,
-        Categories,
         Colors,
         Properties,
       },
@@ -184,6 +181,25 @@ export async function removeFromCart(UserId: string, id: string) {
     return { error };
   }
 }
+export async function removeFromWhishlist(UserId: string, id: string) {
+  try {
+    const user = await prisma.user.findFirst({
+      where: { UserId },
+      select: { WhishList: true },
+    });
+    const currentWhishlist = user?.WhishList;
+    const updatedWhishlist = currentWhishlist?.filter((ID: any) => ID.id != id);
+
+    await prisma.user.update({
+      where: { UserId },
+      data: {
+        WhishList: { set: updatedWhishlist },
+      },
+    });
+  } catch (error) {
+    return { error };
+  }
+}
 export async function updateQuantity(
   UserId: string,
   id: string,
@@ -228,6 +244,40 @@ export async function saveToLater(UserId: string, id: string) {
       where: { UserId },
       data: {
         Cart: { set: updatedCart },
+      },
+    });
+  } catch (error) {
+    return { error };
+  }
+}
+export async function addReview(
+  UserId: string,
+  ProductId: string,
+  Rating: number,
+  Comment: string
+) {
+  try {
+    const ratings: Array<number> = [];
+    ratings.push(Rating);
+    const oldReviews = await prisma.review.findMany({
+      where: { ProductId },
+      select: { Rating: true },
+    });
+    oldReviews.map(({ Rating }) => ratings.push(Rating));
+    const average = (array: Array<number>) =>
+      array.reduce((a, b) => a + b) / array.length;
+    const newRating = average(ratings);
+    await prisma.product.update({
+      where: { id: ProductId },
+      data: {
+        Rating: Math.round(newRating * 10) / 10,
+        Reviews: {
+          create: {
+            Rating,
+            Comment,
+            User: { connect: { UserId } },
+          },
+        },
       },
     });
   } catch (error) {

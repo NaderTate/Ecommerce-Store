@@ -11,29 +11,36 @@ datasource db {
 }
 
 model Product {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
   Title       String
   Price       Float
-  Description String   @default("")
-  Images      Json[]   @default([])
+  Description String     @default("")
+  Images      Json[]     @default([])
   mainImg     String
-  Categories  String[] @default([])
-  Colors      String[] @default([])
+  Categories  Category[] @relation(fields: [CategoryIDs], references: [id])
+  CategoryIDs String[]   @db.ObjectId
+  Colors      String[]   @default([])
   Reviews     Json[]
   Properties  Json
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  OrderIDs    String[]   @db.ObjectId
+  Orders      Order[]    @relation(fields: [OrderIDs], references: [id])
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 }
 
 model Category {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  label      String
-  value      Int
-  Image      String
-  Properties Json[]
-  Parent     String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  label       String
+  value       Int
+  Image       String
+  Properties  Json[]
+  Parent      Category?  @relation(name: "CategoryToCategory", fields: [ParentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children    Category[] @relation(name: "CategoryToCategory")
+  ParentId    String?    @db.ObjectId
+  Products    Product[]  @relation(fields: [ProductsIDs], references: [id])
+  ProductsIDs String[]   @db.ObjectId
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 }
 
 model Admin {
@@ -59,25 +66,31 @@ model User {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
+
 model Order {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  UserId        String   @unique
-  User          User     @relation(fields: [UserId], references: [UserId])
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  UserId        String    @unique
+  User          User      @relation(fields: [UserId], references: [UserId])
   PaymentMethod String
   OrderTotal    Float
   PlacedOn      String
   CompletedOn   String
   Orders        Json[]
   IsComplete    Boolean
-  Address       Json?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  Address       Address   @relation(fields: [AddressId], references: [id])
+  OrderSummary  Json
+  AddressId     String    @db.ObjectId
+  Product       Product[] @relation(fields: [productIDs], references: [id])
+  productIDs    String[]  @db.ObjectId
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
 
 model Address {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   UserId     String   @unique
   User       User     @relation(fields: [UserId], references: [UserId])
+  Orders     Order[]
   Country    String
   City       String
   Street     String

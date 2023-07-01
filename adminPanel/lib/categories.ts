@@ -28,7 +28,6 @@ export async function getCategories(sk: number, take: number) {
 
 export async function createCategory(
   label: string,
-
   Image: string,
   Properties: Array<object>,
   Parent: string
@@ -43,7 +42,7 @@ export async function createCategory(
         value,
         Image,
         Properties,
-        Parent,
+        Parent: { connect: { id: Parent } },
       },
     });
     return { category };
@@ -65,7 +64,7 @@ export async function updateCategory(
         label,
         Image,
         Properties,
-        Parent,
+        Parent: { connect: { id: Parent } },
       },
     });
     return { category };

@@ -100,7 +100,8 @@ async function page({ searchParams }: any) {
                 Image: "",
                 value: 0,
                 Properties: [],
-                Parent: "",
+                ProductsIDs: [],
+                ParentId: "",
                 createdAt: new Date(Date.now()),
                 updatedAt: new Date(Date.now()),
               }}

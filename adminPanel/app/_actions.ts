@@ -12,6 +12,7 @@ import {
 } from "@/lib/categories";
 import { createAdmin, updateadmin, deleteAdmin } from "@/lib/admins";
 import { revalidatePath } from "next/cache";
+import { markAsComplete } from "@/lib/orders";
 // ******************* Products Actions *********************************
 
 export async function getProductByIdAction(id: string) {
@@ -118,4 +119,9 @@ export async function updateAdminAction(
 export async function deleteAdminAction(id: string) {
   await deleteAdmin(id);
   revalidatePath("/admins");
+}
+// **************************** Orders **********************************
+export async function markAsCompleteAction(id: string) {
+  await markAsComplete(id);
+  revalidatePath("/orders");
 }

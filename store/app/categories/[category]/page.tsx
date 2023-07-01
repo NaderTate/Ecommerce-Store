@@ -51,7 +51,7 @@ async function page({
 
   const products = await prisma.product.findMany({
     where: {
-      Categories: { hasSome: category.replace(/%20/g, " ") },
+      CategoryIDs: { hasSome: category },
       AND: [{ Price: { gt: min } }, { Price: { lt: max } }],
     },
     take: itemsToShow,
@@ -72,11 +72,14 @@ async function page({
   });
 
   const allProducts = await prisma.product.findMany({
-    where: { Categories: { hasSome: category.replace(/%20/g, " ") } },
+    where: {
+      CategoryIDs: { hasSome: category },
+      AND: [{ Price: { gt: min } }, { Price: { lt: max } }],
+    },
     orderBy: [{ Price: "desc" }],
   });
-  const highestPrice: any = allProducts.at(0)?.Price;
-  const lowestPrice: any = allProducts.at(-1)?.Price;
+  const highestPrice: number = allProducts?.at(0)?.Price || 0;
+  const lowestPrice: number = allProducts?.at(-1)?.Price || 0;
   const difference: number = Math.floor(highestPrice - lowestPrice);
   const segment = Math.floor(difference / 5);
   const firstPrice = Math.ceil(lowestPrice + segment);
@@ -98,23 +101,41 @@ async function page({
     return newArr;
   };
   const Arr = pagenateArr(pages, sk);
-  let similarCategories: Array<Category> = [];
-  const categoryInfo = await prisma.category.findFirst({
-    where: { label: category.replace(/%20/g, " ") },
+  let similarCategories: Array<{ id: string; label: string }> = [];
+  const categoryInfo = await prisma.category.findUnique({
+    where: { id: category },
+    select: {
+      id: true,
+      label: true,
+      Parent: {
+        select: {
+          children: { select: { id: true, label: true } },
+          label: true,
+          id: true,
+        },
+      },
+      children: { select: { id: true, label: true } },
+      ParentId: true,
+    },
   });
+
   if (categoryInfo) {
-    if (categoryInfo.Parent.length > 0) {
-      similarCategories = await prisma.category.findMany({
-        where: { Parent: categoryInfo.Parent },
+    if (categoryInfo.ParentId && categoryInfo.Parent) {
+      similarCategories.push({
+        id: categoryInfo.Parent?.id,
+        label: categoryInfo.Parent?.label,
       });
-      const parentInfo = await prisma.category.findUnique({
-        where: { id: categoryInfo.Parent },
-      });
-      if (parentInfo) similarCategories.unshift(parentInfo);
+      categoryInfo.Parent?.children.map(({ id, label }) =>
+        similarCategories.push({ id, label })
+      );
     } else {
-      similarCategories = await prisma.category.findMany({
-        where: { Parent: categoryInfo.id },
+      similarCategories.push({
+        id: categoryInfo.id,
+        label: categoryInfo.label,
       });
+      categoryInfo.children.map(({ id, label }) =>
+        similarCategories.push({ id, label })
+      );
     }
   }
   return (
@@ -133,7 +154,7 @@ async function page({
             <div className="flex flex-col items-start">
               <Link
                 href={{
-                  pathname: `/categories/${category.replace(/%20/g, " ")}`,
+                  pathname: `/categories/${category}`,
                   query: { max: firstPrice },
                 }}
               >
@@ -142,7 +163,7 @@ async function page({
               {firstPrice != 0 && secondPrice != 0 && (
                 <Link
                   href={{
-                    pathname: `/categories/${category.replace(/%20/g, " ")}`,
+                    pathname: `/categories/${category}`,
                     query: { min: firstPrice, max: secondPrice },
                   }}
                 >
@@ -152,7 +173,7 @@ async function page({
               {secondPrice != 0 && thirdPrice != 0 && (
                 <Link
                   href={{
-                    pathname: `/categories/${category.replace(/%20/g, " ")}`,
+                    pathname: `/categories/${category}`,
                     query: { min: secondPrice, max: thirdPrice },
                   }}
                 >
@@ -162,7 +183,7 @@ async function page({
               {thirdPrice != 0 && fourthPrice != 0 && (
                 <Link
                   href={{
-                    pathname: `/categories/${category.replace(/%20/g, " ")}`,
+                    pathname: `/categories/${category}`,
                     query: { min: thirdPrice, max: fourthPrice },
                   }}
                 >
@@ -172,7 +193,7 @@ async function page({
               {fourthPrice != 0 && (
                 <Link
                   href={{
-                    pathname: `/categories/${category.replace(/%20/g, " ")}`,
+                    pathname: `/categories/${category}`,
                     query: { min: fourthPrice },
                   }}
                 >
@@ -244,12 +265,9 @@ async function page({
                   <div className="flex flex-col">
                     <div className="font-bold">Discover more in:</div>
 
-                    {similarCategories.map(({ label }) => {
+                    {similarCategories.map(({ id, label }) => {
                       return (
-                        <Link
-                          key={label}
-                          href={{ pathname: `/categories/${label}` }}
-                        >
+                        <Link key={id} href={{ pathname: `/categories/${id}` }}>
                           {label}
                         </Link>
                       );
@@ -290,7 +308,7 @@ async function page({
           <li>
             <Link
               href={{
-                pathname: `/categories/${category.replace(/%20/g, " ")}`,
+                pathname: `/categories/${category}`,
                 query: { page: pages.at(0), sort, min, max },
               }}
               className="inline-flex items-center justify-center w-8 h-8 border border-gray-100 rounded-full hover:bg-slate-400/50 transition "
@@ -314,7 +332,7 @@ async function page({
               <li key={page}>
                 <Link
                   href={{
-                    pathname: `/categories/${category.replace(/%20/g, " ")}`,
+                    pathname: `/categories/${category}`,
                     query: { page: page, sort, min, max },
                   }}
                   className="inline-flex items-center justify-center w-8 h-8 border border-gray-100 rounded-full hover:bg-slate-400/50 transition"
@@ -326,7 +344,7 @@ async function page({
           <li>
             <Link
               href={{
-                pathname: `/categories/${category.replace(/%20/g, " ")}`,
+                pathname: `/categories/${category}`,
                 query: { page: pages.at(-1), sort, min, max },
               }}
               className="inline-flex items-center justify-center w-8 h-8 border border-gray-100 rounded-full hover:bg-slate-400/50 transition"

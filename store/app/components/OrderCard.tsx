@@ -1,7 +1,5 @@
 import { prisma } from "@/lib/prisma";
 import { Address, Order } from "@prisma/client";
-import Image from "next/image";
-import Link from "next/link";
 import React from "react";
 import {
   Accordion,
@@ -9,6 +7,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import Slider from "./Slider";
 async function OrderCard({ Order }: { Order: Order }) {
   const OrderDetails = await prisma.order.findUnique({
     where: { id: Order.id },
@@ -30,13 +29,19 @@ async function OrderCard({ Order }: { Order: Order }) {
   const MoreDetailsSection = ({
     OrderSummary,
     address,
+    PaymentMethod,
   }: {
     OrderSummary: any;
     address: Address;
+    PaymentMethod: string;
   }) => {
     return (
       <div>
-        <div className="flex gap-5 mt-5">
+        <div className="text-lg  lg:hidden">
+          <h1>Payment method:</h1>
+          <div>{PaymentMethod}</div>
+        </div>
+        <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-5 mt-5">
           <div>
             <div className="border rounded-md p-5 space-y-2 text-lg mt-2 bg-gray-100 dark:bg-inherit">
               <span className="font-bold">Shipped to:</span>
@@ -88,13 +93,9 @@ async function OrderCard({ Order }: { Order: Order }) {
   return (
     <div className="border rounded-md bg-white dark:bg-inherit">
       <div className="border-b p-5 ">
-        <Accordion
-          type="single"
-          collapsible
-          className="w-fulls p-0 border-none"
-        >
+        <Accordion type="single" collapsible className="border-none">
           <AccordionItem value="item-1">
-            <div className="flex gap-10 items-start">
+            <div className="flex flex-col lg:flex-row gap-5 items-start">
               <div className="flex flex-col">
                 <span>Placed on:</span>
                 <span>{new Date(PlacedOn).toDateString()}</span>
@@ -103,7 +104,7 @@ async function OrderCard({ Order }: { Order: Order }) {
                 <span>Order total:</span>
                 <span>${OrderTotal}</span>
               </div>
-              <div className="flex flex-col">
+              <div className="lg:flex flex-col hidden">
                 <span>Payment method:</span>
                 <span>{PaymentMethod}</span>
               </div>
@@ -116,51 +117,20 @@ async function OrderCard({ Order }: { Order: Order }) {
                 <MoreDetailsSection
                   OrderSummary={OrderSummary}
                   address={OrderDetails.Address}
+                  PaymentMethod={PaymentMethod}
                 />
               )}
             </AccordionContent>
           </AccordionItem>
         </Accordion>
       </div>
-      <div className="space-y-5 p-5">
+      <div className="ml-5 mt-5">
         {IsComplete && (
-          <div className="font-bold text-2xl">Delivered {CompletedOn}</div>
+          <div className="font-bold text-2xl">Delivered on:{CompletedOn}</div>
         )}
-        {OrderDetails?.Product.map(({ id, Title, mainImg, Price }) => {
-          const quantity: any = Order?.Orders?.find(
-            (order: any) => order?.id == id
-          );
-
-          return (
-            <div key={id} className="flex gap-5">
-              <Link href={{ pathname: `/products/${id}` }}>
-                <div className="relative w-28 h-28">
-                  <Image
-                    fill
-                    src={mainImg}
-                    className=" object-cover rounded-md"
-                    alt={Title}
-                  />
-                  <span className="absolute top-0 right-0 bg-black/50 rounded-bl-md text-white p-[2px]">
-                    {quantity.quantity}
-                  </span>
-                </div>
-              </Link>
-              <div>
-                <Link href={{ pathname: `/products/${id}` }}>
-                  <p>{Title}</p>
-                  <p>${Price}</p>
-                </Link>
-                <div className="flex gap-5">
-                  <button className="bg-blue-700 px-2 rounded-md text-white mt-2">
-                    Buy again
-                  </button>
-                  <div></div>
-                </div>
-              </div>
-            </div>
-          );
-        })}
+        <div>
+          <Slider title="" data={OrderDetails?.Product} />
+        </div>
       </div>
     </div>
   );

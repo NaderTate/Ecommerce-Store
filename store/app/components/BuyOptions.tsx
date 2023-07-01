@@ -3,7 +3,9 @@ import React, { useState } from "react";
 import { addToCartAction, addToFavoritesAction } from "../_actions";
 import RiseLoader from "react-spinners/RiseLoader";
 import ClipLoader from "react-spinners/ClipLoader";
-import { ShareIcon, HeartIcon } from "@heroicons/react/24/outline";
+import { BiShare } from "react-icons/bi";
+import { BsFillHeartbreakFill } from "react-icons/bs";
+import { AiFillHeart } from "react-icons/ai";
 import ShareIcons from "./ShareIcons";
 
 function BuyOptions({
@@ -58,7 +60,7 @@ function BuyOptions({
               }}
               className="flex gap-3 w-24 rounded-md dark:bg-gray-200/70 bg-black/50 text-white dark:text-black font-bold h-10 items-center justify-center cursor-pointer"
             >
-              <ShareIcon className="w-6" />
+              <BiShare size={50} className="w-6" />
               Share
             </div>
             <div
@@ -72,12 +74,10 @@ function BuyOptions({
             >
               {loadingFavs ? (
                 <ClipLoader color="#ffffff" size={20} />
+              ) : favsArray.includes(id) ? (
+                <AiFillHeart size={35} fill="red" />
               ) : (
-                <HeartIcon
-                  className={`w-8 ${
-                    favsArray.includes(id) ? "fill-red-600" : "fill-white"
-                  }`}
-                />
+                <BsFillHeartbreakFill size={30} fill="white" />
               )}
             </div>
           </div>

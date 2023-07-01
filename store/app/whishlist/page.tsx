@@ -3,75 +3,50 @@ import { auth } from "@clerk/nextjs";
 import { getUserById } from "@/lib/users";
 import { getProductById } from "@/lib/products";
 import { Product } from "@prisma/client";
-import CartProductCard from "../components/CartProductCard";
 import CartPageRecommendedProductCard from "../components/CartPageRecommendedProductCard";
 import Slider from "../components/Slider";
-import Link from "next/link";
 import { getProductByCategoryId } from "@/lib/products";
+import WhishlistProductCard from "../components/WhishlistProductCard";
 import { redirect } from "next/navigation";
 async function page() {
   const { userId } = auth();
-  let cartProducts: Array<Product>;
-  let sortedCart: Array<{ product: any; quantity: number }> = [];
   const whishList: Array<string> = [];
   let whishListProducts: Array<Product> = [];
-  const cart: Array<string> = [];
   let user: any;
-  let subtotal_: number = 0;
-  let subtotal: number = 0;
-  let totalQuantity: number = 0;
   if (userId) {
     user = (await getUserById(userId)).user;
-    user?.Cart.map(({ id }: { id: string }) => {
-      cart.push(id);
-    });
-    cartProducts = (await getProductById(cart)).product || [];
-    cart.map((ID) => {
-      sortedCart.push({
-        product: cartProducts.find(({ id }: { id: string }) => id == ID),
-        quantity: user?.Cart.find(({ id }: { id: string }) => id == ID)
-          .quantity,
-      });
-    });
-    sortedCart.reverse();
-    sortedCart.map(
-      ({ product, quantity }: { product: Product; quantity: number }) => {
-        subtotal_ = subtotal_ + product.Price * quantity;
-        totalQuantity = totalQuantity + quantity;
-      }
-    );
-    subtotal = Math.round(subtotal_ * 10) / 10;
     user?.WhishList.map(({ id }: { id: string }) => {
       whishList.push(id);
     });
     whishListProducts = (await getProductById(whishList)).product || [];
-  } else redirect("/sign-in?redirectURL=cart");
+  } else redirect("/sign-in?redirectURL=checkout");
   const womenFashiopProducts = (
-    await getProductByCategoryId("648337b7223afa484880f4fb", 4)
+    await getProductByCategoryId("648337b7223afa484880f4fb", 8)
   ).products;
   const ElectronicsProducts = (
-    await getProductByCategoryId("64834120235cccf7aa5d6cc6", 4)
+    await getProductByCategoryId("64834120235cccf7aa5d6cc6", 15)
   ).products;
   const HomeAppliances = (
-    await getProductByCategoryId("648349be3d5e7e6f8b55811f", 4)
+    await getProductByCategoryId("648349be3d5e7e6f8b55811f", 15)
   ).products;
 
   return (
     <div className="p-5">
       <div className="flex sm:flex-row flex-col-reverse justify-between gap-5">
         <div className="bg-white dark:bg-black/50 w-full p-5 rounded-md">
-          <h1 className="text-2xl tracking-wider">Shopping Cart</h1>
+          <h1 className="text-2xl tracking-wider">Your whishlist</h1>
           <hr className="my-5" />
+          {whishListProducts.length < 1 && (
+            <div>
+              Your Whishlist is empty:( <br />
+            </div>
+          )}
           <div className="space-y-5">
             {userId &&
-              sortedCart?.map((product) => {
+              whishListProducts?.map((product) => {
                 return (
-                  <div key={product.product.id}>
-                    <CartProductCard
-                      userId={userId}
-                      product={product.product}
-                      quantity={product.quantity}
-                    />
+                  <div key={product.id}>
+                    <WhishlistProductCard userId={userId} product={product} />
                     <hr />
                   </div>
                 );
@@ -79,16 +54,7 @@ async function page() {
           </div>
         </div>
         <div className="w-full sm:w-96 mr-5">
-          <div className="bg-white dark:bg-black/50 w-full rounded-md text-xl tracking-wider p-5">
-            Subtotal ({totalQuantity}) items: <br /> $
-            <span className="font-bold">{subtotal}</span> <br />{" "}
-            <Link href={{ pathname: "/checkout" }}>
-              <button className=" bg-blue-700 rounded-md py-1 text-sm w-full text-white">
-                Proceed to checkout
-              </button>
-            </Link>
-          </div>
-          <div className="bg-white dark:bg-black/50 w-full rounded-md p-5 mt-5 hidden sm:block">
+          <div className="bg-white dark:bg-black/50 w-full rounded-md p-5 hidden sm:block">
             <h1 className="font-bold text-lg tracking-wide mb-5">
               Frequently repurchased in personal care and home
             </h1>
@@ -107,12 +73,6 @@ async function page() {
           </div>
         </div>
       </div>
-      <Slider
-        cartPage
-        userId={userId || ""}
-        title="Your Whish List"
-        data={whishListProducts}
-      />
       <Slider
         cartPage
         userId={userId || ""}

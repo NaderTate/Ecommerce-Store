@@ -192,7 +192,7 @@ export default function Header({
                     </div>
                     <Link
                       className="font-bold tracking-wider"
-                      href={{ pathname: "/cart" }}
+                      href={{ pathname: "/whishlist" }}
                     >
                       Manage your whish list
                     </Link>
@@ -263,10 +263,12 @@ export default function Header({
             </SignInButton>
           </SignedOut>
           <SignedIn>
-            <div className="relative p-2">
-              <ShoppingCartIcon className="w-6 h-6 " />
-              <span className="absolute bottom-0 right-0">{count}</span>
-            </div>
+            <Link href={{ pathname: "/cart" }}>
+              <div className="relative p-2">
+                <ShoppingCartIcon className="w-6 h-6 " />
+                <span className="absolute bottom-0 right-0">{count}</span>
+              </div>
+            </Link>
           </SignedIn>
           <AccountLinksMenu userImage={userImage} />
         </div>

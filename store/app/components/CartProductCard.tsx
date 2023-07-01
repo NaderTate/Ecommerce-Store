@@ -99,10 +99,20 @@ function CartProductCard({
             className="w-5"
           />
         </div>
-        <button className="rounded-md bg-black/10  dark:bg-gray-800 px-2">
+        <button
+          onClick={() => {
+            removeFromCartAction(userId, product.id);
+          }}
+          className="rounded-md bg-black/10  dark:bg-gray-800 px-2"
+        >
           Delete
         </button>
-        <button className="rounded-md bg-black/10  dark:bg-gray-800 px-2">
+        <button
+          onClick={() => {
+            saveToLaterAction(userId, product.id);
+          }}
+          className="rounded-md bg-black/10  dark:bg-gray-800 px-2"
+        >
           Save to later
         </button>
       </div>

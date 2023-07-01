@@ -4,10 +4,17 @@ import { getProductById } from "@/lib/products";
 import { getCategories } from "@/lib/categories";
 import { createProductAction, updateProductAction } from "@/app/_actions";
 import { revalidatePath } from "next/cache";
+import prisma from "@/lib/prisma";
 async function page({ searchParams }: any) {
   const id = searchParams.id;
-  const productInfo = await getProductById(id);
-  const { categories } = await getCategories(1, 99999);
+  const productInfo = await prisma.product.findUnique({
+    where: { id },
+    include: { Categories: true },
+  });
+  // const { categories } = await getCategories(1, 99999);/
+  const categories = await prisma.category.findMany({
+    select: { id: true, label: true, value: true, Properties: true },
+  });
   return (
     <div>
       <NavLayout>
@@ -47,7 +54,6 @@ async function page({ searchParams }: any) {
                 Colors,
                 Properties
               );
-              revalidatePath("/products");
             }}
             updateProduct={async ({
               id,
@@ -85,10 +91,9 @@ async function page({ searchParams }: any) {
                 Colors,
                 Properties
               );
-              revalidatePath("/products");
             }}
             allCategories={categories}
-            {...productInfo.product}
+            {...productInfo}
           />
         )}
       </NavLayout>

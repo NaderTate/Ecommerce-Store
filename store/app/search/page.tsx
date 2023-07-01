@@ -44,6 +44,7 @@ async function search({ searchParams }: any) {
   const sk = searchParams.page || 1;
   const itemsToShow = 30;
   const results = await prisma.product.findMany({
+    include: { Categories: true },
     where: {
       OR: [
         {
@@ -51,7 +52,7 @@ async function search({ searchParams }: any) {
         },
         {
           Categories: {
-            hasSome: search.charAt(0).toUpperCase() + search.slice(1),
+            some: { label: search.charAt(0).toUpperCase() + search.slice(1) },
           },
         },
         { Colors: { hasSome: search } },
@@ -76,8 +77,10 @@ async function search({ searchParams }: any) {
     skip: (sk - 1) * itemsToShow,
     // select: { Title: true },
   });
+
   const count = (
     await prisma.product.findMany({
+      include: { Categories: true },
       where: {
         OR: [
           {
@@ -85,7 +88,7 @@ async function search({ searchParams }: any) {
           },
           {
             Categories: {
-              hasSome: search.charAt(0).toUpperCase() + search.slice(1),
+              some: { label: search.charAt(0).toUpperCase() + search.slice(1) },
             },
           },
           { Colors: { hasSome: search } },
@@ -102,6 +105,7 @@ async function search({ searchParams }: any) {
   ).length;
 
   const allData = await prisma.product.findMany({
+    include: { Categories: true },
     where: {
       OR: [
         {
@@ -109,7 +113,7 @@ async function search({ searchParams }: any) {
         },
         {
           Categories: {
-            hasSome: search.charAt(0).toUpperCase() + search.slice(1),
+            some: { label: search.charAt(0).toUpperCase() + search.slice(1) },
           },
         },
         { Colors: { hasSome: search } },
@@ -149,17 +153,31 @@ async function search({ searchParams }: any) {
     where: {
       label: { contains: search, mode: "insensitive" },
     },
+    select: {
+      id: true,
+      label: true,
+      Parent: {
+        select: {
+          children: { select: { id: true, label: true } },
+          label: true,
+          id: true,
+        },
+      },
+      children: { select: { id: true, label: true } },
+      ParentId: true,
+    },
   });
-  let allCategories: Array<Category> = [];
+  let allCategories: Array<{ id: string; label: string }> = [];
   if (category) {
-    if (category.Parent.length > 0) {
-      allCategories = await prisma.category.findMany({
-        where: { Parent: category.Parent },
+    if (category.ParentId && category.Parent?.children) {
+      allCategories = category.Parent?.children;
+      allCategories.unshift({
+        id: category.Parent.id,
+        label: category.Parent.label,
       });
     } else {
-      allCategories = await prisma.category.findMany({
-        where: { Parent: category.id },
-      });
+      allCategories = category.children;
+      allCategories.unshift({ id: category.id, label: category.label });
     }
   }
   return (
@@ -287,12 +305,9 @@ async function search({ searchParams }: any) {
                 {allCategories.length > 0 && (
                   <div className="flex flex-col">
                     <div className="font-bold">Discover more in:</div>
-                    {allCategories.map(({ label }) => {
+                    {allCategories.map(({ id, label }) => {
                       return (
-                        <Link
-                          key={label}
-                          href={{ pathname: `/categories/${label}` }}
-                        >
+                        <Link key={id} href={{ pathname: `/categories/${id}` }}>
                           {label}
                         </Link>
                       );
