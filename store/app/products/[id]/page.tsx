@@ -36,6 +36,7 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
     include: {
       Reviews: {
         select: {
+          id: true,
           Comment: true,
           Rating: true,
           User: { select: { Name: true, Image: true } },
@@ -120,14 +121,15 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
         <div className="space-y-5 mt-5">
           <h1>Customers opinions:</h1>
           {product?.Reviews.map(
-            ({ Comment, Rating, User: { Name, Image } }) => {
+            ({ id, Comment, Rating, User: { Name, Image } }) => {
               return (
-                <div>
+                <div key={id}>
                   <div className="flex items-center  gap-2">
                     <img src={Image} className="w-12 rounded-full" alt="" />
                     <div>
-                      <StarRating rating={Rating} />
-                      <p>{Comment}</p>
+                      <StarRating hideNumber rating={Rating} />
+                      <span className="font-bold">{Name}: </span>
+                      <p className="whitespace-pre-wrap">{Comment}</p>
                     </div>
                   </div>
                 </div>

@@ -10,8 +10,7 @@ import { GrUserAdmin } from "react-icons/gr";
 import { FaChartLine } from "react-icons/fa";
 import { BsBoxes } from "react-icons/bs";
 import { PiCurrencyDollarBold, PiUsersThreeBold } from "react-icons/pi";
-import { BiCategoryAlt } from "react-icons/bi";
-import { FiSettings } from "react-icons/fi";
+import { BiCategoryAlt, BiCommentDetail } from "react-icons/bi";
 function Nav({
   name,
   email,
@@ -52,6 +51,11 @@ function Nav({
       icon: <PiCurrencyDollarBold />,
     },
     {
+      label: "Reviews",
+      url: "/reviews",
+      icon: <BiCommentDetail />,
+    },
+    {
       label: "Admins",
       url: "/admins",
 
@@ -87,7 +91,7 @@ function Nav({
                 return (
                   <Link
                     key={label}
-                    href={url}
+                    href={{ pathname: url }}
                     className={`${
                       path.includes(label.toLocaleLowerCase())
                         ? "bg-blue-700 text-white"
@@ -95,6 +99,7 @@ function Nav({
                     } flex items-center gap-2 rounded-lg  px-4 py-2`}
                   >
                     {icon}
+
                     <span className="text-sm font-medium"> {label} </span>
                   </Link>
                 );

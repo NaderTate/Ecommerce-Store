@@ -7,13 +7,13 @@ async function NavLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/login?callbackUrl=/dashboard");
   return (
-    <div className="min-h-screen">
+    <div className="">
       <Nav
         name={session?.user?.name || ""}
         email={session?.user?.email || ""}
         image={session?.user?.image || ""}
       />
-      <div className="sm:ml-[200px]  p-4 pb-0 ">{children}</div>
+      <div>{children}</div>
     </div>
   );
 }

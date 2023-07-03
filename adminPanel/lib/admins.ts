@@ -72,3 +72,13 @@ export async function deleteAdmin(id: string) {
     return { error };
   }
 }
+export async function deleteUser(id: string) {
+  try {
+    const user = await prisma.user.delete({
+      where: { id },
+    });
+    return { user };
+  } catch (error) {
+    return { error };
+  }
+}

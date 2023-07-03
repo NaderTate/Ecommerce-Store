@@ -25,11 +25,23 @@ const Card = (product: Product) => {
     </div>
   );
 };
-const starReviews: Array<string> = [
-  "https://res.cloudinary.com/dqkyatgoy/image/upload/v1687294114/Nader%20Express/4s_jotbbt.svg",
-  "https://res.cloudinary.com/dqkyatgoy/image/upload/v1687294115/Nader%20Express/3s_fa6fvk.svg",
-  "https://res.cloudinary.com/dqkyatgoy/image/upload/v1687294114/Nader%20Express/2s_bsbrgl.svg",
-  "https://res.cloudinary.com/dqkyatgoy/image/upload/v1687293658/Nader%20Express/Frame_1_utki4s.svg",
+const starReviews: Array<{ img: string; rating: number }> = [
+  {
+    img: "https://res.cloudinary.com/dqkyatgoy/image/upload/v1687294114/Nader%20Express/4s_jotbbt.svg",
+    rating: 4,
+  },
+  {
+    img: "https://res.cloudinary.com/dqkyatgoy/image/upload/v1687294115/Nader%20Express/3s_fa6fvk.svg",
+    rating: 3,
+  },
+  {
+    img: "https://res.cloudinary.com/dqkyatgoy/image/upload/v1687294114/Nader%20Express/2s_bsbrgl.svg",
+    rating: 2,
+  },
+  {
+    img: "https://res.cloudinary.com/dqkyatgoy/image/upload/v1687293658/Nader%20Express/Frame_1_utki4s.svg",
+    rating: 1,
+  },
 ];
 const Divider = () => {
   return (
@@ -48,11 +60,15 @@ async function page({
   const min = Number(searchParams.min) || 0;
   const max = Number(searchParams.max) || 9999999;
   const sort = searchParams.sort || "id";
-
+  const starRating = Number(searchParams.sr) || 0;
   const products = await prisma.product.findMany({
     where: {
       CategoryIDs: { hasSome: category },
-      AND: [{ Price: { gt: min } }, { Price: { lt: max } }],
+      AND: [
+        { Price: { gt: min } },
+        { Price: { lt: max } },
+        { Rating: { gt: starRating } },
+      ],
     },
     take: itemsToShow,
     skip: (sk - 1) * itemsToShow,
@@ -70,11 +86,14 @@ async function page({
           },
     ],
   });
-
   const allProducts = await prisma.product.findMany({
     where: {
       CategoryIDs: { hasSome: category },
-      AND: [{ Price: { gt: min } }, { Price: { lt: max } }],
+      AND: [
+        { Price: { gt: min } },
+        { Price: { lt: max } },
+        { Rating: { gt: starRating } },
+      ],
     },
     orderBy: [{ Price: "desc" }],
   });
@@ -279,10 +298,19 @@ async function page({
               <div className="flex flex-col items-start">
                 <h1 className="font-bold">Customer Reviews:</h1>
                 <div className="space-y-1">
-                  {starReviews.map((star) => {
+                  {starReviews.map(({ img, rating }) => {
                     return (
-                      <div key={star} className="flex gap-1">
-                        <img src={star} className="h-5" alt="" />& up
+                      <div key={img}>
+                        <Link
+                          href={{
+                            pathname: `/categories/${category}`,
+                            query: { min, max, sr: rating },
+                          }}
+                        >
+                          <div className="flex gap-1">
+                            <img src={img} className="h-5" alt="" />& up
+                          </div>
+                        </Link>
                       </div>
                     );
                   })}

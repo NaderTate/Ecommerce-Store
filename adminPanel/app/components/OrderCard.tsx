@@ -47,7 +47,7 @@ async function OrderCard({ Order }: { Order: Order }) {
         </div>
         <div className="flex gap-5 my-5 sm:items-center flex-col sm:flex-row items-start">
           <span className="font-semibold text-lg">Ordered by:</span>
-          <Link href={{ pathname: `/user/${OrderDetails?.User.id}` }}>
+          <Link href={{ pathname: `/users/${OrderDetails?.User.id}` }}>
             <div className="flex gap-5">
               <img
                 src={OrderDetails?.User.Image}

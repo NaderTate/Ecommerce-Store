@@ -19,8 +19,11 @@
         "name": "next"
       }
     ],
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@/public/*": ["./public/*"],
+      "@/registry": ["./registry/*"]
     }
   },
   "include": [
@@ -31,7 +34,7 @@
     "app/api/auth/[...nextauth]/route.js",
     "app/categories/page.tsx",
     "app/components/Provider.js",
-    "test.js"
+    "app/registry/*"
   ],
   "exclude": ["node_modules"]
 }

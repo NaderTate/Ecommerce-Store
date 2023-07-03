@@ -20,10 +20,10 @@ const CategoryCard = ({ category }: { category: Category }) => {
         {category.label}
       </p>
       <p
-        className="absolute top-0 left-0 bg-white/70 rounded-br-md border-black dark:text-black cursor-default"
-        title="39 products"
+        className="absolute top-0 left-0 bg-white/70 rounded-br-md border-black font-bold p-1 dark:text-black cursor-default"
+        title={category.ProductsIDs.length + " products"}
       >
-        39
+        {category.ProductsIDs.length}
       </p>
       <Link
         href={{ pathname: "/categories/edit", query: { id: category?.id } }}

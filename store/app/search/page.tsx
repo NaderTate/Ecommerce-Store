@@ -30,11 +30,23 @@ const Card = (product: Product) => {
     </div>
   );
 };
-const starReviews: Array<string> = [
-  "https://res.cloudinary.com/dqkyatgoy/image/upload/v1687294114/Nader%20Express/4s_jotbbt.svg",
-  "https://res.cloudinary.com/dqkyatgoy/image/upload/v1687294115/Nader%20Express/3s_fa6fvk.svg",
-  "https://res.cloudinary.com/dqkyatgoy/image/upload/v1687294114/Nader%20Express/2s_bsbrgl.svg",
-  "https://res.cloudinary.com/dqkyatgoy/image/upload/v1687293658/Nader%20Express/Frame_1_utki4s.svg",
+const starReviews: Array<{ img: string; rating: number }> = [
+  {
+    img: "https://res.cloudinary.com/dqkyatgoy/image/upload/v1687294114/Nader%20Express/4s_jotbbt.svg",
+    rating: 4,
+  },
+  {
+    img: "https://res.cloudinary.com/dqkyatgoy/image/upload/v1687294115/Nader%20Express/3s_fa6fvk.svg",
+    rating: 3,
+  },
+  {
+    img: "https://res.cloudinary.com/dqkyatgoy/image/upload/v1687294114/Nader%20Express/2s_bsbrgl.svg",
+    rating: 2,
+  },
+  {
+    img: "https://res.cloudinary.com/dqkyatgoy/image/upload/v1687293658/Nader%20Express/Frame_1_utki4s.svg",
+    rating: 1,
+  },
 ];
 async function search({ searchParams }: any) {
   const search = searchParams.s || "";
@@ -43,6 +55,8 @@ async function search({ searchParams }: any) {
   const sort = searchParams.sort || "id";
   const sk = searchParams.page || 1;
   const itemsToShow = 30;
+  const starRating = Number(searchParams.sr) || 0;
+
   const results = await prisma.product.findMany({
     include: { Categories: true },
     where: {
@@ -58,7 +72,11 @@ async function search({ searchParams }: any) {
         { Colors: { hasSome: search } },
         { Description: { contains: search, mode: "insensitive" } },
       ],
-      AND: [{ Price: { gt: min } }, { Price: { lt: max } }],
+      AND: [
+        { Price: { gt: min } },
+        { Price: { lt: max } },
+        { Rating: { gt: starRating } },
+      ],
     },
     orderBy: [
       sort == "id"
@@ -94,7 +112,11 @@ async function search({ searchParams }: any) {
           { Colors: { hasSome: search } },
           { Description: { contains: search, mode: "insensitive" } },
         ],
-        AND: [{ Price: { gt: min } }, { Price: { lt: max } }],
+        AND: [
+          { Price: { gt: min } },
+          { Price: { lt: max } },
+          { Rating: { gt: starRating } },
+        ],
       },
       orderBy: [
         {
@@ -319,10 +341,19 @@ async function search({ searchParams }: any) {
               <div className="flex flex-col items-start">
                 <h1 className="font-bold">Customer Reviews:</h1>
                 <div className="space-y-1">
-                  {starReviews.map((star) => {
+                  {starReviews.map(({ img, rating }) => {
                     return (
-                      <div key={star} className="flex gap-1">
-                        <img src={star} className="h-5" alt="" />& up
+                      <div key={img}>
+                        <Link
+                          href={{
+                            pathname: `/search`,
+                            query: { s: search, min, max, sr: rating },
+                          }}
+                        >
+                          <div className="flex gap-1">
+                            <img src={img} className="h-5" alt="" />& up
+                          </div>
+                        </Link>
                       </div>
                     );
                   })}

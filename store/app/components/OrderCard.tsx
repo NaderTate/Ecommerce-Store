@@ -126,7 +126,9 @@ async function OrderCard({ Order }: { Order: Order }) {
       </div>
       <div className="ml-5 mt-5">
         {IsComplete && (
-          <div className="font-bold text-2xl">Delivered on:{CompletedOn}</div>
+          <div className="font-bold text-2xl">
+            Delivered on:{new Date(CompletedOn).toDateString()}
+          </div>
         )}
         <div>
           <Slider title="" data={OrderDetails?.Product} />
