@@ -7,6 +7,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 function CheckoutForm({
   userId,
   cartItems,
@@ -25,11 +27,12 @@ function CheckoutForm({
   };
 }) {
   const [PaymentMethod, setPaymentMethod] = useState("");
-  const [Shipping, setShipping] = useState(1);
+  const [Shipping, setShipping] = useState(5);
   const [CODFee, setCODFee] = useState(0);
   const [voucher, setVoucher] = useState(0);
-  const total = subtotal + Shipping + CODFee;
-  const orderTotal: number = total - voucher;
+  const total = Number((subtotal + Shipping + CODFee).toFixed(2));
+  const orderTotal: number = Number((total - voucher).toFixed(2));
+  const router = useRouter();
   useEffect(() => {
     if (PaymentMethod == "COD") {
       setCODFee(5);
@@ -50,7 +53,12 @@ function CheckoutForm({
               {address.City}, {address.Street} <br /> {address.Landmark},
               {address.Building}
             </div>
-            <button className="text-left mt-2 md:m-0">Change</button>
+            <Link
+              href={{ pathname: "/account", query: { content: "address" } }}
+              className="text-left mt-2 md:m-0"
+            >
+              Change
+            </Link>
           </div>
           <h1 className="text-xl font-bold tracking-wider">Payment method</h1>
           <form className="mt-2">
@@ -109,13 +117,13 @@ function CheckoutForm({
             </Accordion>
           </div>
           <button
+            disabled={PaymentMethod == ""}
             onClick={async () => {
-              await placeOrderAction(
+              const { Order }: any = await placeOrderAction(
                 userId,
                 cartItems,
                 orderTotal,
                 PaymentMethod,
-
                 false,
                 {
                   Items: subtotal,
@@ -126,9 +134,14 @@ function CheckoutForm({
                   OrderTotal: orderTotal,
                 }
               );
-              // await SendToWhatsAppAction(subtotal, cartItems);
+              await SendToWhatsAppAction(subtotal, cartItems);
+              router.push(`/thankyou?orderID=${Order?.id}`);
             }}
-            className="bg-blue-700 text-white rounded-md px-3 text-xl font-bold  mt-2 tracking-wider py-2 hidden sm:block"
+            className={`${
+              PaymentMethod == ""
+                ? "bg-blue-300 cursor-not-allowed"
+                : "bg-blue-700"
+            } text-white rounded-md px-3 text-xl font-bold  mt-2 tracking-wider py-2 hidden sm:block`}
           >
             Place Order
           </button>
@@ -163,8 +176,9 @@ function CheckoutForm({
                 <div>${orderTotal}</div>
               </div>
               <button
-                onClick={() => {
-                  placeOrderAction(
+                disabled={PaymentMethod == ""}
+                onClick={async () => {
+                  const { Order }: any = await placeOrderAction(
                     userId,
                     cartItems,
                     orderTotal,
@@ -179,8 +193,14 @@ function CheckoutForm({
                       OrderTotal: orderTotal,
                     }
                   );
+                  await SendToWhatsAppAction(subtotal, cartItems);
+                  router.push(`/thankyou?orderID=${Order?.id}`);
                 }}
-                className="bg-blue-700 text-white rounded-md px-3 text-xl font-bold  mt-2 tracking-wider py-2  sm:hidden"
+                className={`${
+                  PaymentMethod == ""
+                    ? "bg-blue-300 cursor-not-allowed"
+                    : "bg-blue-700"
+                } text-white rounded-md px-3 text-xl font-bold mt-2 tracking-wider py-2 sm:hidden`}
               >
                 Place Order
               </button>

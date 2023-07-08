@@ -138,26 +138,22 @@ export async function placeOrder(
     Products.map(({ id }) => {
       IDs.push({ id });
     });
-    const user = await prisma.user.update({
-      where: { UserId },
+    const Order = await prisma.order.create({
       data: {
-        Orders: {
-          create: {
-            PaymentMethod,
-            OrderTotal,
-            PlacedOn: new Date().toString(),
-            CompletedOn: "",
-            Orders: Products,
-            IsComplete,
-            Address: { connect: { UserId } },
-            OrderSummary,
-            Product: { connect: IDs },
-          },
-        },
+        User: { connect: { UserId } },
+        PaymentMethod,
+        OrderTotal,
+        PlacedOn: new Date().toString(),
+        CompletedOn: "",
+        Orders: Products,
+        IsComplete,
+        Address: { connect: { UserId } },
+        OrderSummary,
+        Product: { connect: IDs },
       },
     });
 
-    return { user };
+    return { Order };
   } catch (error) {
     return { error };
   }
@@ -181,7 +177,7 @@ export async function SendToWhatsApp(
       });
     });
     let message = "🚨 *New Order* 🚨 %0a %0a";
-    message += "🤑 " + "$" + "*" + OrderTotal + "*" + " 🤑 %0a %0a";
+    message += "Order total: " + "*" + OrderTotal + "*" + " 🤑 %0a %0a";
     ProductsDetails?.map(({ Title, quantity }) => {
       message += Title + "%0a" + "Quanitity: " + quantity + "%0a %0a";
     });
@@ -194,7 +190,6 @@ export async function SendToWhatsApp(
     return { error };
   }
 }
-
 export async function deleteUser(UserId: string) {
   try {
     const user = await prisma.user.delete({

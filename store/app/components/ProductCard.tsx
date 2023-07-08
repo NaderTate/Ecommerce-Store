@@ -22,11 +22,12 @@ function ProductCard({
   return (
     <div className={`${width}`}>
       <Link href={{ pathname: `/products/${product.id}` }}>
-        <div className={`relative ${width} ${height}`}>
+        <div className={`relative ${width} ${height} bg-white rounded-md`}>
           <Image
+            sizes="30vw"
             fill
             src={product.mainImg}
-            className="object-cover rounded-md "
+            className="object-contain rounded-md"
             alt={product.Title}
           />
           {quantity && (
@@ -36,11 +37,7 @@ function ProductCard({
           )}
         </div>
       </Link>
-      <p
-        className={`overflow-ellipsis whitespace-nowrap overflow-hidden text-xs`}
-      >
-        {product.Title}
-      </p>
+      <p className={`line-clamp-1 text-xs`}>{product.Title}</p>
       <div className="text-xs">${product.Price}</div>
       {cartPage && (
         <button

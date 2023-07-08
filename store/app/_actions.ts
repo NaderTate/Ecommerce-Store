@@ -159,7 +159,7 @@ export async function placeOrderAction(
     OrderTotal: number;
   }
 ) {
-  await placeOrder(
+  const order = await placeOrder(
     UserId,
     Products,
     OrderTotal,
@@ -169,6 +169,7 @@ export async function placeOrderAction(
     OrderSummary
   );
   revalidatePath("/");
+  return order;
 }
 export async function SendToWhatsAppAction(
   OrderTotal: number,

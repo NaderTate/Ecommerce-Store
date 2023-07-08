@@ -4,11 +4,10 @@ import { getProductById } from "@/lib/products";
 import TopDeal from "./TopDeal";
 async function Section2() {
   const topDeal = (await getProductById(["6485cdddfb14ea190a344f95"])).product;
-
   return (
     <div>
-      <div className="grid grid-cols-1 lg:grid-cols-4 justify-center   items-stretch">
-        <div className="grid mx-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 col-span-3">
+      <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 justify-center   items-stretch">
+        <div className="grid mx-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 col-span-3">
           {/* @ts-ignore* */}
           <Deals title="Shop Deals in Fashion" id="648337b7223afa484880f4fb" />
           {/* @ts-ignore* */}
@@ -30,5 +29,4 @@ async function Section2() {
     </div>
   );
 }
-
 export default Section2;

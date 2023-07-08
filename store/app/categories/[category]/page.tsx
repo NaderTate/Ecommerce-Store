@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { Category, Product } from "@prisma/client";
+import { Product } from "@prisma/client";
 import Link from "next/link";
 import React from "react";
 import Image from "next/image";
@@ -8,10 +8,11 @@ const Card = (product: Product) => {
     <div>
       <div className="flex md:flex-col flex-row md:w-56 gap-2">
         <Link href={{ pathname: `/products/${product.id}` }}>
-          <div className="relative w-24 h-24  md:w-56 md:h-56">
+          <div className="relative w-24 h-24  md:w-56 md:h-56 bg-white">
             <Image
+              sizes="30vw"
               fill
-              className="object-cover"
+              className="object-contain rounded-md"
               src={product.mainImg}
               alt={product.Title}
             />
@@ -48,6 +49,55 @@ const Divider = () => {
     <hr className="border border-t border-[#030711] w-full dark:border-white/70 my-1" />
   );
 };
+export async function generateMetadata({
+  params: { category },
+}: {
+  params: { category: string };
+}) {
+  try {
+    const Image = await prisma.category.findUnique({
+      where: { id: category },
+      select: { Image: true },
+    });
+
+    return {
+      title: "Shop for " + category + " products" || "Nader Express",
+      description: "Nader Express",
+      twitter: {
+        card: "summary_large_image",
+        site: "@naderexpress",
+        title: "Shop for " + category + " products" || "Nader Express",
+        description: "Nader Express",
+        images: [
+          {
+            url:
+              Image?.Image ||
+              "https://res.cloudinary.com/dqkyatgoy/image/upload/v1687293658/Nader%20Express/Frame_1_utki4s.svg",
+            width: 800,
+            height: 600,
+          },
+        ],
+      },
+      openGraph: {
+        title: "Shop for " + category + " products" || "Nader Express",
+        images: [
+          {
+            url:
+              Image?.Image ||
+              "https://res.cloudinary.com/dqkyatgoy/image/upload/v1687293658/Nader%20Express/Frame_1_utki4s.svg",
+            width: 800,
+            height: 600,
+          },
+        ],
+      },
+    };
+  } catch (error) {
+    return {
+      title: "Not found",
+      description: "This page does not exist",
+    };
+  }
+}
 async function page({
   params: { category },
   searchParams,
@@ -308,7 +358,8 @@ async function page({
                           }}
                         >
                           <div className="flex gap-1">
-                            <img src={img} className="h-5" alt="" />& up
+                            <Image width={112} height={20} src={img} alt="" />&
+                            up
                           </div>
                         </Link>
                       </div>
@@ -337,7 +388,7 @@ async function page({
             <Link
               href={{
                 pathname: `/categories/${category}`,
-                query: { page: pages.at(0), sort, min, max },
+                query: { page: pages.at(0), sort, min, max, sr: starRating },
               }}
               className="inline-flex items-center justify-center w-8 h-8 border border-gray-100 rounded-full hover:bg-slate-400/50 transition "
             >
@@ -361,7 +412,7 @@ async function page({
                 <Link
                   href={{
                     pathname: `/categories/${category}`,
-                    query: { page: page, sort, min, max },
+                    query: { page: page, sort, min, max, sr: starRating },
                   }}
                   className="inline-flex items-center justify-center w-8 h-8 border border-gray-100 rounded-full hover:bg-slate-400/50 transition"
                 >
@@ -373,7 +424,7 @@ async function page({
             <Link
               href={{
                 pathname: `/categories/${category}`,
-                query: { page: pages.at(-1), sort, min, max },
+                query: { page: pages.at(-1), sort, min, max, sr: starRating },
               }}
               className="inline-flex items-center justify-center w-8 h-8 border border-gray-100 rounded-full hover:bg-slate-400/50 transition"
             >

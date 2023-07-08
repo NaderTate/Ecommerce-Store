@@ -26,27 +26,25 @@ export async function getProductByIdAction(id: string) {
 }
 export async function createProductAction(
   Title: string,
-  price: number,
+  Price: number,
   Images: Array<object>,
   mainImg: string,
   Description: string,
-  Reviews: Array<object>,
   Categories: Array<string>,
   Colors: Array<string>,
   Properties: object
 ) {
   await createProduct(
     Title,
-    price,
+    Price,
     Images,
     mainImg,
     Description,
-    Reviews,
     Categories,
     Colors,
     Properties
   );
-  revalidatePath("/products");
+  revalidatePath("/");
 }
 export async function updateProductAction(
   id: string,
@@ -55,7 +53,6 @@ export async function updateProductAction(
   Images: Array<object>,
   mainImg: string,
   Description: string,
-  Reviews: Array<object>,
   Categories: Array<string>,
   Colors: Array<string>,
   Properties: object
@@ -67,12 +64,11 @@ export async function updateProductAction(
     Images,
     mainImg,
     Description,
-    Reviews,
     Categories,
     Colors,
     Properties
   );
-  revalidatePath("/products");
+  revalidatePath("/");
 }
 export async function deleteProductAction(id: string) {
   await deleteProduct(id);

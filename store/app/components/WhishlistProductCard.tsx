@@ -14,10 +14,11 @@ function WhishlistProductCard({
     <div>
       <div className="flex  gap-2">
         <Link href={{ pathname: `/products/${product.id}` }}>
-          <div className="relative w-24 h-24  md:w-48 md:h-48">
+          <div className="relative w-24 h-24  md:w-48 md:h-48 bg-white">
             <Image
+              sizes="30vw"
               fill
-              className="object-cover"
+              className="object-contain rounded-md"
               src={product.mainImg}
               alt={product.Title}
             />

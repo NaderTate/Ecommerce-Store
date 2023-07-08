@@ -12,6 +12,7 @@ function TopDeal({ product }: { product: Product }) {
       >
         <div className="relative lg:static h-[600px] lg:h-full">
           <Image
+            sizes="(max-width: 768px) 100vw,33vw"
             fill
             src={product.mainImg}
             alt={product.Title}

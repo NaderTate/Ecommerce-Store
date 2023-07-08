@@ -1,0 +1,5 @@
+User-Agent:*
+Allow:/
+Dissallow:/cart,/checkout,/account
+SiteMap: http://www.naderexpress.vercel.app/sitemap.xml
+```

@@ -10,6 +10,7 @@ import PropTypes, { InferProps } from "prop-types";
 import Dropzone from "./Dropzone";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { createProductAction, updateProductAction } from "../_actions";
 function Card({ src, title, deleteImage }: InferProps<typeof Card.propTypes>) {
   return (
     <div className="relative ">
@@ -59,8 +60,6 @@ ProductForm.propTypes = {
   Colors: PropTypes.array,
   Images: PropTypes.array,
   Properties: PropTypes.any,
-  createProduct: PropTypes.any,
-  updateProduct: PropTypes.any,
 };
 function ProductForm({
   id,
@@ -73,8 +72,6 @@ function ProductForm({
   Colors: currentColors,
   Properties: assignedProperties,
   Images,
-  createProduct,
-  updateProduct,
 }: InferProps<typeof ProductForm.propTypes>) {
   const Colors = [
     { value: 1, label: "Red" },
@@ -111,45 +108,42 @@ function ProductForm({
     assignedProperties || {}
   );
   const router = useRouter();
-
   async function action() {
     if (id) {
       setLoading(true);
-      await updateProduct({
+      await updateProductAction(
         id,
-        Title: title,
-        Price: price,
-        Images: images,
-        mainImg: images[0].img,
-        Description: description,
-        Reviews: [{ title: "Rev1" }],
+        title,
+        price,
+        images,
+        images[0].img,
+        description,
         Categories,
-        Colors: colors,
-        Properties: productProperty,
-      });
+        colors,
+        productProperty
+      );
 
       setLoading(false);
       router.push("/products");
       router.refresh();
     } else {
       setLoading(true);
-      await createProduct({
-        Title: title,
-        Price: price,
-        Images: images,
-        mainImg: images[0].img,
-        Description: description,
-        Reviews: [{ title: "Rev1" }],
+      await createProductAction(
+        title,
+        price,
+        images,
+        images[0].img,
+        description,
         Categories,
-        Colors: colors,
-        Properties: productProperty,
-      });
+        colors,
+        productProperty
+      );
       setLoading(false);
       router.push("/products");
       router.refresh();
     }
   }
-  // This function is used by the Reactsortable to sort the images by dragging them and set the images array to our new sorted array
+  // This function is used by Reactsortable to sort the images by dragging them and set the images array to our new sorted array
   function updateImagesOrder(images: any) {
     setImages(images);
   }

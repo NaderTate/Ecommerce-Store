@@ -1,24 +1,50 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import {
-  UserCircleIcon,
-  MapPinIcon,
-  ShoppingBagIcon,
-  Cog6ToothIcon,
-  ArrowRightOnRectangleIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
+import { AiOutlineCreditCard } from "react-icons/ai";
+import { BiUserCircle } from "react-icons/bi";
+import { IoLocationOutline } from "react-icons/io5";
+import { BsHandbag } from "react-icons/bs";
+import { IoCloseOutline as XMarkIcon } from "react-icons/io5";
+import { SlLogout } from "react-icons/sl";
 import { SignOutButton } from "@clerk/nextjs";
+import Image from "next/image";
+export const menuItems = [
+  {
+    icon: <BiUserCircle size={25} />,
+    text: "My Details",
+    link: "/account",
+    query: { content: "details" },
+  },
+  {
+    icon: <IoLocationOutline size={25} />,
+    text: "My Address",
+    link: "/account",
+    query: { content: "address" },
+  },
+  {
+    icon: <BsHandbag size={25} />,
+    text: "My Orders",
+    link: "/account",
+    query: { content: "orders" },
+  },
+  {
+    icon: <AiOutlineCreditCard size={25} />,
+    text: "Payment methods",
+    link: "/account",
+    query: { content: "payment" },
+  },
+] as Array<{ icon: JSX.Element; text: string; link: string; query: {} }>;
 function AccountLinksMenu({ userImage }: { userImage: string }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const itemStyle =
-    "p-2 w-full dark:bg-[#3B3B3B] bg-white flex items-center rounded-md font-bold tracking-widest  gap-2";
-
+    "p-2 w-full dark:bg-[#3B3B3B] bg-white flex items-center rounded-md font-bold tracking-widest  gap-2 my-2";
   return (
     <div>
-      <img
+      <Image
+        width={20}
+        height={20}
         onClick={() => {
           setIsMenuOpen(true);
         }}
@@ -33,62 +59,37 @@ function AccountLinksMenu({ userImage }: { userImage: string }) {
         } `}
       >
         <XMarkIcon
-          className="w-6 cursor-pointer"
+          size={25}
+          className="cursor-pointer"
           onClick={() => {
             setIsMenuOpen(false);
           }}
-        >
-          close
-        </XMarkIcon>
+        />
+
         <div className="mt-2 px-1 flex flex-col justify-center items-center space-y-2 w-full">
           <div className="w-full">
-            <Link
-              className="w-full"
-              href={{ pathname: "/account", query: { content: "details" } }}
-            >
+            {menuItems.map((item, index) => (
+              <Link
+                onClick={() => setIsMenuOpen(false)}
+                key={index}
+                href={{ pathname: item.link, query: item.query }}
+              >
+                <div className={itemStyle}>
+                  {item.icon}
+                  {item.text}
+                </div>
+              </Link>
+            ))}
+            <SignOutButton>
               <div className={itemStyle}>
-                <UserCircleIcon className="w-6" />
-                My Details
+                <SlLogout className="w-6" />
+                Logout
               </div>
-            </Link>
+            </SignOutButton>
           </div>
-          <Link
-            className="w-full"
-            href={{ pathname: "/account", query: { content: "address" } }}
-          >
-            <div className={itemStyle}>
-              <MapPinIcon className="w-6" />
-              My Address
-            </div>
-          </Link>
-          <Link
-            className="w-full"
-            href={{ pathname: "/account", query: { content: "orders" } }}
-          >
-            <div className={itemStyle}>
-              <ShoppingBagIcon className="w-6" />
-              My Orders
-            </div>
-          </Link>
-          <Link
-            className="w-full"
-            href={{ pathname: "/account", query: { content: "settings" } }}
-          >
-            <div className={itemStyle}>
-              <Cog6ToothIcon className="w-6" />
-              Account Settings
-            </div>
-          </Link>
-          <SignOutButton>
-            <div className={itemStyle}>
-              <ArrowRightOnRectangleIcon className="w-6" />
-              Logout
-            </div>
-          </SignOutButton>
         </div>
       </nav>
     </div>
   );
 }
-
 export default AccountLinksMenu;

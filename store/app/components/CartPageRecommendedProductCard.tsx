@@ -17,6 +17,7 @@ function CartPageRecommendedProductCard({
         <Link href={{ pathname: `/products/${product.id}` }}>
           <div className="relative w-24 h-24  md:w-20 md:h-20">
             <Image
+              sizes="25vw"
               fill
               className="object-cover"
               src={product.mainImg}

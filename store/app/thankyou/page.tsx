@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import { prisma } from "@/lib/prisma";
-import { SiHappycow } from "react-icons/si";
+import { PiMaskHappyFill } from "react-icons/pi";
 import StarRating from "../components/StarRating";
 import Image from "next/image";
 async function page({ searchParams }: { searchParams: any }) {
@@ -35,7 +35,7 @@ async function page({ searchParams }: { searchParams: any }) {
       <h1 className="text-5xl font-bold tracking-wider text-center my-10">
         THANK YOU!
       </h1>
-      <SiHappycow size={200} className="m-auto" />
+      <PiMaskHappyFill size={200} className="m-auto" />
       <div className="bg-[#003566] text-white p-5 sm:p-10 text-2xl sm:text-4xl tracking-wider rounded-md mt-10">
         <p>
           Hi {orderDetails?.User.Name}, <br /> <br /> We received your order and
@@ -57,12 +57,13 @@ async function page({ searchParams }: { searchParams: any }) {
             <div key={id} className="pr-5 md:pr-24 lg:pr-96 block h-36">
               <Link href={{ pathname: `/products/${id}` }}>
                 <div className="">
-                  <div className="relative w-36 h-36 float-left mr-5">
+                  <div className="float-left mr-5 bg-white rounded-md">
                     <Image
-                      fill
+                      width={144}
+                      height={144}
                       src={mainImg}
                       alt={Title}
-                      className="rounded-md object-cover"
+                      className="object-contain"
                     />
                     <span className="absolute top-0 right-0 bg-black/70 rounded-bl-md text-white p-[2px]">
                       {quantity.quantity}

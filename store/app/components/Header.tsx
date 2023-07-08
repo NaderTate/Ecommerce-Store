@@ -7,10 +7,11 @@ import { SignedIn, SignedOut } from "@clerk/nextjs/app-beta/client";
 import MobileMenu from "./MobileMenu";
 import { useRouter } from "next/navigation";
 import {
-  HeartIcon,
-  ShoppingCartIcon,
-  MagnifyingGlassIcon,
-} from "@heroicons/react/24/solid";
+  AiFillHeart,
+  AiOutlineCloseCircle,
+  AiOutlineShoppingCart,
+} from "react-icons/ai";
+import { PiMagnifyingGlassBold } from "react-icons/pi";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -31,16 +32,19 @@ export default function Header({
   newArrivals,
   Discover,
   userImage,
+  search,
 }: {
   cart: any;
   Whishlist: Array<object>;
   newArrivals: Array<object>;
   Discover: Array<object>;
   userImage: string;
+  search: any;
 }) {
   const pathname = usePathname();
   const router = useRouter();
   const [searchTerms, setSearchTerms] = React.useState("");
+  const [predictions, setPredictions] = React.useState([]);
   let count: number = 0;
   cart.map(({ quantity }: { quantity: number }) => (count = count + quantity));
   return (
@@ -115,8 +119,13 @@ export default function Header({
                     type="text"
                     placeholder="Search anything..."
                     className="rounded-md py-1 px-3 dark:border-none border border-gray-400"
-                    onChange={(e) => {
+                    onChange={async (e) => {
                       setSearchTerms(e.target.value);
+                      if (e.target.value.length > 2) {
+                        setPredictions(await search(e.target.value));
+                      } else {
+                        setPredictions([]);
+                      }
                     }}
                     // onClick={() => {
                     //   setShow(true);
@@ -132,7 +141,10 @@ export default function Header({
                     }}
                   >
                     <span className="absolute inset-y-0 inline-flex items-center right-4">
-                      <MagnifyingGlassIcon className="w-6 h-6 cursor-pointer" />
+                      <PiMagnifyingGlassBold
+                        size={25}
+                        className="cursor-pointer"
+                      />
                     </span>
                   </button>
                 </form>
@@ -151,14 +163,13 @@ export default function Header({
                     afterSignOutUrl={pathname}
                   /> */}
                   <Link href={{ pathname: "/account" }}>
-                    <div className="relative w-7 h-7">
-                      <Image
-                        fill
-                        src={userImage}
-                        className="rounded-full"
-                        alt=""
-                      />
-                    </div>
+                    <Image
+                      width={30}
+                      height={30}
+                      src={userImage}
+                      className="rounded-full object-cover"
+                      alt=""
+                    />
                   </Link>
                 </SignedIn>
                 <SignedOut>
@@ -172,7 +183,7 @@ export default function Header({
               {/* Whishlist */}
               <NavigationMenuItem>
                 <NavigationMenuTrigger>
-                  <HeartIcon className="w-6 h-6 " />
+                  <AiFillHeart size={25} />
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <div className="p-5">
@@ -205,7 +216,7 @@ export default function Header({
               <NavigationMenuItem>
                 <NavigationMenuTrigger>
                   <div className="relative">
-                    <ShoppingCartIcon className="w-6 h-6 " />
+                    <AiOutlineShoppingCart size={25} />
                     <span className="absolute -bottom-3 -right-3 bg-black/50 rounded-full text-white w-5 h-5 text-xs flex items-center justify-center">
                       {count}
                     </span>
@@ -251,28 +262,66 @@ export default function Header({
           </NavigationMenuList>
         </NavigationMenu>
       </div>
+      {predictions.length > 0 && (
+        <div className="w-screen flex justify-center relative">
+          <div className="absolute  z-10 ml-5 flex flex-wrap gap-5 bg-white/90 dark:bg-black/90  justify-around p-5 rounded-md ">
+            <div className="absolute top-0 right-0">
+              <AiOutlineCloseCircle
+                onClick={() => {
+                  setPredictions([]);
+                }}
+                className="cursor-pointer"
+                size={20}
+              />
+            </div>
+            {predictions.map(({ id, label, Image: img }) => {
+              return (
+                <Link
+                  key={id}
+                  onClick={() => {
+                    setPredictions([]);
+                  }}
+                  href={{ pathname: `/categories/${id}` }}
+                >
+                  <Image
+                    width={75}
+                    height={75}
+                    src={img}
+                    className="w-24 rounded-md"
+                    alt={label}
+                  />
+                  <span>{label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
       {/* Mobile stuff */}
       <div className="block md:hidden">
         <div className="absolute flex top-2 items-center right-2 z-[4] gap-2">
-          {/* <SignedIn>
-            <UserButton afterSignOutUrl="/" />
-          </SignedIn> */}
           <SignedOut>
             <SignInButton mode="modal">
-              <button>Sign in</button>
+              <button className="mt-2">Sign in</button>
             </SignInButton>
           </SignedOut>
           <SignedIn>
             <Link href={{ pathname: "/cart" }}>
               <div className="relative p-2">
-                <ShoppingCartIcon className="w-6 h-6 " />
+                <AiOutlineShoppingCart size={25} />
                 <span className="absolute bottom-0 right-0">{count}</span>
               </div>
             </Link>
           </SignedIn>
-          <AccountLinksMenu userImage={userImage} />
+          <SignedIn>
+            <AccountLinksMenu userImage={userImage} />
+          </SignedIn>
         </div>
-        <MobileMenu />
+        <MobileMenu
+          search={async (e: string) => {
+            return await search(e);
+          }}
+        />
       </div>
     </div>
   );

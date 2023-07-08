@@ -24,14 +24,13 @@ export async function createProduct(
   Images: Array<object>,
   mainImg: string,
   Description: string,
-  Reviews: Array<object>,
   Categories: Array<string>,
   Colors: Array<string>,
   Properties: object
 ) {
   try {
     const Categories_: Array<{}> = [];
-    Categories.map((category) => Categories_.push({ label: category }));
+    Categories.map((category) => Categories_.push({ id: category }));
     const product = await prisma.product.create({
       data: {
         Title,
@@ -67,7 +66,6 @@ export async function updateProduct(
   Images: Array<object>,
   mainImg: string,
   Description: string,
-  Reviews: Array<object>,
   Categories: Array<string>,
   Colors: Array<string>,
   Properties: object

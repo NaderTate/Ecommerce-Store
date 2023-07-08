@@ -1,17 +1,52 @@
 import NavLayout from "@/app/components/NavLayout";
 import ProductForm from "@/app/components/ProductForm";
-import { getProductById } from "@/lib/products";
-import { getCategories } from "@/lib/categories";
-import { createProductAction, updateProductAction } from "@/app/_actions";
-import { revalidatePath } from "next/cache";
 import prisma from "@/lib/prisma";
+export async function generateMetadata({ searchParams }: any) {
+  try {
+    const id = searchParams.id;
+    const product = await prisma.product.findUnique({
+      where: { id },
+      include: { Categories: true },
+    });
+    if (!product)
+      return { title: "Not found", description: "This product does not exist" };
+    return {
+      title: product?.Title,
+      description: product?.Description,
+      alternates: {
+        canonical: `products/${product?.id}`,
+      },
+      twitter: {
+        card: "summary_large_image",
+        site: "@naderexpress",
+        title: product?.Title,
+        description: product?.Description,
+        images: [product?.mainImg || ""],
+      },
+      openGraph: {
+        title: product?.Title,
+        images: [
+          {
+            url: product?.mainImg || "",
+            width: 800,
+            height: 600,
+          },
+        ],
+      },
+    };
+  } catch (error) {
+    return {
+      title: "Not found",
+      description: "This product does not exist",
+    };
+  }
+}
 async function page({ searchParams }: any) {
   const id = searchParams.id;
   const productInfo = await prisma.product.findUnique({
     where: { id },
     include: { Categories: true },
   });
-  // const { categories } = await getCategories(1, 99999);/
   const categories = await prisma.category.findMany({
     select: { id: true, label: true, value: true, Properties: true },
   });
@@ -20,81 +55,7 @@ async function page({ searchParams }: any) {
       <NavLayout>
         <div className="font-bold text-xl mb-5">Edit</div>
         {productInfo && (
-          <ProductForm
-            createProduct={async ({
-              Title,
-              Price,
-              Images,
-              mainImg,
-              Description,
-              Reviews,
-              Categories,
-              Colors,
-              Properties,
-            }: {
-              Title: string;
-              Price: number;
-              Images: Array<object>;
-              mainImg: string;
-              Description: string;
-              Reviews: Array<object>;
-              Categories: Array<string>;
-              Colors: Array<string>;
-              Properties: object;
-            }) => {
-              "use server";
-              await createProductAction(
-                Title,
-                Price,
-                Images,
-                mainImg,
-                Description,
-                Reviews,
-                Categories,
-                Colors,
-                Properties
-              );
-            }}
-            updateProduct={async ({
-              id,
-              Title,
-              Price,
-              Images,
-              mainImg,
-              Description,
-              Reviews,
-              Categories,
-              Colors,
-              Properties,
-            }: {
-              id: string;
-              Title: string;
-              Price: number;
-              Images: Array<object>;
-              mainImg: string;
-              Description: string;
-              Reviews: Array<object>;
-              Categories: Array<string>;
-              Colors: Array<string>;
-              Properties: object;
-            }) => {
-              "use server";
-              await updateProductAction(
-                id,
-                Title,
-                Price,
-                Images,
-                mainImg,
-                Description,
-                Reviews,
-                Categories,
-                Colors,
-                Properties
-              );
-            }}
-            allCategories={categories}
-            {...productInfo}
-          />
+          <ProductForm allCategories={categories} {...productInfo} />
         )}
       </NavLayout>
     </div>

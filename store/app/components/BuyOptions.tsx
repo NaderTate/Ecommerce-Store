@@ -4,10 +4,9 @@ import { addToCartAction, addToFavoritesAction } from "../_actions";
 import RiseLoader from "react-spinners/RiseLoader";
 import ClipLoader from "react-spinners/ClipLoader";
 import { BiShare } from "react-icons/bi";
-import { BsFillHeartbreakFill } from "react-icons/bs";
 import { AiFillHeart } from "react-icons/ai";
 import ShareIcons from "./ShareIcons";
-
+import Link from "next/link";
 function BuyOptions({
   userId,
   id,
@@ -51,7 +50,9 @@ function BuyOptions({
                 "Add to cart"
               )}
             </button>
-            <button className={buttonStyle + " bg-blue-950"}>Buy now</button>
+            <Link href={{ pathname: "/checkout", query: { productId: id } }}>
+              <button className={buttonStyle + " bg-blue-950"}>Buy now</button>
+            </Link>
           </div>
           <div className="flex gap-5 mt-5 justify-center sm:justify-start">
             <div
@@ -77,7 +78,7 @@ function BuyOptions({
               ) : favsArray.includes(id) ? (
                 <AiFillHeart size={35} fill="red" />
               ) : (
-                <BsFillHeartbreakFill size={30} fill="white" />
+                <AiFillHeart size={30} fill="white" />
               )}
             </div>
           </div>

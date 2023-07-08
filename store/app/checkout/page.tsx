@@ -1,14 +1,46 @@
 import React from "react";
 import { auth } from "@clerk/nextjs";
-import { getUserById } from "@/lib/users";
 import { prisma } from "@/lib/prisma";
 import { getProductById } from "@/lib/products";
 import { Product } from "@prisma/client";
-import Link from "next/link";
 import CheckoutForm from "../components/CheckoutForm";
 import { redirect } from "next/navigation";
-
-async function page() {
+export const metadata = {
+  metadataBase: new URL("https://naderexpress.vercel.app/"),
+  title: "Checkout",
+  description: "review your order and checkout",
+  openGraph: {
+    title: "Checkout",
+    type: "website",
+    locale: "en_US",
+    url: "https://naderexpress.vercel.app/",
+    siteName: "Nader Express",
+    images: [
+      {
+        url: "https://res.cloudinary.com/dqkyatgoy/image/upload/v1628753046/Nader%20Express/Frame_1_a507eb.svg",
+        width: 800,
+        height: 600,
+        alt: "Nader Express",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@naderexpress",
+    title: "Checkout",
+    description: "review your order and checkout",
+  },
+};
+async function page({ searchParams }: { searchParams: any }) {
+  const productId = searchParams.productId || null;
+  let productPrice = 0;
+  if (productId) {
+    const product = await prisma.product.findUnique({
+      where: { id: productId },
+      select: { Price: true },
+    });
+    productPrice = product?.Price || 0;
+  }
   const { userId } = auth();
   let cartProducts: Array<Product>;
   let sortedCart: Array<{ product: any; quantity: number }> = [];
@@ -51,9 +83,9 @@ async function page() {
         </h1>
         {userId && (
           <CheckoutForm
-            cartItems={user.Cart}
+            cartItems={productId ? [{ id: productId }] : user.Cart}
             userId={userId}
-            subtotal={subtotal}
+            subtotal={productId ? productPrice : subtotal}
             address={address}
           />
         )}

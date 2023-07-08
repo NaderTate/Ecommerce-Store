@@ -20,7 +20,7 @@ import {
   EmailIcon,
 } from "next-share";
 function ShareIcons({ title, mainImg }: { title: string; mainImg: string }) {
-  const pathname = usePathname();
+  const pathname = "https://naderexpress.vercel.app" + usePathname();
 
   return (
     <div>

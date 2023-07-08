@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { Category, Product } from "@prisma/client";
+import { Product } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -13,10 +13,11 @@ const Card = (product: Product) => {
     <div>
       <div className="flex md:flex-col flex-row md:w-56 gap-2">
         <Link href={{ pathname: `/products/${product.id}` }}>
-          <div className="relative w-24 h-24  md:w-56 md:h-56">
+          <div className="relative w-24 h-24  md:w-56 md:h-56 bg-white">
             <Image
+              sizes="30vw"
               fill
-              className="object-cover"
+              className="object-cotain rounded-md"
               src={product.mainImg}
               alt={product.Title}
             />
@@ -48,6 +49,42 @@ const starReviews: Array<{ img: string; rating: number }> = [
     rating: 1,
   },
 ];
+export async function generateMetadata({ searchParams }: any) {
+  try {
+    return {
+      title: "search results for " + searchParams.s || "Nader Express",
+      description: "Nader Express",
+      twitter: {
+        card: "summary_large_image",
+        site: "@naderexpress",
+        title: "search results for " + searchParams.s || "Nader Express",
+        description: "Nader Express",
+        images: [
+          {
+            url: "https://res.cloudinary.com/dqkyatgoy/image/upload/v1687293658/Nader%20Express/Frame_1_utki4s.svg",
+            width: 800,
+            height: 600,
+          },
+        ],
+      },
+      openGraph: {
+        title: "search results for " + searchParams.s || "Nader Express",
+        images: [
+          {
+            url: "https://res.cloudinary.com/dqkyatgoy/image/upload/v1687293658/Nader%20Express/Frame_1_utki4s.svg",
+            width: 800,
+            height: 600,
+          },
+        ],
+      },
+    };
+  } catch (error) {
+    return {
+      title: "Not found",
+      description: "This page does not exist",
+    };
+  }
+}
 async function search({ searchParams }: any) {
   const search = searchParams.s || "";
   const min = Number(searchParams.min) || 0;
@@ -351,7 +388,8 @@ async function search({ searchParams }: any) {
                           }}
                         >
                           <div className="flex gap-1">
-                            <img src={img} className="h-5" alt="" />& up
+                            <Image width={112} height={20} src={img} alt="" />&
+                            up
                           </div>
                         </Link>
                       </div>
@@ -374,7 +412,14 @@ async function search({ searchParams }: any) {
             <Link
               href={{
                 pathname: "/search",
-                query: { page: pages.at(0), s: search, sort, min, max },
+                query: {
+                  page: pages.at(0),
+                  s: search,
+                  sort,
+                  min,
+                  max,
+                  sr: starRating,
+                },
               }}
               className="inline-flex items-center justify-center w-8 h-8 border border-gray-100 rounded-full hover:bg-slate-400/50 transition "
             >
@@ -398,7 +443,14 @@ async function search({ searchParams }: any) {
                 <Link
                   href={{
                     pathname: "/search",
-                    query: { page: page, s: search, sort, min, max },
+                    query: {
+                      page: page,
+                      s: search,
+                      sort,
+                      min,
+                      max,
+                      sr: starRating,
+                    },
                   }}
                   className="inline-flex items-center justify-center w-8 h-8 border border-gray-100 rounded-full hover:bg-slate-400/50 transition"
                 >
@@ -410,7 +462,14 @@ async function search({ searchParams }: any) {
             <Link
               href={{
                 pathname: "/search",
-                query: { page: pages.at(-1), s: search, sort, min, max },
+                query: {
+                  page: pages.at(-1),
+                  s: search,
+                  sort,
+                  min,
+                  max,
+                  sr: starRating,
+                },
               }}
               className="inline-flex items-center justify-center w-8 h-8 border border-gray-100 rounded-full hover:bg-slate-400/50 transition"
             >

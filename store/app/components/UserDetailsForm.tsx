@@ -35,9 +35,13 @@ function UserDetailsForm({ userData }: { userData: User }) {
       <ToastContainer autoClose={3000} />
 
       <div className="flex gap-5 items-end mb-2">
-        <div className="relative w-24 h-24">
-          <Image fill src={image} alt="User Image" className="rounded-md" />
-        </div>
+        <Image
+          width={100}
+          height={100}
+          src={image}
+          alt="User Image"
+          className="rounded-md object-cover"
+        />
         <label htmlFor="files" className="">
           <div
             className={`${
@@ -87,7 +91,6 @@ function UserDetailsForm({ userData }: { userData: User }) {
                       formData
                     )
                     .then((response) => {
-                      console.log(response);
                       setImage(response.data.secure_url);
                     })
                     .catch((error) => {
@@ -108,7 +111,7 @@ function UserDetailsForm({ userData }: { userData: User }) {
               type="text"
               name="name"
               placeholder="Name"
-              defaultValue={userData.Name}
+              defaultValue={userData.Name || ""}
               className={inputStyle}
             />
           </div>

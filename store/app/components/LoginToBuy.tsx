@@ -4,7 +4,7 @@ import { SignInButton } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import ShareIcons from "./ShareIcons";
 import { BiShare } from "react-icons/bi";
-import { BsFillHeartbreakFill } from "react-icons/bs";
+import { AiFillHeart } from "react-icons/ai";
 function BuyOptions({ mainImg, title }: { mainImg: string; title: string }) {
   const [showShare, setShowShare] = useState(false);
   const pathname = usePathname();
@@ -32,7 +32,7 @@ function BuyOptions({ mainImg, title }: { mainImg: string; title: string }) {
         </div>
         <SignInButton redirectUrl={pathname} mode="modal">
           <div className="w-24 rounded-md dark:bg-gray-200/70 bg-black/50 text-black font-bold h-10 items-center flex  justify-center cursor-pointer">
-            <BsFillHeartbreakFill size={30} fill="white" />
+            <AiFillHeart size={30} fill="white" />
           </div>
         </SignInButton>
       </div>

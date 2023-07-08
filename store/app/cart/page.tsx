@@ -9,6 +9,32 @@ import Slider from "../components/Slider";
 import Link from "next/link";
 import { getProductByCategoryId } from "@/lib/products";
 import { redirect } from "next/navigation";
+export const metadata = {
+  metadataBase: new URL("https://naderexpress.vercel.app/"),
+  title: "Cart",
+  description: "manage your cart",
+  openGraph: {
+    title: "Cart",
+    type: "website",
+    locale: "en_US",
+    url: "https://naderexpress.vercel.app/",
+    siteName: "Nader Express",
+    images: [
+      {
+        url: "https://res.cloudinary.com/dqkyatgoy/image/upload/v1628753046/Nader%20Express/Frame_1_a507eb.svg",
+        width: 800,
+        height: 600,
+        alt: "Nader Express",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@naderexpress",
+    title: "Cart",
+    description: "manage your cart",
+  },
+};
 async function page() {
   const { userId } = auth();
   let cartProducts: Array<Product>;

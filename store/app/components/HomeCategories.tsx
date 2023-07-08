@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React from "react";
+import Image from "next/image";
 function HomeCategories({ categories }: { categories: any }) {
   return (
     <div>
@@ -8,7 +9,7 @@ function HomeCategories({ categories }: { categories: any }) {
           categories.map(
             ({
               label,
-              Image,
+              Image: img,
               id,
             }: {
               label: string;
@@ -22,9 +23,15 @@ function HomeCategories({ categories }: { categories: any }) {
                 >
                   <Link href={{ pathname: `/categories/${id}` }}>
                     <h1>{label}</h1>
-                    <img src={Image} alt="" />
+                    <Image
+                      width={400}
+                      height={400}
+                      className="object-cover"
+                      src={img}
+                      alt=""
+                    />
+                    <button className="text-xs">Shop now</button>
                   </Link>
-                  <button className="text-xs">Shop now</button>
                 </div>
               );
             }

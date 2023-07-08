@@ -7,6 +7,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { PiSealCheckBold } from "react-icons/pi";
+import { FiTruck } from "react-icons/fi";
 import Slider from "./Slider";
 async function OrderCard({ Order }: { Order: Order }) {
   const OrderDetails = await prisma.order.findUnique({
@@ -45,11 +47,23 @@ async function OrderCard({ Order }: { Order: Order }) {
           <div>
             <div className="border rounded-md p-5 space-y-2 text-lg mt-2 bg-gray-100 dark:bg-inherit">
               <span className="font-bold">Shipped to:</span>
-              <div>{address.Street}</div>
-              <div>{address.Building}</div>
-              <div>{address.City}</div>
-              <div>{address.Landmark}</div>
-              <div>{address.Country}</div>
+              <div className="flex gap-10 justify-between">
+                <span>Street: </span>
+                <span>{address.Street}</span>
+              </div>
+              <div className="flex gap-10 justify-between">
+                <span>Building:</span>
+                <span> {address.Building}</span>
+              </div>
+              <div className="flex gap-10 justify-between">
+                <span>City:</span> <span>{address.City}</span>
+              </div>
+              <div className="flex gap-10 justify-between">
+                <span>Landmark:</span> <span>{address.Landmark}</span>
+              </div>
+              <div className="flex gap-10 justify-between">
+                <span>Country:</span> <span>{address.Country}</span>
+              </div>
             </div>
           </div>
           <div>
@@ -111,6 +125,21 @@ async function OrderCard({ Order }: { Order: Order }) {
               <AccordionTrigger>
                 <div className="flex gap-2">More details</div>
               </AccordionTrigger>
+              <div className=" lg:mr-0   lg:ml-auto my-auto">
+                {Order.IsComplete ? (
+                  <div className="flex  items-center  rounded-md  px-3 py-1 gap-2 bg-green-300">
+                    <h1 className="font-semibold text-green-800">Complete</h1>
+                    <PiSealCheckBold size={24} color="rgb(22 101 52)" />{" "}
+                  </div>
+                ) : (
+                  <div className="flex  items-center  rounded-md  px-3 py-1 gap-2 bg-yellow-300">
+                    <h1 className="font-semibold text-yellow-800">
+                      In progress
+                    </h1>
+                    <FiTruck size={24} color="rgb(133 77 14 )" />
+                  </div>
+                )}
+              </div>
             </div>
             <AccordionContent className="">
               {OrderDetails && OrderSummary && (
