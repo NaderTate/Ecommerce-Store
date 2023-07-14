@@ -76,12 +76,6 @@ export default function Header({
                       );
                     })}
                   </div>
-                  <Link
-                    className="font-bold tracking-wider"
-                    href={{ pathname: "/products" }}
-                  >
-                    Check all our products
-                  </Link>
                 </div>
               </NavigationMenuContent>
               {/* Discover section */}
@@ -102,12 +96,6 @@ export default function Header({
                       );
                     })}
                   </div>
-                  <Link
-                    className="font-bold tracking-wider"
-                    href={{ pathname: "/categories" }}
-                  >
-                    Discover more
-                  </Link>
                 </div>
               </NavigationMenuContent>
               {/* Search bar */}
@@ -127,9 +115,6 @@ export default function Header({
                         setPredictions([]);
                       }
                     }}
-                    // onClick={() => {
-                    //   setShow(true);
-                    // }}
                   />
                   <button
                     type="submit"

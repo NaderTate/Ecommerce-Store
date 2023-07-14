@@ -7,11 +7,11 @@ import BuyOptions from "@/app/components/BuyOptions";
 import LoginToBuy from "@/app/components/LoginToBuy";
 import ReviewForm from "@/app/components/ReviewForm";
 import Image from "next/image";
-// export const revalidate = 60;
-// export async function generateStaticParams() {
-//   const products = await prisma.product.findMany();
-//   return products.map((product) => ({ id: product.id }));
-// }
+export const revalidate = 60;
+export async function generateStaticParams() {
+  const products = await prisma.product.findMany();
+  return products.map((product) => ({ id: product.id }));
+}
 export async function generateMetadata({ params }: { params: { id: string } }) {
   try {
     const product = await prisma.product.findUnique({
