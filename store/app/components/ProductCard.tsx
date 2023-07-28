@@ -6,15 +6,15 @@ import { addToCartAction } from "../_actions";
 
 function ProductCard({
   product,
-  width,
-  height,
+  width = "w-40",
+  height = "h-40",
   quantity,
   cartPage = false,
   userId,
 }: {
   product: Product;
-  width: string;
-  height: string;
+  width?: string;
+  height?: string;
   quantity?: number;
   cartPage?: boolean;
   userId?: string;

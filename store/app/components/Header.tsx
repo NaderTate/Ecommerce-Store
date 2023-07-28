@@ -138,15 +138,6 @@ export default function Header({
             <NavigationMenuItem>
               <div className="mx-5">
                 <SignedIn>
-                  {/* <UserButton
-                    userProfileMode="navigation"
-                    userProfileUrl={
-                      typeof window !== "undefined"
-                        ? `${window.location.origin}/account`
-                        : undefined
-                    }
-                    afterSignOutUrl={pathname}
-                  /> */}
                   <Link href={{ pathname: "/account" }}>
                     <Image
                       width={30}

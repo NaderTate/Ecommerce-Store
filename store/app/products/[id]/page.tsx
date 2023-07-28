@@ -52,7 +52,6 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
 }
 
 const Page = async ({ params: { id } }: { params: { id: string } }) => {
-  // await new Promise((resolve) => setTimeout(resolve, 1000000));
   const product = await prisma.product.findUnique({
     where: { id },
     include: {
