@@ -1,5 +1,5 @@
 import { Icons } from "./icons";
-import { Button } from "../registry/new-york/ui/button";
+import { Button } from "../resgistry/new-york/ui/button";
 import {
   Card,
   CardContent,
@@ -7,20 +7,20 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../registry/new-york/ui/card";
-import { Input } from "../registry/new-york/ui/input";
-import { Label } from "../registry/new-york/ui/label";
+} from "../resgistry/new-york/ui/card";
+import { Input } from "../resgistry/new-york/ui/input";
+import { Label } from "../resgistry/new-york/ui/label";
 import {
   RadioGroup,
   RadioGroupItem,
-} from "../registry/new-york/ui/radio-group";
+} from "../resgistry/new-york/ui/radio-group";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../registry/new-york/ui/select";
+} from "../resgistry/new-york/ui/select";
 
 export function PaymentMethod() {
   return (

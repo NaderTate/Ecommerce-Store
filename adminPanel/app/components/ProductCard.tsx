@@ -12,14 +12,13 @@ const ProductCard = ({ product }: { product: Product }) => {
   return (
     <div>
       <div className="flex gap-3 relative border-2 pr-1 rounded-md max-w-[19rem]  ">
-        <div className="relative  min-w-[6rem] min-h-[6rem]">
-          <Image
-            alt={product.Title}
-            src={product.mainImg}
-            fill
-            className="object-cover rounded-l-md"
-          />
-        </div>
+        <Image
+          width={100}
+          height={100}
+          alt={product.Title}
+          src={product.mainImg}
+          className="object-contain rounded-l-md"
+        />
 
         <div>
           <p className="font-semibold  max-w-[11rem] overflow-ellipsis whitespace-nowrap overflow-hidden ">

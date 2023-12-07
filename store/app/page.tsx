@@ -1,48 +1,60 @@
-import { getProductByCategoryId } from "@/lib/products";
-import Slider from "./components/Slider";
-import Featured from "./components/Featured";
-import Section2 from "./components/Section2";
-import HomeCategories from "./components/HomeCategories";
-import { getCategories } from "@/lib/categories";
-import { prisma } from "@/lib/prisma";
-export default async function Home() {
-  const menFashion = (
-    await getProductByCategoryId("64833a2edbbe74f153ec7938", 15)
-  ).products;
-  const womenFashion = (
-    await getProductByCategoryId("648337b7223afa484880f4fb", 15)
-  ).products;
-  const Electronics = (
-    await getProductByCategoryId("64834120235cccf7aa5d6cc6", 15)
-  ).products;
-  const Drones = (await getProductByCategoryId("6483417822bf5feb0d8251d0", 15))
-    .products;
-  const DroneMotors: any = (
-    await getProductByCategoryId("64834dd8b13297eae381f3cd", 15)
-  ).products;
-  Drones?.push(...DroneMotors);
-  const fitness = (await getProductByCategoryId("64835031082e25fade6967c6", 15))
-    .products;
-  const categories = (await getCategories(5, 8)).categories;
-  const categories2 = (await getCategories(1, 4)).categories;
-  // await new Promise((resolve) => setTimeout(resolve, 1000000));
-  const dealsUnder25 = await prisma.product.findMany({
-    where: { Price: { lt: 25 } },
-    take: 15,
-  });
+import ProductsCarousel from "./components/ProductsCarousel";
+import Featured from "./components/HomePage/Featured";
+import CategorySection from "./components/HomePage/CategorySection";
+import ShoesSection from "./components/HomePage/ShoesSection";
+import Shipping from "./components/HomePage/Returns&Shipping";
+import { NextPage } from "next";
+import { getProductsByCategoryID } from "./server_actions/products";
+const Home: NextPage = async () => {
+  // IDs of the categories to fetch their products
+  const menFashionID = ["64833a2edbbe74f153ec7938"];
+  const womenFashionID = ["648337b7223afa484880f4fb"];
+  const shoesID = ["64834d49b13297eae381f3cb", "64834d57b13297eae381f3cc"];
+  const bagsID = ["64834cdcb13297eae381f3c7"];
+  // fetch 15 items from each category
+  const limit = 15;
+  // Fetch the products
+  const menFashion = await getProductsByCategoryID(menFashionID, limit);
+  const womenFashion = await getProductsByCategoryID(womenFashionID, limit);
+  const shoes = await getProductsByCategoryID(shoesID, limit);
+  const bags = await getProductsByCategoryID(bagsID, limit);
   return (
-    <div>
+    <>
       <Featured />
-      {/* @ts-ignore* */}
-      <Section2 />
-      <Slider title="Popular in men's fashion" data={menFashion} />
-      <Slider title="Popular in women's fashion" data={womenFashion} />
-      <HomeCategories categories={categories} />
-      <Slider title="Deals under $25" data={dealsUnder25} />
-      <Slider title="Deals on electronics and gadgets" data={Electronics} />
-      <HomeCategories categories={categories2} />
-      <Slider title="For drones lovers" data={Drones} />
-      <Slider title="Let's pump them muscles" data={fitness} />
-    </div>
+      <ProductsCarousel data={menFashion} />
+      <CategorySection
+        img={
+          "https://res.cloudinary.com/dqkyatgoy/image/upload/v1686354031/nader%20express/eitvc3gnwnc6rp4oopq2.webp"
+        }
+        CTA="Dive into Style!"
+        description="Dress to Impress: Elevate Your Style Game."
+        id={menFashionID[0]}
+        title="Men fashion"
+      />
+      <ProductsCarousel data={womenFashion} />
+      <CategorySection
+        img={
+          "https://res.cloudinary.com/dqkyatgoy/image/upload/v1686354014/nader%20express/jssuusa0sh7f4lxmwyaa.webp"
+        }
+        CTA="Shop the Latest Trends!"
+        description="Chic Couture: Where Elegance Meets Empowerment."
+        title="Women Fashion"
+        id={womenFashionID[0]}
+      />
+      <ProductsCarousel data={shoes} />
+      <ShoesSection />
+      <ProductsCarousel data={bags} />
+      <CategorySection
+        img={
+          "https://res.cloudinary.com/dqkyatgoy/image/upload/v1686353106/nader%20express/snzu3p13phvqh74dunkz.webp"
+        }
+        CTA="Shop Your Statement Piece!"
+        description="Carry Confidence: Unleash Your Style in Every Bag."
+        title="Women Bags"
+        id={bagsID[0]}
+      />
+      <Shipping />
+    </>
   );
-}
+};
+export default Home;

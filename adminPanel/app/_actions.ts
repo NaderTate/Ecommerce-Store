@@ -1,10 +1,6 @@
 "use server";
-import {
-  createProduct,
-  updateProduct,
-  deleteProduct,
-  getProductById,
-} from "@/lib/products";
+import prisma from "@/lib/prisma";
+import { deleteProduct, getProductById } from "@/lib/products";
 import {
   createCategory,
   updateCategory,
@@ -24,56 +20,114 @@ export async function getProductByIdAction(id: string) {
   await getProductById(id);
   revalidatePath("/products");
 }
-export async function createProductAction(
+
+export const createProduct = async (
   Title: string,
   Price: number,
   Images: Array<object>,
   mainImg: string,
+  secondImage: string,
   Description: string,
   Categories: Array<string>,
   Colors: Array<string>,
   Properties: object
-) {
-  await createProduct(
-    Title,
-    Price,
-    Images,
-    mainImg,
-    Description,
-    Categories,
-    Colors,
-    Properties
-  );
-  revalidatePath("/");
-}
-export async function updateProductAction(
+) => {
+  await prisma.product.create({
+    data: {
+      Title,
+      Price,
+      Images,
+      Description,
+      Rating: 5,
+      Categories: { connect: Categories.map((category) => ({ id: category })) },
+      mainImg,
+      secondImage,
+      Colors,
+      Properties,
+    },
+  });
+  revalidatePath("/products");
+};
+
+export const updateProduct = async (
   id: string,
   Title: string,
   Price: number,
   Images: Array<object>,
   mainImg: string,
+  secondImage: string,
   Description: string,
   Categories: Array<string>,
   Colors: Array<string>,
   Properties: object
-) {
-  await updateProduct(
-    id,
-    Title,
-    Price,
-    Images,
-    mainImg,
-    Description,
-    Categories,
-    Colors,
-    Properties
-  );
-  revalidatePath("/");
-}
-export async function deleteProductAction(id: string) {
-  await deleteProduct(id);
+) => {
+  await prisma.product.update({
+    where: { id },
+    data: {
+      Title,
+      Price,
+      Images,
+      secondImage,
+      Description,
+      Rating: 5,
+      Categories: { connect: Categories.map((category) => ({ id: category })) },
+      mainImg,
+      Colors,
+      Properties,
+    },
+  });
   revalidatePath("/products");
-}
+};
+// export async function createProductAction(
+//   Title: string,
+//   Price: number,
+//   Images: Array<object>,
+//   mainImg: string,
+//   Description: string,
+//   Categories: Array<string>,
+//   Colors: Array<string>,
+//   Properties: object
+// ) {
+//   await createProduct(
+//     Title,
+//     Price,
+//     Images,
+//     mainImg,
+//     Description,
+//     Categories,
+//     Colors,
+//     Properties
+//   );
+//   revalidatePath("/");
+// }
+// export async function updateProductAction(
+//   id: string,
+//   Title: string,
+//   Price: number,
+//   Images: Array<object>,
+//   mainImg: string,
+//   Description: string,
+//   Categories: Array<string>,
+//   Colors: Array<string>,
+//   Properties: object
+// ) {
+//   await updateProduct(
+//     id,
+//     Title,
+//     Price,
+//     Images,
+//     mainImg,
+//     Description,
+//     Categories,
+//     Colors,
+//     Properties
+//   );
+//   revalidatePath("/");
+// }
+// export async function deleteProductAction(id: string) {
+//   await deleteProduct(id);
+//   revalidatePath("/products");
+// }
 // ******************* Categories Actions *********************************
 
 export async function createCategoryAction(

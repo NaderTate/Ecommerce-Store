@@ -10,7 +10,7 @@ import PropTypes, { InferProps } from "prop-types";
 import Dropzone from "./Dropzone";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { createProductAction, updateProductAction } from "../_actions";
+import { createProduct, updateProduct } from "../_actions";
 function Card({ src, title, deleteImage }: InferProps<typeof Card.propTypes>) {
   return (
     <div className="relative ">
@@ -31,13 +31,14 @@ function Card({ src, title, deleteImage }: InferProps<typeof Card.propTypes>) {
       </svg>
 
       {src && title && (
-        <div className="relative h-32 w-32">
+        <div>
           <Image
-            fill
-            sizes="(max-width: 470px) 40vw,(max-width: 640px)25vw,(max-width :810px)17vw,10vw"
+            quality={100}
+            width={400}
+            height={400}
             src={src}
             alt={title}
-            className="rounded-md object-cover "
+            className="rounded-md object-contain "
           />
         </div>
       )}
@@ -111,12 +112,13 @@ function ProductForm({
   async function action() {
     if (id) {
       setLoading(true);
-      await updateProductAction(
+      await updateProduct(
         id,
         title,
         price,
         images,
         images[0].img,
+        images[1].img,
         description,
         Categories,
         colors,
@@ -125,14 +127,14 @@ function ProductForm({
 
       setLoading(false);
       router.push("/products");
-      router.refresh();
     } else {
       setLoading(true);
-      await createProductAction(
+      await createProduct(
         title,
         price,
         images,
         images[0].img,
+        images[1].img,
         description,
         Categories,
         colors,
@@ -140,7 +142,6 @@ function ProductForm({
       );
       setLoading(false);
       router.push("/products");
-      router.refresh();
     }
   }
   // This function is used by Reactsortable to sort the images by dragging them and set the images array to our new sorted array

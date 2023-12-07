@@ -2,7 +2,7 @@ import Link from "next/link";
 import React from "react";
 import { prisma } from "@/lib/prisma";
 import { PiMaskHappyFill } from "react-icons/pi";
-import StarRating from "../components/StarRating";
+import StarRating from "../components/ProductPage/StarRating";
 import Image from "next/image";
 async function page({ searchParams }: { searchParams: any }) {
   const orderID = searchParams.orderID;

@@ -5,7 +5,7 @@ import { getProductById } from "@/lib/products";
 import { Product } from "@prisma/client";
 import CartProductCard from "../components/CartProductCard";
 import CartPageRecommendedProductCard from "../components/CartPageRecommendedProductCard";
-import Slider from "../components/Slider";
+import ProductsCarousel from "../components/ProductsCarousel";
 import Link from "next/link";
 import { getProductByCategoryId } from "@/lib/products";
 import { redirect } from "next/navigation";
@@ -133,19 +133,19 @@ async function page() {
           </div>
         </div>
       </div>
-      <Slider
+      <ProductsCarousel
         cartPage
         userId={userId || ""}
         title="Your Whish List"
         data={whishListProducts}
       />
-      <Slider
+      <ProductsCarousel
         cartPage
         userId={userId || ""}
         title="Frequently repurchased in Health and beauty"
         data={ElectronicsProducts}
       />
-      <Slider
+      <ProductsCarousel
         cartPage
         userId={userId || ""}
         title="Frequently repurchased in Home appliances"

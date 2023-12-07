@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/accordion";
 import { PiSealCheckBold } from "react-icons/pi";
 import { FiTruck } from "react-icons/fi";
-import Slider from "./Slider";
+import ProductsCarousel from "./ProductsCarousel";
 async function OrderCard({ Order }: { Order: Order }) {
   const OrderDetails = await prisma.order.findUnique({
     where: { id: Order.id },
@@ -160,7 +160,7 @@ async function OrderCard({ Order }: { Order: Order }) {
           </div>
         )}
         <div>
-          <Slider title="" data={OrderDetails?.Product} />
+          <ProductsCarousel title="" data={OrderDetails?.Product} />
         </div>
       </div>
     </div>

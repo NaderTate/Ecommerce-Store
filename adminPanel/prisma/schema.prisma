@@ -17,6 +17,7 @@ model Product {
   Description String     @default("")
   Images      Json[]     @default([])
   mainImg     String
+  secondImage String?
   Categories  Category[] @relation(fields: [CategoryIDs], references: [id])
   CategoryIDs String[]   @db.ObjectId
   Colors      String[]   @default([])

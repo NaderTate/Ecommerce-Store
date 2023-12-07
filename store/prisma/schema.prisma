@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,22 +8,25 @@ datasource db {
 }
 
 model Product {
-  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  id          String          @id @default(auto()) @map("_id") @db.ObjectId
   Title       String
   Price       Float
-  Description String     @default("")
-  Images      Json[]     @default([])
+  Description String          @default("")
+  Images      Json[]          @default([])
   mainImg     String
-  Categories  Category[] @relation(fields: [CategoryIDs], references: [id])
-  CategoryIDs String[]   @db.ObjectId
-  Colors      String[]   @default([])
+  secondImage String
+  Categories  Category[]      @relation(fields: [CategoryIDs], references: [id])
+  CategoryIDs String[]        @db.ObjectId
+  Colors      String[]        @default([])
   Properties  Json
-  OrderIDs    String[]   @db.ObjectId
-  Orders      Order[]    @relation(fields: [OrderIDs], references: [id])
+  OrderIDs    String[]        @db.ObjectId
+  Orders      Order[]         @relation(fields: [OrderIDs], references: [id])
   Reviews     Review[]
   Rating      Float
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  Cart        CartItem[]
+  WhishList   WhishListItem[]
 }
 
 model Category {
@@ -45,21 +45,21 @@ model Category {
 }
 
 model User {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  UserId    String    @unique
+  id        String          @id @default(auto()) @map("_id") @db.ObjectId
+  UserId    String          @unique
   Name      String
   Email     String
   Phone     Int
   BirthDate String
   Gender    String
   Image     String
-  Cart      Json[]
   Orders    Order[]
-  WhishList Json[]
   Address   Address[]
   Review    Review[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  Cart      CartItem[]
+  WhishList WhishListItem[]
 }
 
 model Order {
@@ -79,6 +79,27 @@ model Order {
   productIDs    String[]  @db.ObjectId
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+}
+
+model CartItem {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  UserId    String   @unique
+  User      User     @relation(fields: [UserId], references: [UserId])
+  Product   Product  @relation(fields: [ProductId], references: [id])
+  ProductId String   @db.ObjectId
+  Quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model WhishListItem {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  UserId    String   @unique
+  User      User     @relation(fields: [UserId], references: [UserId])
+  Product   Product  @relation(fields: [ProductId], references: [id])
+  ProductId String   @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Address {

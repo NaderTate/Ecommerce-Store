@@ -1,51 +1,62 @@
 "use client";
-import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/swiper.min.css";
 import { Navigation } from "swiper";
+import "swiper/swiper.min.css";
 import "swiper/css/navigation";
-
 import ProductCard from "./ProductCard";
-function Slider({
+import SwiperNavButtons from "./SwiperNavButtons";
+function ProductsCarousel({
   data,
-  title,
   cartPage = false,
   userId,
 }: {
-  data: any;
-  title: string;
+  data: {
+    id: string;
+    mainImg: string;
+    secondImage: string;
+    Title: string;
+    Price: number;
+  }[];
   cartPage?: boolean;
   userId?: string;
 }) {
   return (
     <div>
-      <div className="bg-white dark:bg-black/30  p-3 rounded-md lg:mr-5 my-5">
-        <h1>{title}</h1>
+      <div className="rounded-md my-5">
         <Swiper
-          navigation={true}
+          navigation
           modules={[Navigation]}
-          slidesPerView="auto"
-          spaceBetween={10}
+          breakpoints={{
+            500: {
+              slidesPerView: 2,
+            },
+            768: {
+              slidesPerView: 3,
+            },
+            1200: {
+              slidesPerView: 4,
+            },
+          }}
+          spaceBetween={30}
           className="HomeSlider"
         >
           {data &&
-            data.map((product: any) => {
+            data.map((product) => {
               return (
                 <SwiperSlide key={product.id}>
                   <ProductCard
                     userId={userId}
                     cartPage={cartPage}
                     product={product}
-                    width="w-56"
-                    height="h-56"
                   />
                 </SwiperSlide>
               );
             })}
+          <SwiperNavButtons />
         </Swiper>
       </div>
     </div>
   );
 }
 
-export default Slider;
+export default ProductsCarousel;

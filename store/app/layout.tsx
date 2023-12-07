@@ -1,17 +1,16 @@
 import "./globals.css";
-import "./styles.scss";
 import { Inter } from "next/font/google";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import "react-toastify/dist/ReactToastify.css";
 const inter = Inter({ subsets: ["latin"] });
-import Providers from "./Provider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { getUserById } from "@/lib/users";
 import { auth } from "@clerk/nextjs";
-import { getProductById, getProducts } from "@/lib/products";
+import { getProductById } from "@/lib/products";
 import { Product } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import ClientProviders from "./components/ClientProviders";
 export const metadata = {
   metadataBase: new URL("https://naderexpress.vercel.app/"),
   title: { default: "Nader Express", template: "%s | Nader Express" },
@@ -51,7 +50,7 @@ export default async function RootLayout({
   let user: any;
   if (userId) {
     user = (await getUserById(userId)).user;
-    user?.Cart.map((item: any) => {
+    user?.Cart?.map((item: any) => {
       cart.push(item?.id);
     });
     cartProducts = (await getProductById(cart)).product || [];
@@ -62,7 +61,7 @@ export default async function RootLayout({
           .quantity,
       });
     });
-    user?.WhishList.map((item: any) => {
+    user?.WhishList?.map((item: any) => {
       whishList.push(item?.id);
     });
     whishListProducts = (await getProductById(whishList)).product || [];
@@ -70,45 +69,34 @@ export default async function RootLayout({
   const productCount = await prisma.product.count();
   const skip = Math.floor(Math.random() * productCount);
   const newArrivals = await prisma.product.findMany({
-    take: 12,
+    take: 8,
     skip,
     orderBy: { createdAt: "desc" },
   });
   const categoriesCount = await prisma.category.count();
   const skipCategories = Math.floor(Math.random() * categoriesCount);
   const Discover = await prisma.category.findMany({
-    take: 12,
+    take: 8,
     skip: skipCategories,
     orderBy: { createdAt: "desc" },
   });
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ClerkProvider>
-          <Providers>
+        <ClientProviders>
+          <ClerkProvider>
             <div className="min-h-screen flex flex-col">
               <Header
-                search={async (e: string) => {
-                  "use server";
-                  return await prisma.category.findMany({
-                    where: { label: { contains: e, mode: "insensitive" } },
-                    select: { label: true, id: true, Image: true },
-                  });
-                }}
-                userImage={
-                  user?.Image ||
-                  "https://res.cloudinary.com/dqkyatgoy/image/upload/v1687453046/Nader%20Express/Frame_1_a507eb.svg"
-                }
                 newArrivals={newArrivals || []}
                 Discover={Discover || []}
                 cart={sortedCart.reverse() || []}
                 Whishlist={whishListProducts || []}
               />
-              <div className="grow mt-7 md:mt-0">{children}</div>
+              <div className="grow ">{children}</div>
               <Footer />
             </div>
-          </Providers>
-        </ClerkProvider>
+          </ClerkProvider>
+        </ClientProviders>
       </body>
     </html>
   );

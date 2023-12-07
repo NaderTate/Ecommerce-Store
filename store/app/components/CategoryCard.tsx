@@ -1,34 +1,34 @@
+"use client";
 import Link from "next/link";
-import React from "react";
-import { Category } from "@prisma/client";
+import { motion } from "framer-motion";
 import Image from "next/image";
-function CategoryCard({
-  category,
-  width,
-  height,
-}: {
-  category: Category;
-  width: string;
-  height: string;
-}) {
+type props = {
+  category: {
+    id: string;
+    label: string;
+    Image: string;
+  };
+};
+function CategoryCard({ category }: props) {
   return (
-    <div className={`${width}`}>
+    <div className={``}>
       <Link href={{ pathname: `/categories/${category.id}` }}>
-        <div className={`relative ${width} ${height}`}>
+        <motion.div
+          initial={{ opacity: 0, scale: 1.1 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
+        >
           <Image
-            sizes="30vw"
-            fill
+            width={500}
+            height={500}
             src={category.Image}
-            className="object-cover rounded-md "
+            className="object-contain rounded-md "
             alt={category.label}
           />
-        </div>
+        </motion.div>
       </Link>
-      <p
-        className={`overflow-ellipsis whitespace-nowrap overflow-hidden text-xs`}
-      >
-        {category.label}
-      </p>
+      <p className={`line-clamp-1 text-xs`}>{category.label}</p>
     </div>
   );
 }

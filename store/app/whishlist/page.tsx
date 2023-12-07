@@ -4,7 +4,7 @@ import { getUserById } from "@/lib/users";
 import { getProductById } from "@/lib/products";
 import { Product } from "@prisma/client";
 import CartPageRecommendedProductCard from "../components/CartPageRecommendedProductCard";
-import Slider from "../components/Slider";
+import ProductsCarousel from "../components/ProductsCarousel";
 import { getProductByCategoryId } from "@/lib/products";
 import WhishlistProductCard from "../components/WhishlistProductCard";
 import { redirect } from "next/navigation";
@@ -73,13 +73,13 @@ async function page() {
           </div>
         </div>
       </div>
-      <Slider
+      <ProductsCarousel
         cartPage
         userId={userId || ""}
         title="Frequently repurchased in Health and beauty"
         data={ElectronicsProducts}
       />
-      <Slider
+      <ProductsCarousel
         cartPage
         userId={userId || ""}
         title="Frequently repurchased in Home appliances"

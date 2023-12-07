@@ -8,6 +8,7 @@ import {
   FaRegGrinHearts,
 } from "react-icons/fa";
 import { BiSad } from "react-icons/bi";
+import { Button, Textarea } from "@nextui-org/react";
 function ReviewForm({
   UserId,
   ProductId,
@@ -17,6 +18,7 @@ function ReviewForm({
 }) {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
+  const [loading, setLoading] = useState(false);
   return (
     <div>
       <div className="flex gap-2 items-center my-2">
@@ -62,24 +64,23 @@ function ReviewForm({
         />
         {rating > 0 && <span>{rating}/5</span>}
       </div>
-      <textarea
-        name="comment"
-        id="comment"
-        rows={7}
-        placeholder="Type your review"
-        className="w-full p-5 rounded-md md:w-3/4 lg:w-2/3"
-        onChange={(e) => {
-          setComment(e.target.value);
-        }}
-      ></textarea>
-      <button
-        className="block bg-blue-700 rounded-md w-24 font-semibold tracking-wider py-2 text-white"
-        onClick={() => {
+      <Textarea
+        label="Type your review"
+        className=" md:w-3/4 lg:w-2/3 my-2"
+        onValueChange={setComment}
+      />
+      <Button
+        color="primary"
+        isLoading={loading}
+        isDisabled={loading || comment.length < 2}
+        onPress={async () => {
+          setLoading(true);
           addReviewAction(UserId, ProductId, rating, comment);
+          setLoading(false);
         }}
       >
         Submit
-      </button>
+      </Button>
     </div>
   );
 }
