@@ -16,8 +16,9 @@ const AddToFavsButton = ({ productID, userID, isFav }: Props) => {
       {userID ? (
         <FaHeart
           size={25}
-          fill={isFavorite ? "#fc3737" : "#ffffff"}
-          className="cursor-pointer transition-colors"
+          className={`cursor-pointer transition-colors ${
+            isFavorite ? " fill-red-500" : " fill-black dark:fill-white"
+          }`}
           onClick={async () => {
             setIsFavorite(!isFavorite);
             const res = await addToWishlist(productID, userID);

@@ -13,7 +13,7 @@ import {
   getRelatedProducts,
   hasBoughtProduct,
   isFavorite,
-} from "./helper_functions";
+} from "./utils";
 import ProductDescription from "@/app/components/ProductPage/ProductDescription";
 export const revalidate = 100;
 export async function generateStaticParams() {

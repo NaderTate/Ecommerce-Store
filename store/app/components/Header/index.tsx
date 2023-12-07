@@ -22,37 +22,84 @@ import UserAvatar from "../Header/userAvatar";
 import { useUser } from "@clerk/nextjs";
 import Search from "../Header/Search";
 import MobileMenu from "./mobileMenu";
+import { getNewArrivals, getNewCategories } from "./utils";
+import WishlistSection from "./WishlistSection";
+import CartSection from "./CartSection";
+type Props = {
+  cart: {
+    cartItems: {
+      Product: {
+        id: string;
+        Title: string;
+        Price: number;
+        mainImg: string;
+        secondImage: string;
+      };
+      Quantity: number;
+    }[];
+    totalCount: number;
+    totalPrice: number;
+  } | null;
+  Whishlist: {
+    wishlistItems: {
+      Product: {
+        id: string;
+        Title: string;
+        Price: number;
+        mainImg: string;
+        secondImage: string;
+      };
+    }[];
+    totalCount: number;
+  } | null;
+};
 
-export default function Header({
-  cart,
-  Whishlist,
-  newArrivals,
-  Discover,
-}: {
-  cart: any;
-  Whishlist: Array<object>;
-  newArrivals: Array<object>;
-  Discover: Array<object>;
-}) {
+export default function Header({ cart, Whishlist }: Props) {
   const pathname = usePathname();
   const [scrollY, setScrollY] = useState(0);
   const { isSignedIn } = useUser();
-
+  const [newArrivals, setNewArrivals] = useState<
+    | {
+        id: string;
+        Title: string;
+        Price: number;
+        mainImg: string;
+        secondImage: string;
+      }[]
+    | []
+  >([]);
+  const [newCategories, setNewCategories] = useState<
+    { id: string; label: string; Image: string }[]
+  >([]);
   useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
     };
-    window.addEventListener("scroll", handleScroll);
+    getNewArrivals().then(
+      (
+        res: {
+          id: string;
+          Title: string;
+          Price: number;
+          mainImg: string;
+          secondImage: string;
+        }[]
+      ) => {
+        setNewArrivals(res);
+      }
+    );
+    getNewCategories().then((res) => {
+      setNewCategories(res);
+    });
+    pathname == "/" && window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-  let count: number = 0;
-  cart.map(({ quantity }: { quantity: number }) => (count = count + quantity));
   return (
     <div>
       <div
-        className={`hidden md:block fixed top-0 z-20 w-full  backdrop-blur-xl ${
+        className={`hidden md:block fixed top-0 z-20 w-full backdrop-blur-xl ${
           pathname == "/" && scrollY < window.innerHeight
             ? "text-black"
             : "text-inherit"
@@ -61,10 +108,17 @@ export default function Header({
         <NavigationMenu className="w-full">
           <NavigationMenuList className="flex justify-between w-[95vw] items-center">
             <NavigationMenuItem className="cursor-pointer">
-              <Link href={{ pathname: "/" }} legacyBehavior passHref>
+              {/* Logo */}
+              <Link
+                href={{ pathname: "/" }}
+                legacyBehavior
+                passHref
+                className="cursor-pointer"
+              >
                 <Image src={"/logo.webp"} width={50} height={50} alt="Logo" />
               </Link>
             </NavigationMenuItem>
+
             <div className="flex absolute justify-center right-0 left-0 ">
               {/* New Arrivals section */}
               <NavigationMenuItem>
@@ -93,7 +147,7 @@ export default function Header({
                 <NavigationMenuContent className="bg-default-50">
                   <div className="p-5">
                     <div className="flex flex-wrap w-[750px] gap-5 justify-around  dark:text-white text-center">
-                      {Discover.map((category: any) => {
+                      {newCategories.map((category) => {
                         return (
                           <div key={category.id} className="w-36">
                             <CategoryCard category={category} />
@@ -120,25 +174,7 @@ export default function Header({
                         <FaRegHeart size={25} />
                       </NavigationMenuTrigger>
                       <NavigationMenuContent className="bg-default-50 min-w-[750px]">
-                        <div className="p-5 dark:text-white">
-                          <div className="flex flex-wrap  gap-5 ">
-                            {Whishlist.length > 0
-                              ? Whishlist.map((product: any) => {
-                                  return (
-                                    <div key={product.id} className="w-36">
-                                      <ProductCard product={product} />
-                                    </div>
-                                  );
-                                })
-                              : "Your whish list is empty :("}
-                          </div>
-                          <Link
-                            className="font-bold tracking-wider"
-                            href={{ pathname: "/whishlist" }}
-                          >
-                            Manage your whish list
-                          </Link>
-                        </div>
+                        <WishlistSection Whishlist={Whishlist} />
                       </NavigationMenuContent>
                     </NavigationMenuItem>
                     {/* Cart */}
@@ -147,41 +183,12 @@ export default function Header({
                         <div className="relative">
                           <AiOutlineShoppingCart size={25} />
                           <span className="absolute -bottom-3 -right-3 bg-black/50 rounded-full text-white w-5 h-5 text-xs flex items-center justify-center">
-                            {count}
+                            {cart?.totalCount || 0}
                           </span>
                         </div>
                       </NavigationMenuTrigger>
                       <NavigationMenuContent className="bg-default-50">
-                        <div className="p-5 dark:text-white">
-                          <div className="flex flex-wrap w-[750px] gap-5">
-                            {cart.length > 0
-                              ? cart.map(
-                                  ({
-                                    product,
-                                    quantity,
-                                  }: {
-                                    product: any;
-                                    quantity: number;
-                                  }) => {
-                                    return (
-                                      <div key={product.id} className="w-36">
-                                        <ProductCard
-                                          product={product}
-                                          quantity={quantity}
-                                        />
-                                      </div>
-                                    );
-                                  }
-                                )
-                              : "Your cart is empty :("}
-                          </div>
-                          <Link
-                            className="font-bold tracking-wider"
-                            href={{ pathname: "/cart" }}
-                          >
-                            Review and checkout
-                          </Link>
-                        </div>
+                        <CartSection cart={cart} />
                       </NavigationMenuContent>
                     </NavigationMenuItem>
                     <UserAvatar />

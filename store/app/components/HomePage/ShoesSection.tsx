@@ -6,7 +6,7 @@ type Props = {};
 const ShoesSection = (props: Props) => {
   return (
     <div>
-      <div className='bg-[url("https://res.cloudinary.com/dqkyatgoy/image/upload/v1701364279/shoes_1d3c4eb8-d243-4469-84a5-5e59982bc64b_msc6ul.jpg")] bg-cover bg-bottom bg-no-repeat h-screen p-20 w-screen flex flex-col justify-center items-center'>
+      <div className='bg-[url("https://res.cloudinary.com/dqkyatgoy/image/upload/v1701364279/shoes_1d3c4eb8-d243-4469-84a5-5e59982bc64b_msc6ul.jpg")] bg-cover bg-bottom bg-no-repeat h-screen p-20 w-full flex flex-col justify-center items-center'>
         <div className="space-y-5">
           <motion.h1
             initial={{ y: 50, opacity: 0 }}

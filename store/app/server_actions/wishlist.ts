@@ -43,3 +43,36 @@ export const addToWishlist = async (ProductId: string, UserId: string) => {
     return { success: false, error };
   }
 };
+
+// Get wishlist items
+export const getWishlistItems = async (UserId: string, limit?: number) => {
+  // Get the total count of wishlist items to use that in the navbar (eg: the user has 10 items in the wishlist, he will see only the last 7 and "+3 more")
+  const totalCount = await prisma.whishListItem.count({
+    where: {
+      UserId,
+    },
+  });
+
+  const wishlistItems = await prisma.whishListItem.findMany({
+    where: {
+      UserId,
+    },
+    take: limit ? limit : undefined,
+    orderBy: {
+      createdAt: "desc",
+    },
+    select: {
+      Product: {
+        select: {
+          id: true,
+          mainImg: true,
+          secondImage: true,
+          Title: true,
+          Price: true,
+        },
+      },
+    },
+  });
+
+  return { wishlistItems, totalCount };
+};

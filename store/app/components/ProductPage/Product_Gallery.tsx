@@ -56,7 +56,7 @@ export default function Product_Gallery({ gallery }: { gallery: any }) {
                 alt={`Product gallery ${item.id}`}
                 width={450}
                 height={450}
-                className="object-cover h-full rounded-md"
+                className="object-contain h-full rounded-md"
               />
             </SwiperSlide>
           ))}

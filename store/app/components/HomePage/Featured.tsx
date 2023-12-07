@@ -74,7 +74,9 @@ function Featured() {
         transition={{ duration: 1, delay: 0.2 }}
         className="underline text-center font-bold mb-5 text-black"
       >
-        <Link href={{ pathname: "/" }}>Shop Now</Link>
+        <Link href={{ pathname: "/products/64a72be82adc64d87b3512eb" }}>
+          Shop Now
+        </Link>
       </motion.p>
     </div>
   );
