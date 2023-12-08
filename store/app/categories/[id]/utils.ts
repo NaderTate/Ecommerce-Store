@@ -8,7 +8,7 @@ export const getCategoryProducts = async (
   filters?: { minPrice?: number; maxPrice?: number; minRating?: number },
   sortBy?: {
     price?: "asc" | "desc" | undefined;
-    id?: "asc" | "desc" | undefined;
+    id?: "desc" | undefined;
   }
 ) => {
   // This is the main request to get the products, it returns a certain number of products based on the filters and pagination.
@@ -24,6 +24,13 @@ export const getCategoryProducts = async (
       Rating: {
         gte: filters?.minRating ?? undefined,
       },
+    },
+    select: {
+      id: true,
+      mainImg: true,
+      secondImage: true,
+      Title: true,
+      Price: true,
     },
     orderBy: {
       Price: sortBy?.price ?? undefined,
@@ -94,12 +101,12 @@ export const getCategoryProducts = async (
 };
 
 export const calculatePriceFilter = (
-  highestPrice: number,
+  highestPrice: number | undefined,
   lowestPrice: number,
   filterLength: number = 5
 ) => {
   // This function calculates the price range of the results, it returns an array of numbers that represent the price range, the array is used to create the price filter.
-  const priceRange = Math.floor((highestPrice - lowestPrice) / filterLength);
+  const priceRange = Math.floor((highestPrice ?? -lowestPrice) / filterLength);
   const priceFilter = [];
   for (let i = 0; i < filterLength; i++) {
     priceFilter.push(Math.floor(lowestPrice + priceRange * i));
