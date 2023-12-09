@@ -55,7 +55,7 @@ function Search() {
     if (event.key === "Enter") {
       if (searchTerms.length < 2) return;
       onOpenChange();
-      router.push(`/search?search=${searchTerms}`);
+      router.push(`/search?s=${searchTerms}`);
       resetSearchResults();
     }
   };
@@ -92,11 +92,11 @@ function Search() {
               />
             </div>
             {loading && <Spinner />}
-            {searchResults.products.length > 0 && (
+            {searchResults?.products?.length > 0 && (
               <div>
                 <h1 className="text-center mb-3">products</h1>
                 <div className="flex flex-wrap justify-center gap-5 ">
-                  {searchResults.products.map((product) => {
+                  {searchResults?.products?.map((product) => {
                     return (
                       <div
                         className="w-36"

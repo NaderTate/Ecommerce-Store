@@ -102,61 +102,15 @@ export const getCategoryProducts = async (
 
 export const calculatePriceFilter = (
   highestPrice: number | undefined,
-  lowestPrice: number,
+  lowestPrice: number | undefined,
   filterLength: number = 5
 ) => {
+  if (!highestPrice || !lowestPrice) return [];
   // This function calculates the price range of the results, it returns an array of numbers that represent the price range, the array is used to create the price filter.
   const priceRange = Math.floor((highestPrice ?? -lowestPrice) / filterLength);
   const priceFilter = [];
   for (let i = 0; i < filterLength; i++) {
-    priceFilter.push(Math.floor(lowestPrice + priceRange * i));
+    priceFilter.push(Math.ceil(lowestPrice + priceRange * i));
   }
   return priceFilter;
-};
-
-// This function finds similar categories to the current one.
-// for example, if the current category is "laptops", it will return "mobiles", "power banks", "tablets", etc...
-// This is used in the "Discover more" section in the sidebar.
-export const getSimilarCategories = async (categoryId: string) => {
-  // Initialize the array that will hold the similar categories.
-  let similarCategories: Array<{ id: string; label: string }> = [];
-  // The idea behind this is to get the category info, if this category is a parent, then get all of it's children, if it's a child, then get all of it's siblings.
-  const categoryInfo = await prisma.category.findUnique({
-    where: { id: categoryId },
-    select: {
-      id: true,
-      label: true,
-      Parent: {
-        select: {
-          children: { select: { id: true, label: true } },
-          label: true,
-          id: true,
-        },
-      },
-      children: { select: { id: true, label: true } },
-      ParentId: true,
-    },
-  });
-
-  // If the category has a parent, then it's a child, so we push the parent and all of it's children to the array.
-  if (categoryInfo?.Parent) {
-    similarCategories.push({
-      id: categoryInfo.Parent?.id,
-      label: categoryInfo.Parent?.label,
-    });
-    categoryInfo.Parent?.children.map(({ id, label }) =>
-      similarCategories.push({ id, label })
-    );
-  }
-  // If it doesn't have a parent, then it's a parent, so we push it and all of it's children to the array.
-  else {
-    similarCategories.push({
-      id: categoryInfo?.id as string,
-      label: categoryInfo?.label as string,
-    });
-    categoryInfo?.children.map(({ id, label }) =>
-      similarCategories.push({ id, label })
-    );
-  }
-  return similarCategories;
 };

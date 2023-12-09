@@ -1,4 +1,3 @@
-import React from "react";
 import { SignOutButton } from "@clerk/nextjs";
 import { PaymentMethod } from "../components/PaymentMethod";
 import { BiUserCircle } from "react-icons/bi";
@@ -11,7 +10,6 @@ import { auth } from "@clerk/nextjs";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import AddressForm from "../components/AddressForm";
-import { Prisma } from "@prisma/client";
 import Orders from "../components/Orders";
 import { redirect } from "next/navigation";
 export const metadata = {
@@ -55,7 +53,7 @@ async function page({ searchParams }: any) {
     typeof userData?.Address === "object" &&
     Array.isArray(userData?.Address)
   ) {
-    const address = userData?.Address as Prisma.JsonArray;
+    const address = userData?.Address;
     address_ = address[0];
   }
   const content = searchParams.content || "details";

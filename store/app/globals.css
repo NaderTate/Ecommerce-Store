@@ -17,17 +17,6 @@ html {
   }
 }
 
-.title {
-  display: block;
-  text-overflow: ellipsis;
-  word-wrap: break-word;
-  overflow: hidden;
-  max-height: 1.3em;
-  line-height: 1.3em;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-}
 .mySwiper2 .swiper-slide img {
   height: 100%;
   margin: auto;
@@ -92,5 +81,9 @@ html {
 
 .swiper-button-next:after,
 .swiper-button-prev:after {
+  display: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
   display: none;
 }

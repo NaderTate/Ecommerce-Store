@@ -54,12 +54,9 @@ export async function generateMetadata({
     };
   }
 }
-async function page({ params: { id } }: { params: { id: string } }) {
-  return (
-    <div className="px-10">
-      <Main categoryId={id} />
-    </div>
-  );
+type Props = { params: { id: string } };
+function page({ params: { id } }: Props) {
+  return <Main categoryId={id} />;
 }
 
 export default page;
