@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { addReviewAction } from "../_actions";
+import { addReviewAction } from "../../_actions";
 import {
   FaRegAngry,
   FaRegMeh,

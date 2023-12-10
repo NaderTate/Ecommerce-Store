@@ -3,7 +3,7 @@ import { auth } from "@clerk/nextjs";
 import StarRating from "@/app/components/ProductPage/StarRating";
 import Product_Gallery from "@/app/components/ProductPage/Product_Gallery";
 import ProductsCarousel from "@/app/components/ProductsCarousel";
-import ReviewForm from "@/app/components/ReviewForm";
+import ReviewForm from "@/app/components/ProductPage/ReviewForm";
 import Image from "next/image";
 import AddToCartButton from "@/app/components/ProductPage/AddToCartButton";
 import ShareButton from "@/app/components/ProductPage/ShareButton";

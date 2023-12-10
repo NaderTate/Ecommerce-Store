@@ -33,54 +33,6 @@ export async function getUserById(UserId: string) {
   }
 }
 
-export async function updateAddress(
-  UserId: string,
-  Address: {
-    Country: string;
-    City: string;
-    Street: string;
-    Building: string;
-    PostalCode: number;
-    Landmark: string;
-  }
-) {
-  try {
-    const user = await prisma.address.upsert({
-      where: { UserId },
-      update: { ...Address },
-      create: { ...Address, UserId },
-    });
-    return { user };
-  } catch (error) {
-    return { error };
-  }
-}
-export async function updateUserInfo(
-  UserId: string,
-  Name: string,
-  Email: string,
-  Phone: number,
-  Gender: string,
-  BirthDate: string,
-  Image: string
-) {
-  try {
-    const user = await prisma.user.update({
-      where: { UserId },
-      data: {
-        Name,
-        Email,
-        Gender,
-        Phone,
-        BirthDate,
-        Image,
-      },
-    });
-    return { user };
-  } catch (error) {
-    return { error };
-  }
-}
 export async function createUserAfterAuth(
   UserId: string,
   Name: string,
@@ -88,34 +40,26 @@ export async function createUserAfterAuth(
   Image: string
 ) {
   try {
-    if (!(await getUserById(UserId)).user) {
-      const user = await prisma.user.create({
+    // Check if user exists, usually this function only runs when a new user signs up, but just to be safe.
+    const user = await prisma.user.findUnique({
+      where: { UserId },
+    });
+    if (!user) {
+      await prisma.user.create({
         data: {
           UserId,
           Name,
           Email,
           Gender: "",
-          Phone: 0,
+          Phone: "",
           BirthDate: "",
           Image,
-          Cart: [],
-          WhishList: [],
-          Address: {
-            create: {
-              Country: "",
-              City: "",
-              Street: "",
-              Building: "",
-              PostalCode: 0,
-              Landmark: "",
-            },
-          },
         },
       });
-      return { user };
+      return { success: true };
     }
   } catch (error) {
-    return { error };
+    return { sucess: false, error };
   }
 }
 export async function placeOrder(

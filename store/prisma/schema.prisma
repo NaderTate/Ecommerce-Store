@@ -49,7 +49,7 @@ model User {
   UserId    String          @unique
   Name      String
   Email     String
-  Phone     Int
+  Phone     String
   BirthDate String
   Gender    String
   Image     String
@@ -60,6 +60,7 @@ model User {
   updatedAt DateTime        @updatedAt
   Cart      CartItem[]
   WhishList WhishListItem[]
+  Card      Card?
 }
 
 model Order {
@@ -111,7 +112,7 @@ model Address {
   City       String
   Street     String
   Building   String
-  PostalCode Int
+  PostalCode String
   Landmark   String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -127,4 +128,17 @@ model Review {
   Comment   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Card {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  UserId     String   @unique
+  User       User     @relation(fields: [UserId], references: [UserId])
+  CardType   String?
+  HolderName String?
+  CardNumber String
+  Expiry     String
+  CVV        String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }

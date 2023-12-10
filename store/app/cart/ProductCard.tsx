@@ -1,44 +1,48 @@
 "use client";
 import Link from "next/link";
-import { Product } from "@prisma/client";
 import Image from "next/image";
 import { PlusIcon, MinusIcon } from "@heroicons/react/24/solid";
-import {
-  removeFromCartAction,
-  saveToLaterAction,
-  updateQuantityAction,
-} from "../_actions";
+
 import { useState } from "react";
-function CartProductCard({
-  userId,
-  product,
-  quantity,
-}: {
+import {
+  removeFromCart,
+  saveToLater,
+  updateItemQuantity,
+} from "../server_actions/cart";
+import { currencySymbol } from "../global_variables";
+
+type Props = {
   userId: string;
-  product: Product;
+  product: {
+    id: string;
+    mainImg: string;
+    secondImage: string;
+    Title: string;
+    Price: number;
+  };
   quantity?: number;
-}) {
+  id: string;
+};
+
+function ProductCard({ userId, product, quantity, id }: Props) {
   const [quantity_, setQuantity] = useState(quantity || 1);
   return (
     <div>
       <div className="flex  gap-2">
         <Link href={{ pathname: `/products/${product.id}` }}>
-          <div className="relative w-24 h-24  md:w-48 md:h-48 bg-white ">
-            <Image
-              sizes="30vw"
-              fill
-              className="object-contain rounded-md"
-              src={product.mainImg}
-              alt={product.Title}
-            />
-          </div>
+          <Image
+            width={100}
+            height={100}
+            className="object-contain rounded-md"
+            src={product.mainImg}
+            alt={product.Title}
+          />
         </Link>
         <div className="flex flex-col gap-2">
-          <p className="max-h-[35px] sm:max-h-[75px] overflow-hidden text-sm sm:text-md">
-            {product.Title}
-          </p>
+          <p className="line-clamp-1">{product.Title}</p>
           <span>
-            $<span className="text-xl font-bold">{product.Price}</span>
+            {currencySymbol}
+            <span className="text-xl font-bold">{product.Price}</span>
           </span>
           <div className=" hidden md:flex">
             <div className="">
@@ -49,22 +53,15 @@ function CartProductCard({
                 type="number"
                 defaultValue={quantity}
                 onChange={(e) => {
-                  updateQuantityAction(
-                    userId,
-                    product.id,
-                    Number(e.target.value)
-                  );
+                  updateItemQuantity(id, Number(e.target.value));
                 }}
                 className="mx-1 rounded-md w-12 text-center "
               />
             </div>
-            <button
-              onClick={() => removeFromCartAction(userId, product.id)}
-              className="sm:mx-5 mr-5"
-            >
+            <button onClick={() => removeFromCart(id)} className="sm:mx-5 mr-5">
               Delete
             </button>
-            <button onClick={() => saveToLaterAction(userId, product.id)}>
+            <button onClick={() => saveToLater(userId, product.id, id)}>
               Save for later
             </button>
           </div>
@@ -72,7 +69,7 @@ function CartProductCard({
       </div>
 
       {/* for mobile view*/}
-      <div className="flex justify-around my-2 md:hidden">
+      {/* <div className="flex justify-around my-2 md:hidden">
         <div className="flex">
           <MinusIcon
             onClick={() => {
@@ -116,9 +113,9 @@ function CartProductCard({
         >
           Save to later
         </button>
-      </div>
+      </div> */}
     </div>
   );
 }
 
-export default CartProductCard;
+export default ProductCard;

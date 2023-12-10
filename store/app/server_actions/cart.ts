@@ -62,6 +62,7 @@ export const getCartItems = async (UserId: string, limit?: number) => {
       createdAt: "desc",
     },
     select: {
+      id: true,
       Quantity: true,
       Product: {
         select: {
@@ -80,4 +81,57 @@ export const getCartItems = async (UserId: string, limit?: number) => {
     totalPrice += item.Quantity * item.Product.Price;
   });
   return { cartItems, totalCount, totalPrice };
+};
+
+export const updateItemQuantity = async (itemId: string, quantity: number) => {
+  await prisma.cartItem.update({
+    where: {
+      id: itemId,
+    },
+    data: {
+      Quantity: quantity,
+    },
+  });
+  revalidatePath("/cart");
+  return { success: true };
+};
+
+export const removeFromCart = async (itemId: string) => {
+  await prisma.cartItem.delete({
+    where: {
+      id: itemId,
+    },
+  });
+  revalidatePath("/cart");
+  return { success: true };
+};
+
+export const saveToLater = async (
+  UserId: string,
+  ProductId: string,
+  cartItemId: string
+) => {
+  // Add the product to the wishlist
+  await prisma.whishListItem.create({
+    data: {
+      Product: {
+        connect: {
+          id: ProductId,
+        },
+      },
+      User: {
+        connect: {
+          UserId,
+        },
+      },
+    },
+  });
+  // Remove the product from the cart
+  await prisma.cartItem.delete({
+    where: {
+      id: cartItemId,
+    },
+  });
+  revalidatePath("/cart");
+  return { success: true };
 };

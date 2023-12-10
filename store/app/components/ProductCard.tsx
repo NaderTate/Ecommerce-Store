@@ -2,9 +2,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Image as Next_UI_Image } from "@nextui-org/react";
-import { addToCartAction } from "../_actions";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { addToCart } from "../server_actions/cart";
 function ProductCard({
   product,
   quantity,
@@ -57,7 +57,7 @@ function ProductCard({
       <div className="text-xs text-center">${product.Price}</div>
       {cartPage && (
         <button
-          onClick={() => addToCartAction(userId || "", { id: product.id })}
+          onClick={() => addToCart(product.id, userId as string)}
           className="text-xs bg-blue-700 rounded-md px-2 text-center tracking-tighter cursor-pointer text-white"
         >
           Add to cart
