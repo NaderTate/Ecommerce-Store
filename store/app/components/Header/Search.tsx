@@ -7,7 +7,7 @@ import {
 } from "@nextui-org/modal";
 import { Image as NextUIImage } from "@nextui-org/image";
 import Image from "next/image";
-import { search } from "@/app/server_actions/search";
+import { search } from "@/app/server_actions/products";
 import { Spinner } from "@nextui-org/spinner";
 import Link from "next/link";
 import { debounce } from "lodash";

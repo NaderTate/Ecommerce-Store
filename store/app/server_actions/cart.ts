@@ -80,9 +80,10 @@ export const getCartItems = async (UserId: string, limit?: number) => {
   cartItems.forEach((item) => {
     totalPrice += item.Quantity * item.Product.Price;
   });
-  return { cartItems, totalCount, totalPrice };
+  return { cartItems, totalCount, totalPrice: Number(totalPrice.toFixed(2)) };
 };
 
+// Update the quantity of an item in the cart
 export const updateItemQuantity = async (itemId: string, quantity: number) => {
   await prisma.cartItem.update({
     where: {
@@ -95,7 +96,7 @@ export const updateItemQuantity = async (itemId: string, quantity: number) => {
   revalidatePath("/cart");
   return { success: true };
 };
-
+// Remove item from the cart
 export const removeFromCart = async (itemId: string) => {
   await prisma.cartItem.delete({
     where: {

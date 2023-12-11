@@ -96,3 +96,34 @@ export const createNewAddress = async (
     return { success: false, error };
   }
 };
+
+// Create a user record in the database after the user signs up
+export async function createUserAfterAuth(
+  UserId: string,
+  Name: string,
+  Email: string,
+  Image: string
+) {
+  try {
+    // Check if user exists, usually this function only runs when a new user signs up, but just to be safe.
+    const user = await prisma.user.findUnique({
+      where: { UserId },
+    });
+    if (!user) {
+      await prisma.user.create({
+        data: {
+          UserId,
+          Name,
+          Email,
+          Gender: "",
+          Phone: "",
+          BirthDate: "",
+          Image,
+        },
+      });
+      return { success: true };
+    }
+  } catch (error) {
+    return { sucess: false, error };
+  }
+}

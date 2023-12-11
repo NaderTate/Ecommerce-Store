@@ -1,4 +1,4 @@
-import { createUserAfterAuth } from "@/lib/users";
+import { createUserAfterAuth } from "@/app/server_actions/users";
 import { IncomingHttpHeaders } from "http";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";

@@ -1,33 +1,16 @@
-import { prisma } from "@/lib/prisma";
-import { Address, Order } from "@prisma/client";
-import React from "react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+"use client";
+import { Accordion, AccordionItem } from "@nextui-org/react";
+import { Address } from "@prisma/client";
+
 import { PiSealCheckBold } from "react-icons/pi";
 import { FiTruck } from "react-icons/fi";
 import ProductsCarousel from "./ProductsCarousel";
-async function OrderCard({ Order }: { Order: Order }) {
-  const OrderDetails = await prisma.order.findUnique({
-    where: { id: Order.id },
-    select: {
-      Address: true,
-      Product: {
-        select: { id: true, Title: true, mainImg: true, Price: true },
-      },
-    },
-  });
-  const {
-    PaymentMethod,
-    OrderTotal,
-    PlacedOn,
-    IsComplete,
-    CompletedOn,
-    OrderSummary,
-  } = Order;
+import { Order } from "@/typings";
+
+type Props = {
+  order: Order;
+};
+async function OrderCard({ order }: Props) {
   const MoreDetailsSection = ({
     OrderSummary,
     address,
@@ -107,60 +90,57 @@ async function OrderCard({ Order }: { Order: Order }) {
   return (
     <div className="border rounded-md bg-white dark:bg-inherit">
       <div className="border-b p-5 ">
-        <Accordion type="single" collapsible className="border-none">
-          <AccordionItem value="item-1">
-            <div className="flex flex-col lg:flex-row gap-5 items-start">
-              <div className="flex flex-col">
-                <span>Placed on:</span>
-                <span>{new Date(PlacedOn).toDateString()}</span>
+        <div className="flex flex-col xl:flex-row gap-5 items-start">
+          <div className="flex flex-col flex-shrink-0">
+            <span>Placed on:</span>
+            <span>{new Date(order.createdAt).toDateString()}</span>
+          </div>
+          <div className="flex flex-col flex-shrink-0">
+            <span>Order total:</span>
+            <span>${order.OrderTotal}</span>
+          </div>
+          <div className="lg:flex flex-col flex-shrink-0 hidden">
+            <span>Payment method:</span>
+            <span>{order.PaymentMethod}</span>
+          </div>
+          <div className="flex-shrink-0">
+            {order.IsComplete ? (
+              <div className="flex  items-center  rounded-md  px-3 py-1 gap-2 bg-green-300">
+                <h1 className="font-semibold text-green-800">Complete</h1>
+                <PiSealCheckBold size={24} color="rgb(22 101 52)" />{" "}
               </div>
-              <div className="flex flex-col">
-                <span>Order total:</span>
-                <span>${OrderTotal}</span>
+            ) : (
+              <div className="flex  items-center  rounded-md  px-3 py-1 gap-2 bg-yellow-300">
+                <h1 className="font-semibold text-yellow-800">In progress</h1>
+                <FiTruck size={24} color="rgb(133 77 14 )" />
               </div>
-              <div className="lg:flex flex-col hidden">
-                <span>Payment method:</span>
-                <span>{PaymentMethod}</span>
-              </div>
-              <AccordionTrigger>
-                <div className="flex gap-2">More details</div>
-              </AccordionTrigger>
-              <div className=" lg:mr-0   lg:ml-auto my-auto">
-                {Order.IsComplete ? (
-                  <div className="flex  items-center  rounded-md  px-3 py-1 gap-2 bg-green-300">
-                    <h1 className="font-semibold text-green-800">Complete</h1>
-                    <PiSealCheckBold size={24} color="rgb(22 101 52)" />{" "}
-                  </div>
-                ) : (
-                  <div className="flex  items-center  rounded-md  px-3 py-1 gap-2 bg-yellow-300">
-                    <h1 className="font-semibold text-yellow-800">
-                      In progress
-                    </h1>
-                    <FiTruck size={24} color="rgb(133 77 14 )" />
-                  </div>
-                )}
-              </div>
-            </div>
-            <AccordionContent className="">
-              {OrderDetails && OrderSummary && (
-                <MoreDetailsSection
-                  OrderSummary={OrderSummary}
-                  address={OrderDetails.Address}
-                  PaymentMethod={PaymentMethod}
-                />
-              )}
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+            )}
+          </div>
+          <Accordion isCompact>
+            <AccordionItem title="More details">
+              <MoreDetailsSection
+                OrderSummary={order.OrderSummary}
+                address={order.Address}
+                PaymentMethod={order.PaymentMethod}
+              />
+            </AccordionItem>
+          </Accordion>
+        </div>
       </div>
       <div className="ml-5 mt-5">
-        {IsComplete && (
+        {order.IsComplete && (
           <div className="font-bold text-2xl">
-            Delivered on:{new Date(CompletedOn).toDateString()}
+            Delivered on:{new Date(order.CompletedOn).toDateString()}
           </div>
         )}
         <div>
-          <ProductsCarousel title="" data={OrderDetails?.Product} />
+          <ProductsCarousel
+            data={order.Products.map((product) => {
+              return {
+                ...product.Product,
+              };
+            })}
+          />
         </div>
       </div>
     </div>

@@ -66,7 +66,12 @@ function AddressForm({
         />
         <Button
           isLoading={loading}
-          isDisabled={loading}
+          isDisabled={
+            loading ||
+            addressDetails.PostalCode == "" ||
+            addressDetails.City == "" ||
+            addressDetails.Country == ""
+          }
           color="primary"
           onPress={onSubmit}
         >

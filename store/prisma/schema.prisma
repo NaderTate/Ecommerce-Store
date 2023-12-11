@@ -20,7 +20,6 @@ model Product {
   Colors      String[]        @default([])
   Properties  Json
   OrderIDs    String[]        @db.ObjectId
-  Orders      Order[]         @relation(fields: [OrderIDs], references: [id])
   Reviews     Review[]
   Rating      Float
   createdAt   DateTime        @default(now())
@@ -64,33 +63,32 @@ model User {
 }
 
 model Order {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  UserId        String    @unique
-  User          User      @relation(fields: [UserId], references: [UserId])
+  id            String     @id @default(auto()) @map("_id") @db.ObjectId
+  UserId        String     @unique
+  User          User       @relation(fields: [UserId], references: [UserId])
   PaymentMethod String
   OrderTotal    Float
-  PlacedOn      String
   CompletedOn   String
-  Orders        Json[]
+  Products      CartItem[]
   IsComplete    Boolean
-  Address       Address   @relation(fields: [AddressId], references: [id])
+  Address       Address    @relation(fields: [AddressId], references: [id])
   OrderSummary  Json
-  AddressId     String    @db.ObjectId
-  Product       Product[] @relation(fields: [productIDs], references: [id])
-  productIDs    String[]  @db.ObjectId
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  AddressId     String     @db.ObjectId
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 }
 
 model CartItem {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  UserId    String   @unique
-  User      User     @relation(fields: [UserId], references: [UserId])
+  UserId    String?  @unique
+  User      User?    @relation(fields: [UserId], references: [UserId])
   Product   Product  @relation(fields: [ProductId], references: [id])
-  ProductId String   @db.ObjectId
+  ProductId String   @unique @db.ObjectId
   Quantity  Int      @default(1)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Order     Order?   @relation(fields: [orderId], references: [id])
+  orderId   String?  @db.ObjectId
 }
 
 model WhishListItem {
@@ -98,7 +96,7 @@ model WhishListItem {
   UserId    String   @unique
   User      User     @relation(fields: [UserId], references: [UserId])
   Product   Product  @relation(fields: [ProductId], references: [id])
-  ProductId String   @db.ObjectId
+  ProductId String   @unique @db.ObjectId
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

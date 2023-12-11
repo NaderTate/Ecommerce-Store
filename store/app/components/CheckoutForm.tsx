@@ -1,209 +1,154 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { SendToWhatsAppAction, placeOrderAction } from "../_actions";
 import {
+  RadioGroup,
+  Radio,
+  Divider,
+  Spacer,
   Accordion,
-  AccordionContent,
   AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+  Input,
+  Button,
+} from "@nextui-org/react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { Address, Card } from "@prisma/client";
+import AddressForm from "../account/AddressForm";
+import PaymentCardForm from "../account/PaymentCardForm";
+import OrderSummary from "../checkout/OrderSummary";
+import { useHandleOrderSummary } from "../hooks/useHandleOrderSummary";
 function CheckoutForm({
   userId,
   cartItems,
   subtotal,
-  address,
+  addresses,
+  paymentCards,
 }: {
   userId: string;
-  cartItems: Array<{ id: string; quantity: number }>;
+  cartItems: {
+    Product: {
+      Title: string;
+      Price: number;
+    };
+    id: string;
+    Quantity: number;
+  }[];
   subtotal: number;
-  address: {
-    City: string;
-    Street: string;
-    Building: string;
-    Landmark: string;
-    Country: string;
-  };
+  addresses: Address[];
+  paymentCards: Card[];
 }) {
-  const [PaymentMethod, setPaymentMethod] = useState("");
-  const [Shipping, setShipping] = useState(5);
-  const [CODFee, setCODFee] = useState(0);
-  const [voucher, setVoucher] = useState(0);
-  const total = Number((subtotal + Shipping + CODFee).toFixed(2));
-  const orderTotal: number = Number((total - voucher).toFixed(2));
-  const router = useRouter();
-  useEffect(() => {
-    if (PaymentMethod == "COD") {
-      setCODFee(5);
-    } else {
-      setCODFee(0);
+  const { summary, setSummary, onSubmitOrder, loading } = useHandleOrderSummary(
+    {
+      userId,
+      subtotal,
+      cartItems,
     }
-  }, [PaymentMethod]);
+  );
   return (
     <div>
       <div className="flex  sm:flex-row flex-col justify-between gap-12">
-        <div className="bg-white dark:bg-black/50 w-full p-5 rounded-md">
-          <div className="flex flex-col md:flex-row justify-between mb-10">
-            <h1 className="text-xl font-bold tracking-wider">
-              Shipping address
-            </h1>
-
-            <div>
-              {address.City}, {address.Street} <br /> {address.Landmark},
-              {address.Building}
-            </div>
-            <Link
-              href={{ pathname: "/account", query: { content: "address" } }}
-              className="text-left mt-2 md:m-0"
+        <div className=" w-full ">
+          <h1 className="text-xl font-bold tracking-wider ">
+            Shipping address
+          </h1>
+          <Link className="text-sm underline" href={{ pathname: "/account" }}>
+            Manage your addresses
+          </Link>
+          <Spacer y={4} />
+          {addresses.length == 0 ? (
+            <AddressForm userId={userId} />
+          ) : (
+            <RadioGroup
+              defaultValue={addresses[0].id}
+              onChange={(e) => console.log(e.target.value)}
             >
-              Change
-            </Link>
-          </div>
-          <h1 className="text-xl font-bold tracking-wider">Payment method</h1>
-          <form className="mt-2">
-            <input
-              type="radio"
-              id="credit"
-              name="payment_method"
-              value="credit"
-              onChange={(e) => setPaymentMethod(e.target.value)}
-            />
-            <label className="ml-2" htmlFor="credit">
-              Credit/debit card
-            </label>
-            <br />
-            <input
-              type="radio"
-              id="Paypal"
-              name="payment_method"
-              value="Paypal"
-              onChange={(e) => setPaymentMethod(e.target.value)}
-            />
-            <label className="ml-2" htmlFor="Paypal">
-              Paypal
-            </label>
-            <br />
-
-            <input
-              type="radio"
-              id="COD"
-              name="payment_method"
-              value="COD"
-              onChange={(e) => setPaymentMethod(e.target.value)}
-            />
-            <label className="ml-2" htmlFor="COD">
-              Cash on delivery
-            </label>
-          </form>
-
-          <div>
-            <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="item-1">
-                <AccordionTrigger>
-                  Gift card or promotion code:
-                </AccordionTrigger>
-                <AccordionContent>
-                  <input
-                    className="h-8 rounded-md px-2 mr-5"
-                    type="text"
-                    placeholder="Enter code"
-                  />
-                  <button className="bg-black/10 dark:bg-gray-800 h-8 px-2 rounded-md">
-                    Apply
-                  </button>
-                </AccordionContent>
+              {addresses.map((address) => (
+                <Radio key={address.id} value={address.id}>
+                  <p>
+                    {address?.City}, {address?.Street}, {address?.Building}
+                  </p>
+                </Radio>
+              ))}
+            </RadioGroup>
+          )}
+          <Divider className="mt-5" />
+          <h1 className="text-xl font-bold tracking-wider mt-5">
+            Payment method
+          </h1>
+          <Link className="text-sm underline" href={{ pathname: "/account" }}>
+            Manage your payment cards
+          </Link>
+          <Spacer y={2} />
+          <RadioGroup
+            value={summary.PaymentMethod}
+            onValueChange={setSummary.setPaymentMethod}
+          >
+            <Accordion isCompact>
+              <AccordionItem
+                key="1"
+                aria-label="Credit / Debit card"
+                title="Credit / Debit card"
+              >
+                {paymentCards.length == 0 ? (
+                  <PaymentCardForm userId={userId} />
+                ) : (
+                  <div className="flex flex-col gap-2">
+                    {paymentCards.map((card) => (
+                      <Radio key={card.id} value={card.id}>
+                        <p>
+                          {card?.CardNumber} - {card?.HolderName}
+                        </p>
+                      </Radio>
+                    ))}
+                  </div>
+                )}
               </AccordionItem>
             </Accordion>
-          </div>
-          <button
-            disabled={PaymentMethod == ""}
-            onClick={async () => {
-              const { Order }: any = await placeOrderAction(
-                userId,
-                cartItems,
-                orderTotal,
-                PaymentMethod,
-                false,
-                {
-                  Items: subtotal,
-                  Shipping,
-                  CODFee,
-                  Total: total,
-                  Coupon: voucher,
-                  OrderTotal: orderTotal,
-                }
-              );
-              await SendToWhatsAppAction(subtotal, cartItems);
-              router.push(`/thankyou?orderID=${Order?.id}`);
-            }}
-            className={`${
-              PaymentMethod == ""
-                ? "bg-blue-300 cursor-not-allowed"
-                : "bg-blue-700"
-            } text-white rounded-md px-3 text-xl font-bold  mt-2 tracking-wider py-2 hidden sm:block`}
+
+            <Radio value="paypal">
+              <p>Paypal</p>
+            </Radio>
+            <Radio value="COD">
+              <p>Cash on delivery</p>
+            </Radio>
+          </RadioGroup>
+          <Divider className="mt-5" />
+
+          <Input
+            label="Enter coupon code"
+            className="w-80 my-5"
+            endContent={<Button color="primary">Apply</Button>}
+          />
+
+          <Button
+            isLoading={loading}
+            color="primary"
+            size="lg"
+            isDisabled={
+              summary.PaymentMethod == "" || loading || cartItems.length == 0
+            }
+            onPress={onSubmitOrder}
+            className="hidden sm:block"
           >
             Place Order
-          </button>
+          </Button>
         </div>
         <div className="w-full sm:w-[480px] mr-5">
-          <div className="bg-white dark:bg-black/50 w-full rounded-md  p-5">
+          <div className=" w-full bg-default-50 p-5 rounded-md">
             <span className="font-bold ">Order summary:</span>
             <div className="space-y-2 mt-2">
-              <div className="flex justify-between">
-                <div>items:</div>
-                <div>${subtotal}</div>
-              </div>
-              <div className="flex justify-between">
-                <div>Shipping:</div>
-                <div>${Shipping}</div>
-              </div>
-              <div className="flex justify-between">
-                <div>Cash on delivery fee:</div>
-                <div>${CODFee}</div>
-              </div>
-              <div className="flex justify-between">
-                <div>Total:</div>
-                <div>${total}</div>
-              </div>
-              <div className="flex justify-between">
-                <div>Coupon:</div>
-                <div>${voucher}</div>
-              </div>
-              <hr />
-              <div className="flex justify-between">
-                <div className="font-bold text-lg">Order Total:</div>
-                <div>${orderTotal}</div>
-              </div>
-              <button
-                disabled={PaymentMethod == ""}
-                onClick={async () => {
-                  const { Order }: any = await placeOrderAction(
-                    userId,
-                    cartItems,
-                    orderTotal,
-                    PaymentMethod,
-                    false,
-                    {
-                      Items: subtotal,
-                      Shipping,
-                      CODFee,
-                      Total: total,
-                      Coupon: voucher,
-                      OrderTotal: orderTotal,
-                    }
-                  );
-                  await SendToWhatsAppAction(subtotal, cartItems);
-                  router.push(`/thankyou?orderID=${Order?.id}`);
-                }}
-                className={`${
-                  PaymentMethod == ""
-                    ? "bg-blue-300 cursor-not-allowed"
-                    : "bg-blue-700"
-                } text-white rounded-md px-3 text-xl font-bold mt-2 tracking-wider py-2 sm:hidden`}
+              <OrderSummary summary={{ ...summary, subtotal }} />
+              <Button
+                isLoading={loading}
+                isDisabled={
+                  summary.PaymentMethod == "" ||
+                  loading ||
+                  cartItems.length == 0
+                }
+                color="primary"
+                onPress={onSubmitOrder}
+                className={`sm:hidden`}
               >
                 Place Order
-              </button>
+              </Button>
             </div>
           </div>
         </div>

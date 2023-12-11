@@ -1,6 +1,5 @@
 "use client";
-import React, { useState } from "react";
-import { addReviewAction } from "../../_actions";
+import { useState } from "react";
 import {
   FaRegAngry,
   FaRegMeh,
@@ -9,6 +8,7 @@ import {
 } from "react-icons/fa";
 import { BiSad } from "react-icons/bi";
 import { Button, Textarea } from "@nextui-org/react";
+import { addReview } from "@/app/server_actions/products";
 function ReviewForm({
   UserId,
   ProductId,
@@ -75,7 +75,7 @@ function ReviewForm({
         isDisabled={loading || comment.length < 2}
         onPress={async () => {
           setLoading(true);
-          addReviewAction(UserId, ProductId, rating, comment);
+          addReview(UserId, ProductId, rating, comment);
           setLoading(false);
         }}
       >

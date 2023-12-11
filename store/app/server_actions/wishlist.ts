@@ -76,3 +76,17 @@ export const getWishlistItems = async (UserId: string, limit?: number) => {
 
   return { wishlistItems, totalCount };
 };
+
+export const removeFromWishlist = async (ProductId: string) => {
+  try {
+    await prisma.whishListItem.delete({
+      where: {
+        ProductId,
+      },
+    });
+    revalidatePath("/wishlist");
+    return { success: true };
+  } catch (error) {
+    return { success: false, error };
+  }
+};

@@ -37,7 +37,7 @@ export const getRelatedProducts = async (
 export const hasBoughtProduct = async (productId: string, UserId: string) => {
   const order = await prisma.order.count({
     where: {
-      AND: [{ UserId }, { Product: { some: { id: productId } } }],
+      AND: [{ UserId }, { Products: { some: { id: productId } } }],
     },
   });
   return order > 0;

@@ -7,7 +7,7 @@ import ProductCard from "./ProductCard";
 import SwiperNavButtons from "./SwiperNavButtons";
 function ProductsCarousel({
   data,
-  cartPage = false,
+  addToCartButton = false,
   userId,
 }: {
   data: {
@@ -17,7 +17,7 @@ function ProductsCarousel({
     Title: string;
     Price: number;
   }[];
-  cartPage?: boolean;
+  addToCartButton?: boolean;
   userId?: string;
 }) {
   return (
@@ -46,7 +46,7 @@ function ProductsCarousel({
                 <SwiperSlide key={product.id}>
                   <ProductCard
                     userId={userId}
-                    cartPage={cartPage}
+                    addToCartButton={addToCartButton}
                     product={product}
                   />
                 </SwiperSlide>

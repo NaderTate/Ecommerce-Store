@@ -1,16 +1,12 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { Image as Next_UI_Image } from "@nextui-org/react";
+import { Button, Image as Next_UI_Image, Spacer } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { addToCart } from "../server_actions/cart";
-function ProductCard({
-  product,
-  quantity,
-  cartPage = false,
-  userId,
-}: {
+import { removeFromWishlist } from "../server_actions/wishlist";
+type Props = {
   product: {
     id: string;
     mainImg: string;
@@ -19,10 +15,19 @@ function ProductCard({
     Price: number;
   };
   quantity?: number;
-  cartPage?: boolean;
+  addToCartButton?: boolean;
+  removeFromWishlistButton?: boolean;
   userId?: string;
-}) {
+};
+function ProductCard({
+  product,
+  quantity,
+  addToCartButton = false,
+  removeFromWishlistButton = false,
+  userId,
+}: Props) {
   const [isHovered, setIsHovered] = useState(false);
+  const [loading, setLoading] = useState(false);
   return (
     <div>
       <Link href={{ pathname: `/products/${product.id}` }}>
@@ -55,13 +60,34 @@ function ProductCard({
       </Link>
       <p className={`line-clamp-1 text-center`}>{product.Title}</p>
       <div className="text-xs text-center">${product.Price}</div>
-      {cartPage && (
-        <button
-          onClick={() => addToCart(product.id, userId as string)}
-          className="text-xs bg-blue-700 rounded-md px-2 text-center tracking-tighter cursor-pointer text-white"
+      {addToCartButton && (
+        <Button
+          color="primary"
+          size="sm"
+          fullWidth
+          isLoading={loading}
+          isDisabled={loading}
+          onPress={async () => {
+            setLoading(true);
+            await addToCart(product.id, userId as string);
+            setLoading(false);
+          }}
         >
           Add to cart
-        </button>
+        </Button>
+      )}
+      <Spacer y={1} />
+      {removeFromWishlistButton && (
+        <Button
+          color="danger"
+          size="sm"
+          fullWidth
+          onPress={() => {
+            removeFromWishlist(product.id);
+          }}
+        >
+          Remove
+        </Button>
       )}
     </div>
   );
