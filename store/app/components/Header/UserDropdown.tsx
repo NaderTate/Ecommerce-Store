@@ -15,12 +15,13 @@ import { LuPackageOpen } from "react-icons/lu";
 import { RiLogoutCircleLine } from "react-icons/ri";
 import { useUser } from "@clerk/nextjs";
 
-type props = {};
-function UserAvatar({}: props) {
+type Props = {};
+
+const UserDropdown = ({}: Props) => {
   const { user } = useUser();
 
   return (
-    <div>
+    <>
       <Dropdown
         placement="bottom-end"
         className="bg-background shadow-md shadow-blue-600/10"
@@ -89,8 +90,8 @@ function UserAvatar({}: props) {
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>
-    </div>
+    </>
   );
-}
+};
 
-export default UserAvatar;
+export default UserDropdown;

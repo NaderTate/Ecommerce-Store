@@ -1,7 +1,7 @@
 import Image from "next/image";
 import SearchModal from "../SearchModal";
 import ThemeSwitch from "../ThemeSwitch";
-import UserAvatar from "../UserAvatar";
+import UserDropdown from "../UserDropdown";
 
 type Props = {};
 const MobileMenu = ({}: Props) => {
@@ -11,7 +11,7 @@ const MobileMenu = ({}: Props) => {
       <div className="flex gap-3 items-center">
         <SearchModal />
         <ThemeSwitch />
-        <UserAvatar />
+        <UserDropdown />
       </div>
     </div>
   );

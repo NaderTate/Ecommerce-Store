@@ -15,13 +15,14 @@ import ProductCard from "../ProductCard";
 import CategoryCard from "./CategoryCard";
 import { IoMdLogIn } from "react-icons/io";
 import { FaRegHeart } from "react-icons/fa6";
-import UserAvatar from "./UserAvatar";
 import SearchModal from "./SearchModal";
 import MobileMenu from "./mobileMenu";
 import WishlistSection from "./WishlistSection";
 import CartSection from "./CartSection";
 import { ProductCardProps } from "@/typings";
 import { useFetchNavbarData } from "./utils";
+import UserDropdown from "./UserDropdown";
+
 type Props = {
   cart: {
     cartItems: {
@@ -134,7 +135,7 @@ export default function Header({ cart, Whishlist }: Props) {
                         <CartSection cart={cart} />
                       </NavigationMenuContent>
                     </NavigationMenuItem>
-                    <UserAvatar />
+                    <UserDropdown />
                   </div>
                 ) : (
                   <SignInButton redirectUrl={pathname} mode="modal">
