@@ -32,7 +32,7 @@ const ProductsFilters = ({
   const [showSideBar, setShowSideBar] = useState(false);
 
   return (
-    <div className="">
+    <>
       <Button
         endContent={<IoChevronForward />}
         color="primary"
@@ -85,7 +85,7 @@ const ProductsFilters = ({
           )}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

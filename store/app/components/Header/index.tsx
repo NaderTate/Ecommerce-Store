@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import { useEffect } from "react";
 import Link from "next/link";
 import { SignInButton } from "@clerk/nextjs";
 import { AiOutlineShoppingCart } from "react-icons/ai";
@@ -10,31 +9,23 @@ import {
   NavigationMenuItem,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
-import ThemeButton from "../Header/ThemeButton";
-import { usePathname } from "next/navigation";
+} from "@/app/components/Header/navigation-menu";
+import ThemeSwitch from "./ThemeSwitch";
 import ProductCard from "../ProductCard";
-import CategoryCard from "../CategoryCard";
-import { useState } from "react";
+import CategoryCard from "./CategoryCard";
 import { IoMdLogIn } from "react-icons/io";
 import { FaRegHeart } from "react-icons/fa6";
-import UserAvatar from "../Header/userAvatar";
-import { useUser } from "@clerk/nextjs";
-import Search from "../Header/Search";
+import UserAvatar from "./UserAvatar";
+import SearchModal from "./SearchModal";
 import MobileMenu from "./mobileMenu";
-import { getNewArrivals, getNewCategories } from "./utils";
 import WishlistSection from "./WishlistSection";
 import CartSection from "./CartSection";
+import { ProductCardProps } from "@/typings";
+import { useFetchNavbarData } from "./utils";
 type Props = {
   cart: {
     cartItems: {
-      Product: {
-        id: string;
-        Title: string;
-        Price: number;
-        mainImg: string;
-        secondImage: string;
-      };
+      Product: ProductCardProps;
       Quantity: number;
     }[];
     totalCount: number;
@@ -42,62 +33,17 @@ type Props = {
   } | null;
   Whishlist: {
     wishlistItems: {
-      Product: {
-        id: string;
-        Title: string;
-        Price: number;
-        mainImg: string;
-        secondImage: string;
-      };
+      Product: ProductCardProps;
     }[];
     totalCount: number;
   } | null;
 };
 
 export default function Header({ cart, Whishlist }: Props) {
-  const pathname = usePathname();
-  const [scrollY, setScrollY] = useState(0);
-  const { isSignedIn } = useUser();
-  const [newArrivals, setNewArrivals] = useState<
-    | {
-        id: string;
-        Title: string;
-        Price: number;
-        mainImg: string;
-        secondImage: string;
-      }[]
-    | []
-  >([]);
-  const [newCategories, setNewCategories] = useState<
-    { id: string; label: string; Image: string }[]
-  >([]);
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-    getNewArrivals().then(
-      (
-        res: {
-          id: string;
-          Title: string;
-          Price: number;
-          mainImg: string;
-          secondImage: string;
-        }[]
-      ) => {
-        setNewArrivals(res);
-      }
-    );
-    getNewCategories().then((res) => {
-      setNewCategories(res);
-    });
-    pathname == "/" && window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+  const { newArrivals, newCategories, scrollY, pathname, isSignedIn } =
+    useFetchNavbarData();
   return (
-    <div>
+    <>
       <div
         className={`hidden md:block fixed top-0 z-20 w-full backdrop-blur-xl ${
           pathname == "/" && scrollY < window.innerHeight
@@ -107,18 +53,14 @@ export default function Header({ cart, Whishlist }: Props) {
       >
         <NavigationMenu className="w-full">
           <NavigationMenuList className="flex justify-between w-[95vw] items-center">
-            <NavigationMenuItem className="cursor-pointer">
+            <NavigationMenuItem className="cursor-pointer z-20">
               {/* Logo */}
-              <Link
-                href={{ pathname: "/" }}
-                legacyBehavior
-                passHref
-                className="cursor-pointer"
-              >
+              <Link href={{ pathname: "/" }} legacyBehavior passHref>
                 <Image src={"/logo.webp"} width={50} height={50} alt="Logo" />
               </Link>
             </NavigationMenuItem>
 
+            {/* Middle Section (New arrivals, Discover) */}
             <div className="flex absolute justify-center right-0 left-0 ">
               {/* New Arrivals section */}
               <NavigationMenuItem>
@@ -128,7 +70,7 @@ export default function Header({ cart, Whishlist }: Props) {
                 <NavigationMenuContent className="bg-default-50">
                   <div className="p-5">
                     <div className="flex flex-wrap w-[750px] gap-5 justify-around  dark:text-white">
-                      {newArrivals.map((product: any) => {
+                      {newArrivals.map((product) => {
                         return (
                           <div key={product.id} className="w-36">
                             <ProductCard product={product} />
@@ -160,11 +102,12 @@ export default function Header({ cart, Whishlist }: Props) {
               </NavigationMenuItem>
             </div>
 
+            {/* Search, Wishlist, Cart and userAvatar */}
             <div className="flex items-center gap-x-3 z-20">
               <NavigationMenuItem>
-                <Search />
+                <SearchModal />
               </NavigationMenuItem>
-              <ThemeButton />
+              <ThemeSwitch />
               <NavigationMenuItem>
                 {isSignedIn ? (
                   <div className="flex gap-x-3 items-center">
@@ -206,6 +149,6 @@ export default function Header({ cart, Whishlist }: Props) {
       <div className="md:hidden">
         <MobileMenu />
       </div>
-    </div>
+    </>
   );
 }

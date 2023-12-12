@@ -1,10 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
-import Orders from "../components/Orders";
+import Orders from "./Orders";
 type Props = {};
 
-const page = async (props: Props) => {
+const page = async ({}: Props) => {
   const { userId } = auth();
   if (!userId) redirect("/sign-in?redirectURL=wishlist");
   const orders = await prisma.order.findMany({
@@ -24,6 +24,7 @@ const page = async (props: Props) => {
         },
       },
       Address: true,
+      OrderSummary: true,
     },
     orderBy: { createdAt: "desc" },
     cacheStrategy: { ttl: 60 },

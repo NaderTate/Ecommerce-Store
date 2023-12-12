@@ -14,6 +14,10 @@ export const getProductData = async (productId: string) => {
         },
       },
     },
+    cacheStrategy: {
+      ttl: 60 * 60 * 24,
+      swr: 60 * 60,
+    },
   });
   return product;
 };

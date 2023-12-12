@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs";
 import { prisma } from "@/lib/prisma";
-import CheckoutForm from "../components/CheckoutForm";
+import Main from "./Main";
 import { redirect } from "next/navigation";
 import { getCartItems } from "../server_actions/cart";
 export const metadata = {
@@ -33,32 +33,40 @@ export const metadata = {
 async function page() {
   const { userId } = auth();
   if (!userId) redirect("/sign-in?redirectURL=checkout");
-
   const { cartItems, totalPrice, totalCount } = await getCartItems(userId);
   const userAddresses = await prisma.address.findMany({
     where: { UserId: userId },
+    select: {
+      id: true,
+      City: true,
+      Street: true,
+      Building: true,
+    },
     orderBy: { createdAt: "desc" },
   });
   const userPaymentCards = await prisma.card.findMany({
     where: { UserId: userId },
+    select: {
+      id: true,
+      CardNumber: true,
+      HolderName: true,
+    },
     orderBy: { createdAt: "desc" },
   });
   return (
     <div className="sm:px-10 mt-20 px-5">
-      <div>
-        <h1 className="text-2xl my-12 text-center tracking-wider">
-          Checkout ({totalCount} items)
-        </h1>
-        {userId && (
-          <CheckoutForm
-            cartItems={cartItems}
-            userId={userId}
-            subtotal={totalPrice}
-            addresses={userAddresses}
-            paymentCards={userPaymentCards}
-          />
-        )}
-      </div>
+      <h1 className="text-2xl my-12 text-center tracking-wider">
+        Checkout ({totalCount} items)
+      </h1>
+      {userId && (
+        <Main
+          cartItems={cartItems}
+          userId={userId}
+          subtotal={totalPrice}
+          addresses={userAddresses}
+          paymentCards={userPaymentCards}
+        />
+      )}
     </div>
   );
 }

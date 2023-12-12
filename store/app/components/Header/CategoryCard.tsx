@@ -11,7 +11,7 @@ type props = {
 };
 function CategoryCard({ category }: props) {
   return (
-    <div className={``}>
+    <>
       <Link href={{ pathname: `/categories/${category.id}` }}>
         <motion.div
           initial={{ opacity: 0, scale: 1.1 }}
@@ -29,7 +29,7 @@ function CategoryCard({ category }: props) {
         </motion.div>
       </Link>
       <p className={`line-clamp-1 text-xs`}>{category.label}</p>
-    </div>
+    </>
   );
 }
 export default CategoryCard;

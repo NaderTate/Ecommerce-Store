@@ -13,8 +13,10 @@ export const useHandleOrderSummary = (params: {
     id: string;
     Quantity: number;
   }[];
+  defaultAddressId: string;
 }) => {
   const [PaymentMethod, setPaymentMethod] = useState("");
+  const [addressId, setAddressId] = useState(params.defaultAddressId);
   const [Shipping, setShipping] = useState(5);
   const [CODFee, setCODFee] = useState(0);
   const [voucher, setVoucher] = useState(0);
@@ -33,17 +35,24 @@ export const useHandleOrderSummary = (params: {
 
   const onSubmitOrder = async () => {
     setLoading(true);
-    await placeOrder(params.userId, PaymentMethod, params.cartItems, {
-      Items: params.subtotal,
-      Shipping,
-      CODFee,
-      Total: total,
-      Coupon: voucher,
-      OrderTotal: orderTotal,
-    });
+    router.prefetch("/thankyou");
+    const { order } = await placeOrder(
+      params.userId,
+      PaymentMethod,
+      addressId,
+      params.cartItems,
+      {
+        CODFee,
+        Shipping,
+        voucher,
+        orderTotal,
+        total,
+        subtotal: params.subtotal,
+      }
+    );
     await SendToWhatsApp(orderTotal, params.cartItems);
     setLoading(false);
-    // router.push(`/thankyou?orderID=${Order?.id}`);
+    router.push(`/thankyou?orderID=${order?.id}`);
   };
 
   return {
@@ -57,6 +66,7 @@ export const useHandleOrderSummary = (params: {
     },
     setSummary: {
       setPaymentMethod,
+      setAddressId,
       setShipping,
       setCODFee,
       setVoucher,

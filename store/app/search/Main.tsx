@@ -3,7 +3,7 @@ import { useFetchProducts } from "../hooks/useFetchProducts";
 import ProductsFilters from "../components/ProductsFilters";
 import ProductsSection from "../categories/[id]/ProductsSection";
 import Pagination from "../components/Pagination";
-import { productsPerPage } from "../global_variables";
+import { productsPerPage } from "../../lib/global_variables";
 
 type Props = { searchQuery: string };
 

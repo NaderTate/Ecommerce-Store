@@ -6,7 +6,7 @@ import { Switch } from "@nextui-org/react";
 import { BiSolidSun } from "react-icons/bi";
 import { BsFillMoonFill } from "react-icons/bs";
 
-const ThemeButton = () => {
+const ThemeSwitch = () => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -31,4 +31,4 @@ const ThemeButton = () => {
   );
 };
 
-export default ThemeButton;
+export default ThemeSwitch;

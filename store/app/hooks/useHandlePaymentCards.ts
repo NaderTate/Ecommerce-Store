@@ -8,7 +8,6 @@ export const useHandlePaymentCards = (UserId: string, card?: Card) => {
   const [HolderName, setHolderName] = useState(card?.HolderName || "");
   const [Expiry, setExpiry] = useState(card?.Expiry || "");
   const [CVV, setCVV] = useState(card?.CVV || "");
-  const [CardType, setCardType] = useState(card?.CardType || "");
   const [loading, setLoading] = useState(false);
   const notify = (message: string) => toast(message);
   const getCardType = (cardNumber: string) => {
@@ -29,6 +28,7 @@ export const useHandlePaymentCards = (UserId: string, card?: Card) => {
       return "Unknown";
     }
   };
+  const CardType = getCardType(CardNumber);
   const onSubmit = async function () {
     setLoading(true);
     if (card) {
@@ -54,14 +54,10 @@ export const useHandlePaymentCards = (UserId: string, card?: Card) => {
       setHolderName("");
       setExpiry("");
       setCVV("");
-      setCardType("");
       notify("Your card has been added");
     }
   };
 
-  useEffect(() => {
-    setCardType(getCardType(CardNumber));
-  }, [CardNumber]);
   return {
     loading,
     cardDetails: {
@@ -76,7 +72,6 @@ export const useHandlePaymentCards = (UserId: string, card?: Card) => {
       setHolderName,
       setExpiry,
       setCVV,
-      setCardType,
     },
     onSubmit,
   };

@@ -1,14 +1,14 @@
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@nextui-org/react";
 
 function loading() {
   return (
-    <div className="mt-5 mx-5">
-      <Skeleton className="w-[90vw] m-auto h-56 bg-gray-500 mb-10" />
+    <div className="mt-20 mx-5">
+      <Skeleton disableAnimation className="w-[90vw] m-auto h-56 mb-10" />
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-10">
-        <Skeleton className="w-full m-auto h-44 bg-gray-500" />
-        <Skeleton className="w-full m-auto h-44 bg-gray-500" />
-        <Skeleton className="w-full m-auto h-44 bg-gray-500" />
-        <Skeleton className="w-full m-auto h-44 bg-gray-500" />
+        <Skeleton disableAnimation className="w-full m-auto h-44" />
+        <Skeleton disableAnimation className="w-full m-auto h-44" />
+        <Skeleton disableAnimation className="w-full m-auto h-44" />
+        <Skeleton disableAnimation className="w-full m-auto h-44" />
       </div>
     </div>
   );

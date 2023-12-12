@@ -1,16 +1,27 @@
-import { Address, Order } from "@prisma/client";
+import { Address, Order, OrderSummary } from "@prisma/client";
 
 interface Order extends Order {
-  OrderSummary: any;
+  OrderSummary: OrderSummary;
   Address: Address;
   Products: {
-    Product: {
-      id: string;
-      Title: string;
-      Price: number;
-      mainImg: string;
-      secondImage: string;
-    };
+    Product: ProductCardProps;
     Quantity: number;
   }[];
 }
+
+type OrderSummary_ = {
+  subtotal: number;
+  CODFee: number;
+  Shipping: number;
+  voucher: number;
+  orderTotal: number;
+  total: number;
+};
+
+type ProductCardProps = {
+  id: string;
+  Title: string;
+  Price: number;
+  mainImg: string;
+  secondImage: string;
+};

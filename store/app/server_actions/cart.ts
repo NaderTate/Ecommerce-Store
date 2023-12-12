@@ -74,6 +74,7 @@ export const getCartItems = async (UserId: string, limit?: number) => {
         },
       },
     },
+
   });
   // Calculate the total price of the cart
   let totalPrice = 0;

@@ -43,22 +43,20 @@ const Shipping = (props: Props) => {
     );
   };
   return (
-    <div>
-      <div className="flex flex-col md:flex-row items-center justify-center gap-5 p-5">
-        {data.map((item, i) => {
-          return (
-            <motion.div
-              key={i}
-              initial={{ y: 50, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.1 * i }}
-              viewport={{ once: true }}
-            >
-              <Section {...item} />
-            </motion.div>
-          );
-        })}
-      </div>
+    <div className="flex flex-col md:flex-row items-center justify-center gap-5 p-5">
+      {data.map((item, i) => {
+        return (
+          <motion.div
+            key={i}
+            initial={{ y: 50, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.1 * i }}
+            viewport={{ once: true }}
+          >
+            <Section {...item} />
+          </motion.div>
+        );
+      })}
     </div>
   );
 };

@@ -1,16 +1,11 @@
+import { ProductCardProps } from "@/typings";
 import ProductCard from "../ProductCard";
 import Link from "next/link";
 
 type Props = {
   cart: {
     cartItems: {
-      Product: {
-        id: string;
-        Title: string;
-        Price: number;
-        mainImg: string;
-        secondImage: string;
-      };
+      Product: ProductCardProps;
       Quantity: number;
     }[];
     totalCount: number;
@@ -42,9 +37,11 @@ const CartSection = ({ cart }: Props) => {
           </div>
         )}
       </div>
-      <Link className="font-bold tracking-wider" href={{ pathname: "/cart" }}>
-        Review and checkout (${cart?.totalPrice.toFixed(2)})
-      </Link>
+      {cart && cart?.totalCount > 0 && (
+        <Link className="font-bold tracking-wider" href={{ pathname: "/cart" }}>
+          Review and checkout (${cart?.totalPrice.toFixed(2)})
+        </Link>
+      )}
     </div>
   );
 };

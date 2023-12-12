@@ -39,7 +39,7 @@ export const getCategoryProducts = async (
     take: pagination?.limit ?? undefined,
     skip: pagination?.skip ?? undefined,
   });
-  //   I have to make another request to get the total count of products that match the fileters, prisma doesn't have a way to do this in one request yet...
+  //   I have to make another request to get the total count of products that match the filters, prisma doesn't have a way to do this in one request yet...
   const count = await prisma.product.count({
     where: {
       CategoryIDs: {
@@ -54,7 +54,7 @@ export const getCategoryProducts = async (
       },
     },
   });
-  //   I have to make another request to get the cheapest and most expensive products that match the fileters, the first request only returns a certain number of products, there's no guranatee that the most expensive or cheapest products will be in that list.
+  //   I have to make another request to get the cheapest and most expensive products that match the filters, the first request only returns a certain number of products, there's no guranatee that the most expensive or cheapest products will be in that list.
   // I use these values to calculate the average price range of the results which is used in the price filter.
   const highestPrice = await prisma.product.findFirst({
     select: { Price: true },

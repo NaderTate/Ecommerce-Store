@@ -31,5 +31,5 @@ const FilterButton = forwardRef<HTMLButtonElement, Props>(
     );
   }
 );
-
+FilterButton.displayName = "FilterButton";
 export default FilterButton;

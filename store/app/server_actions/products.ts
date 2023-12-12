@@ -24,6 +24,10 @@ export const getProductsByCategoryID = async (
       Title: true,
       Price: true,
     },
+    cacheStrategy: {
+      ttl: 60 * 60 * 24, // Store the results in cache for 24 hours
+      swr: 60, // after the 24 hours, you may get the cached results for 60 seconds while the new results are being fetched in the background
+    },
   });
   return products;
 };

@@ -4,8 +4,9 @@ import { Address } from "@prisma/client";
 
 import { PiSealCheckBold } from "react-icons/pi";
 import { FiTruck } from "react-icons/fi";
-import ProductsCarousel from "./ProductsCarousel";
-import { Order } from "@/typings";
+import ProductsCarousel from "../components/ProductsCarousel";
+import { Order, OrderSummary_ } from "@/typings";
+import OrderSummaryCard from "../components/OrderSummaryCard";
 
 type Props = {
   order: Order;
@@ -16,7 +17,7 @@ async function OrderCard({ order }: Props) {
     address,
     PaymentMethod,
   }: {
-    OrderSummary: any;
+    OrderSummary: OrderSummary_;
     address: Address;
     PaymentMethod: string;
   }) => {
@@ -51,34 +52,10 @@ async function OrderCard({ order }: Props) {
           </div>
           <div>
             <div className="border rounded-md p-5 space-y-2 text-lg mt-2 bg-gray-100 dark:bg-inherit">
-              <div className="  w-full rounded-md">
+              <div className="w-full rounded-md">
                 <div className="space-y-2">
                   <span className="font-bold">Order Summary:</span>
-                  <div className="flex justify-between">
-                    <div>items:</div>
-                    <div>${OrderSummary.Items}</div>
-                  </div>
-                  <div className="flex justify-between">
-                    <div>Shipping:</div>
-                    <div>${OrderSummary.Shipping}</div>
-                  </div>
-                  <div className="flex justify-between gap-5">
-                    <div>Cash on delivery fee:</div>
-                    <div>${OrderSummary.CODFee}</div>
-                  </div>
-                  <div className="flex justify-between">
-                    <div>Total:</div>
-                    <div>${OrderSummary.Total}</div>
-                  </div>
-                  <div className="flex justify-between">
-                    <div>Coupon:</div>
-                    <div>${OrderSummary.Coupon}</div>
-                  </div>
-                  <hr />
-                  <div className="flex justify-between">
-                    <div className="font-bold text-lg">Order Total:</div>
-                    <div>${OrderSummary.OrderTotal}</div>
-                  </div>
+                  <OrderSummaryCard summary={OrderSummary} />
                 </div>
               </div>
             </div>

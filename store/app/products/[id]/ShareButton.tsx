@@ -12,7 +12,7 @@ const ShareButton = ({ productTitle, productImage }: Props) => {
   return (
     <Accordion>
       <AccordionItem
-        indicator={<></>}
+        hideIndicator
         startContent={<IoMdShareAlt size={25} />}
         key="1"
         aria-label="Share"

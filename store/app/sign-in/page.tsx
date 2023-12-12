@@ -26,13 +26,15 @@ export const metadata = {
     description: "sign ",
   },
 };
-async function page({ searchParams }: { searchParams: any }) {
+
+type Props = {
+  searchParams: { redirectURL: string };
+};
+async function page({ searchParams }: Props) {
   const { redirectURL } = searchParams;
   return (
-    <div>
-      <div className="flex justify-center">
-        <SignIn redirectUrl={redirectURL || "/"} signUpUrl="/sign-up" />
-      </div>
+    <div className="flex justify-center">
+      <SignIn redirectUrl={redirectURL || "/"} signUpUrl="/sign-up" />
     </div>
   );
 }

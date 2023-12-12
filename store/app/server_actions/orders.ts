@@ -1,31 +1,29 @@
 "use server";
 import { prisma } from "@/lib/prisma";
-import { currencySymbol } from "../global_variables";
+import { currencySymbol } from "../../lib/global_variables";
+import { OrderSummary_ } from "@/typings";
+import { revalidatePath } from "next/cache";
 
 export const placeOrder = async (
   userId: string,
   PaymentMethod: string,
+  addressId: string,
   itemsIDs: { id: string }[],
-  OrderSummary: {
-    Items: number;
-    Shipping: number;
-    CODFee: number;
-    Total: number;
-    Coupon: number;
-    OrderTotal: number;
-  }
+  OrderSummary: OrderSummary_
 ) => {
   try {
     const OrderCreation = prisma.order.create({
       data: {
         User: { connect: { UserId: userId } },
         PaymentMethod,
-        OrderTotal: OrderSummary.OrderTotal,
+        OrderTotal: OrderSummary.orderTotal,
         CompletedOn: "",
         Products: { connect: itemsIDs },
         IsComplete: false,
-        Address: { connect: { UserId: userId } },
-        OrderSummary,
+        Address: { connect: { id: addressId } },
+        OrderSummary: {
+          create: OrderSummary,
+        },
       },
     });
     // remove the items from the user cart after the order has been placed
@@ -38,7 +36,8 @@ export const placeOrder = async (
       OrderCreation,
       CartDisconnection,
     ]);
-    return { success: true };
+    revalidatePath("/checkout");
+    return { order: result[0], success: true };
   } catch (error) {
     return { error };
   }

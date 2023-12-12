@@ -7,10 +7,14 @@ import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
-export default function Product_Gallery({ gallery }: { gallery: any }) {
+export default function Product_Gallery({
+  gallery,
+}: {
+  gallery: { img: string; id: string }[];
+}) {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   return (
-    <div className="md:sticky md:float-left md:top-2 md:w-[40vw] md:mr-10">
+    <div className="md:sticky md:float-left md:top-20 md:w-[40vw] md:mr-10">
       <div className="flex flex-col-reverse md:flex-row">
         <div>
           <Swiper
@@ -23,7 +27,7 @@ export default function Product_Gallery({ gallery }: { gallery: any }) {
             modules={[Navigation, Thumbs]}
             className="thumbs"
           >
-            {gallery?.map((item: any) => (
+            {gallery?.map((item) => (
               <SwiperSlide
                 key={`product-gallery-${item.id}`}
                 className="flex justify-center items-center"
@@ -46,7 +50,7 @@ export default function Product_Gallery({ gallery }: { gallery: any }) {
           navigation
           className="mySwiper2 flex items-center"
         >
-          {gallery?.map((item: any) => (
+          {gallery?.map((item) => (
             <SwiperSlide
               key={`product-gallery-${item.id}`}
               className="flex justify-center items-center h-full"
@@ -56,7 +60,7 @@ export default function Product_Gallery({ gallery }: { gallery: any }) {
                 alt={`Product gallery ${item.id}`}
                 width={450}
                 height={450}
-                className="object-contain h-full rounded-md"
+                className="object-contain h-full rounded-md max-h-[80vh]"
               />
             </SwiperSlide>
           ))}

@@ -8,7 +8,7 @@ import {
 } from "../categories/[id]/utils";
 import { getSimilarCategories } from "@/app/server_actions/categories";
 import { getSearchResults } from "@/app/search/utils";
-import { productsPerPage } from "../global_variables";
+import { productsPerPage } from "../../lib/global_variables";
 export const useFetchProducts = (query: {
   categoryId?: string;
   searchQuery?: string;

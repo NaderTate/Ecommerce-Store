@@ -29,7 +29,7 @@ function ProductCard({
   const [isHovered, setIsHovered] = useState(false);
   const [loading, setLoading] = useState(false);
   return (
-    <div>
+    <>
       <Link href={{ pathname: `/products/${product.id}` }}>
         <div
           className={`p-5 bg-default/40 dark:bg-content1/40 rounded-md relative`}
@@ -89,7 +89,7 @@ function ProductCard({
           Remove
         </Button>
       )}
-    </div>
+    </>
   );
 }
 

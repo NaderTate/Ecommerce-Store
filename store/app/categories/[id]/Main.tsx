@@ -1,12 +1,15 @@
+// This component is the parent of the filters and the products sections
+// It takes the filters values from the user and pass them to the useFetchProducts hook then passes them to the products section to be displayed
 "use client";
 import ProductsSection from "./ProductsSection";
 import ProductsFilters from "@/app/components/ProductsFilters";
 import { useFetchProducts } from "../../hooks/useFetchProducts";
 import Pagination from "@/app/components/Pagination";
-import { productsPerPage } from "@/app/global_variables";
+import { productsPerPage } from "@/lib/global_variables";
 type Props = { categoryId: string };
 
 const Main = ({ categoryId }: Props) => {
+  // This is a custom hook that fetches the products based on the filters values
   const {
     products,
     similarCategories,

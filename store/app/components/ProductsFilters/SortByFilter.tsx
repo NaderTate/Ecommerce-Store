@@ -12,7 +12,7 @@ type Props = {
 
 const SortByFilter = ({ onChange }: Props) => {
   return (
-    <div>
+    <>
       <FilterButton onClick={() => onChange({ id: "desc" })}>
         Latest
       </FilterButton>
@@ -22,7 +22,7 @@ const SortByFilter = ({ onChange }: Props) => {
       <FilterButton onClick={() => onChange({ price: "desc" })}>
         Price: High to Low
       </FilterButton>
-    </div>
+    </>
   );
 };
 

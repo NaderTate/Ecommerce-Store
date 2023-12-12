@@ -7,50 +7,24 @@ import {
 } from "@nextui-org/modal";
 import { Image as NextUIImage } from "@nextui-org/image";
 import Image from "next/image";
-import { search } from "@/app/server_actions/products";
 import { Spinner } from "@nextui-org/spinner";
 import Link from "next/link";
-import { debounce } from "lodash";
-import { ChangeEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@nextui-org/input";
 import { PiMagnifyingGlassBold } from "react-icons/pi";
 import ProductCard from "../ProductCard";
-
-function Search() {
+import { useFetchSearchResults } from "./utils";
+function SearchModal() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [loading, setLoading] = useState(false);
-  const [searchTerms, setSearchTerms] = useState<string>("");
-  const [searchResults, setSearchResults] = useState<{
-    products: {
-      Title: string;
-      id: string;
-      mainImg: string;
-      secondImage: string;
-      Price: number;
-    }[];
-    categories: { label: string; Image: string; id: string }[];
-  }>({ products: [], categories: [] });
+  const {
+    searchTerms,
+    searchResults,
+    resetSearchResults,
+    handleInputChange,
+    loading,
+  } = useFetchSearchResults();
   const router = useRouter();
-  const resetSearchResults = () => {
-    setSearchResults({ products: [], categories: [] });
-  };
-  const debouncedSearch = debounce(async (searchQuery: string) => {
-    // Make your Prisma query here and update the UI
-    if (searchQuery.length < 2) return;
-    setLoading(true);
-    const data = await search(searchQuery);
-    // Update the UI with the search results
-    setSearchResults(data);
-    setLoading(false);
-  }, 500);
-  function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
-    const searchQuery = event.target.value;
-    if (searchQuery.length < 2) resetSearchResults();
-    setSearchTerms(searchQuery);
-    resetSearchResults();
-    debouncedSearch(searchQuery);
-  }
+  router.prefetch("/search");
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       if (searchTerms.length < 2) return;
@@ -60,7 +34,7 @@ function Search() {
     }
   };
   return (
-    <div>
+    <>
       <div onClick={onOpen}>
         <PiMagnifyingGlassBold size={25} className="cursor-pointer" />
       </div>
@@ -72,33 +46,33 @@ function Search() {
       >
         <ModalContent className="p-2 max-h-[95vh] overflow-auto">
           <ModalBody>
-            <div className="relative mt-5" onKeyDown={handleKeyDown}>
-              <Input
-                onChange={handleInputChange}
-                label="search any thing..."
-                autoFocus
-                endContent={
-                  <PiMagnifyingGlassBold
-                    className="cursor-pointer"
-                    size={22}
-                    onClick={() => {
-                      if (searchTerms.length < 2) return;
-                      onOpenChange();
-                      router.push(`/search?search=${searchTerms}`);
-                      resetSearchResults();
-                    }}
-                  />
-                }
-              />
-            </div>
+            <Input
+              onKeyDown={handleKeyDown}
+              onChange={handleInputChange}
+              label="search any thing..."
+              autoFocus
+              endContent={
+                <PiMagnifyingGlassBold
+                  className="cursor-pointer"
+                  size={22}
+                  onClick={() => {
+                    if (searchTerms.length < 2) return;
+                    onOpenChange();
+                    router.push(`/search?search=${searchTerms}`);
+                    resetSearchResults();
+                  }}
+                />
+              }
+            />
             {loading && <Spinner />}
             {searchResults?.products?.length > 0 && (
-              <div>
+              <>
                 <h1 className="text-center mb-3">products</h1>
                 <div className="flex flex-wrap justify-center gap-5 ">
                   {searchResults?.products?.map((product) => {
                     return (
                       <div
+                        key={product.id}
                         className="w-36"
                         onClick={() => {
                           onOpenChange();
@@ -110,10 +84,10 @@ function Search() {
                     );
                   })}
                 </div>
-              </div>
+              </>
             )}
             {searchResults.categories.length > 0 && (
-              <div>
+              <>
                 <h1 className="text-center mb-3">categories</h1>
                 <div className="flex flex-wrap justify-center gap-5">
                   {searchResults.categories.map((category) => {
@@ -132,20 +106,20 @@ function Search() {
                           height={135}
                           className="object-contain rounded-md"
                           src={category?.Image}
-                          alt=""
+                          alt={category.label}
                         />
                         <h1 className="text-center">{category.label}</h1>
                       </Link>
                     );
                   })}
                 </div>
-              </div>
+              </>
             )}
           </ModalBody>
         </ModalContent>
       </Modal>
-    </div>
+    </>
   );
 }
 
-export default Search;
+export default SearchModal;

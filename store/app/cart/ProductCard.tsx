@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { removeFromCart, saveToLater } from "../server_actions/cart";
-import { currencySymbol } from "../global_variables";
+import { currencySymbol } from "../../lib/global_variables";
 import QuantityButtons from "./QuantityButtons";
 import { Button, Skeleton } from "@nextui-org/react";
 import { useState } from "react";

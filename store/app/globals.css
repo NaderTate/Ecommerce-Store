@@ -22,6 +22,11 @@ html {
   margin: auto;
   width: 100%;
 }
+.mySwiper2 .swiper-slide img {
+  height: 100%;
+  margin: auto;
+  width: 100%;
+}
 @media only screen and (min-width: 768px) {
   .thumbs .swiper-wrapper .swiper-slide {
     width: auto !important;

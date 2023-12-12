@@ -63,19 +63,33 @@ model User {
 }
 
 model Order {
-  id            String     @id @default(auto()) @map("_id") @db.ObjectId
-  UserId        String     @unique
-  User          User       @relation(fields: [UserId], references: [UserId])
-  PaymentMethod String
-  OrderTotal    Float
-  CompletedOn   String
-  Products      CartItem[]
-  IsComplete    Boolean
-  Address       Address    @relation(fields: [AddressId], references: [id])
-  OrderSummary  Json
-  AddressId     String     @db.ObjectId
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  UserId         String       @unique
+  User           User         @relation(fields: [UserId], references: [UserId])
+  PaymentMethod  String
+  OrderTotal     Float
+  CompletedOn    String
+  Products       CartItem[]
+  IsComplete     Boolean
+  Address        Address      @relation(fields: [AddressId], references: [id])
+  AddressId      String       @db.ObjectId
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  OrderSummary   OrderSummary @relation(fields: [OrderSummaryId], references: [id])
+  OrderSummaryId String       @unique @db.ObjectId
+}
+
+model OrderSummary {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  subtotal   Int
+  Shipping   Int
+  CODFee     Int
+  total      Int
+  voucher    Int
+  orderTotal Int
+  Order      Order?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model CartItem {

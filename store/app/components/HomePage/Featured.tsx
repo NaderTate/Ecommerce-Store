@@ -4,7 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 function Featured() {
   return (
-    <div className="h-screen bg-gradient-to-r from-[#A1C4FD] to-[#C2E9FB] flex flex-col justify-evenly">
+    <div className="h-screen bg-gradient-to-r from-[#A1C4FD] to-[#C2E9FB] flex flex-col justify-evenly overflow-x-hidden">
       {/* mobile view */}
       <div className="sm:hidden h-screen relative">
         <motion.div
@@ -34,7 +34,7 @@ function Featured() {
             width={1920}
             height={1080}
             quality={100}
-            className="object-contain w-96 absolute  -rotate-[30deg] transform -scale-x-100"
+            className="object-contain w-96 absolute -rotate-[30deg] transform -scale-x-100"
             alt="macbook"
           />
         </motion.div>

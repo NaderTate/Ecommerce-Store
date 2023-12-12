@@ -1,20 +1,21 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs";
-import StarRating from "@/app/components/ProductPage/StarRating";
-import Product_Gallery from "@/app/components/ProductPage/Product_Gallery";
-import ProductsCarousel from "@/app/components/ProductsCarousel";
-import ReviewForm from "@/app/components/ProductPage/ReviewForm";
 import Image from "next/image";
-import AddToCartButton from "@/app/components/ProductPage/AddToCartButton";
-import ShareButton from "@/app/components/ProductPage/ShareButton";
-import AddToFavsButton from "@/app/components/ProductPage/AddToFavsButton";
+import StarRating from "@/app/components/StarRating";
+import Product_Gallery from "./Product_Gallery";
+import ProductsCarousel from "@/app/components/ProductsCarousel";
+import ReviewForm from "./ReviewForm";
+import AddToCartButton from "@/app/products/[id]/AddToCartButton";
+import ShareButton from "./ShareButton";
+import AddToFavsButton from "@/app/products/[id]/AddToFavsButton";
+import ProductDescription from "./ProductDescription";
 import {
   getProductData,
   getRelatedProducts,
   hasBoughtProduct,
   isFavorite,
 } from "./utils";
-import ProductDescription from "@/app/components/ProductPage/ProductDescription";
+import { currencySymbol } from "@/lib/global_variables";
 export const revalidate = 100;
 export async function generateStaticParams() {
   const products = await prisma.product.findMany();
@@ -73,16 +74,18 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
   const isInFavorites =
     product && userId && (await isFavorite(product?.id, userId));
   return (
-    <div>
-      <div className="p-5 sm:p-10 mt-10">
-        <Product_Gallery gallery={product?.Images} />
+    <>
+      <div className="px-5 sm:px-10 mt-20">
+        <Product_Gallery
+          gallery={product?.Images as { id: string; img: string }[]}
+        />
         <div className="flex flex-col md:ml-10 lg:pr-56 space-y-5">
           <p className="text-xl sm:text-3xl font-bold tracking-widest">
             {product?.Title}
           </p>
           <StarRating rating={product?.Rating || 4.3} />
           <div className="flex items-center gap-1">
-            <span>$</span>
+            <span className="text-xs">{currencySymbol}</span>
             <span className="font-bold text-xl">{product?.Price}</span>
           </div>
           <div>
@@ -119,11 +122,13 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
                   }
                 })}
             </div>
-            <ProductDescription description={product?.Description || ""} />
+            {product?.Description && (
+              <ProductDescription description={product.Description} />
+            )}
           </div>
         </div>
       </div>
-      <div className="md:ml-5">
+      <div className={`md:ml-5 ${!product?.Description && "mt-96"}`}>
         <h1 className="text-3xl font-bold">You might also like:</h1>
         <ProductsCarousel data={relatedProducts || []} />
       </div>
@@ -168,7 +173,7 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
           )}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 export default Page;

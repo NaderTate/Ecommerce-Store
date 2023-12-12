@@ -7,7 +7,8 @@ import {
 } from "@nextui-org/react";
 import { SignOutButton } from "@clerk/nextjs";
 import Link from "next/link";
-import { FaUserCircle } from "react-icons/fa";
+
+import { FaRegCircleUser } from "react-icons/fa6";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import { FaRegHeart } from "react-icons/fa6";
 import { LuPackageOpen } from "react-icons/lu";
@@ -48,7 +49,7 @@ function UserAvatar({}: props) {
           <DropdownItem
             as={Link}
             href="/account"
-            startContent={<FaUserCircle />}
+            startContent={<FaRegCircleUser />}
             key="account"
           >
             Account
@@ -82,9 +83,9 @@ function UserAvatar({}: props) {
             key="logout"
             color="danger"
           >
-            <SignOutButton
-              children={<button className="w-full text-left">Sign Out</button>}
-            />
+            <SignOutButton>
+              <button className="w-full text-left">Sign Out</button>
+            </SignOutButton>
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>
