@@ -1,9 +1,11 @@
+import { getServerSession } from "next-auth";
+import ClientProviders from "./components/ClientProviders";
 import "./globals.css";
 import "./styles.scss";
 import { Inter } from "next/font/google";
-import Provider from "./components/Provider";
+import { authOptions } from "./api/auth/[...nextauth]/route";
 const inter = Inter({ subsets: ["latin"] });
-import Providers from "./Providers";
+
 export const metadata = {
   metadataBase: new URL("https://expressadmin.vercel.app/"),
   title: {
@@ -32,20 +34,13 @@ export const metadata = {
     description: "We got this",
   },
 };
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+type Props = { children: React.ReactNode };
+export default async function RootLayout({ children }: Props) {
+  const session = await getServerSession(authOptions);
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Provider>
-          <Providers>
-            {/* @ts-ignore */}
-            <div className="">{children}</div>
-          </Providers>
-        </Provider>
+        <ClientProviders session={session}>{children}</ClientProviders>
       </body>
     </html>
   );

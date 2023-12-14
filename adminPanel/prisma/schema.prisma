@@ -10,24 +10,48 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  email         String    @unique
+  image         String
+  sessions      Session[]
+  Account       Account[]
+  emailVerified DateTime? @map("verifiedAt")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("users")
+}
+
+model Admin {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  Name      String
+  Email     String
+  Image     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Product {
-  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  id          String          @id @default(auto()) @map("_id") @db.ObjectId
   Title       String
   Price       Float
-  Description String     @default("")
-  Images      Json[]     @default([])
+  Description String          @default("")
+  Images      Json[]          @default([])
   mainImg     String
-  secondImage String?
-  Categories  Category[] @relation(fields: [CategoryIDs], references: [id])
-  CategoryIDs String[]   @db.ObjectId
-  Colors      String[]   @default([])
-  Properties  Json
-  OrderIDs    String[]   @db.ObjectId
-  Orders      Order[]    @relation(fields: [OrderIDs], references: [id])
+  secondImage String
+  Categories  Category[]      @relation(fields: [CategoryIDs], references: [id])
+  CategoryIDs String[]        @db.ObjectId
+  Colors      String[]        @default([])
+  Properties  Json[]          @default([])
+  OrderIDs    String[]        @db.ObjectId
   Reviews     Review[]
   Rating      Float
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  Cart        CartItem[]
+  WhishList   WhishListItem[]
 }
 
 model Category {
@@ -45,60 +69,90 @@ model Category {
   updatedAt   DateTime   @updatedAt
 }
 
-model Admin {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  email String
-  name  String
-  image String
-}
-
-model User {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  UserId    String    @unique
+model Customer {
+  id        String          @id @default(auto()) @map("_id") @db.ObjectId
+  UserId    String          @unique
   Name      String
   Email     String
-  Phone     Int
+  Phone     String
   BirthDate String
   Gender    String
   Image     String
-  Cart      Json[]
   Orders    Order[]
-  WhishList Json[]
   Address   Address[]
   Review    Review[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  Cart      CartItem[]
+  WhishList WhishListItem[]
+  Card      Card?
+
+  @@map("User")
 }
 
 model Order {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  UserId        String    @unique
-  User          User      @relation(fields: [UserId], references: [UserId])
-  PaymentMethod String
-  OrderTotal    Float
-  PlacedOn      String
-  CompletedOn   String
-  Orders        Json[]
-  IsComplete    Boolean
-  Address       Address   @relation(fields: [AddressId], references: [id])
-  OrderSummary  Json
-  AddressId     String    @db.ObjectId
-  Product       Product[] @relation(fields: [productIDs], references: [id])
-  productIDs    String[]  @db.ObjectId
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  UserId         String       @unique
+  User           Customer     @relation(fields: [UserId], references: [UserId])
+  PaymentMethod  String
+  OrderTotal     Float
+  CompletedOn    String
+  Products       CartItem[]
+  IsComplete     Boolean
+  Address        Address      @relation(fields: [AddressId], references: [id])
+  AddressId      String       @db.ObjectId
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  OrderSummary   OrderSummary @relation(fields: [OrderSummaryId], references: [id])
+  OrderSummaryId String       @unique @db.ObjectId
+}
+
+model OrderSummary {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  subtotal   Int
+  Shipping   Int
+  CODFee     Int
+  total      Int
+  voucher    Int
+  orderTotal Int
+  Order      Order?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model CartItem {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  UserId    String?   @unique
+  User      Customer? @relation(fields: [UserId], references: [UserId])
+  Product   Product   @relation(fields: [ProductId], references: [id])
+  ProductId String    @unique @db.ObjectId
+  Quantity  Int       @default(1)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Order     Order?    @relation(fields: [orderId], references: [id])
+  orderId   String?   @db.ObjectId
+}
+
+model WhishListItem {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  UserId    String   @unique
+  User      Customer @relation(fields: [UserId], references: [UserId])
+  Product   Product  @relation(fields: [ProductId], references: [id])
+  ProductId String   @unique @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Address {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   UserId     String   @unique
-  User       User     @relation(fields: [UserId], references: [UserId])
+  User       Customer @relation(fields: [UserId], references: [UserId])
   Orders     Order[]
   Country    String
   City       String
   Street     String
   Building   String
-  PostalCode Int
+  PostalCode String
   Landmark   String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -107,11 +161,63 @@ model Address {
 model Review {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   UserId    String   @unique
-  User      User     @relation(fields: [UserId], references: [UserId])
+  User      Customer @relation(fields: [UserId], references: [UserId])
   Product   Product  @relation(fields: [ProductId], references: [id])
   ProductId String   @db.ObjectId
   Rating    Int
   Comment   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Card {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  UserId     String   @unique
+  User       Customer @relation(fields: [UserId], references: [UserId])
+  CardType   String?
+  HolderName String?
+  CardNumber String
+  Expiry     String
+  CVV        String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Session {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken String   @unique
+  userId       String   @db.ObjectId
+  expires      DateTime @map("expiresAt")
+  user         User     @relation(fields: [userId], references: [id])
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  identifier String
+  token      String   @unique
+  expires    DateTime @map("expiresAt")
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
 }

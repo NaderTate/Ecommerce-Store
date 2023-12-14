@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Product } from "@prisma/client";
-import { deleteProductAction } from "../_actions";
+import { deleteProduct } from "../server_actions/products";
 
 const ProductCard = ({ product }: { product: Product }) => {
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -64,7 +64,7 @@ const ProductCard = ({ product }: { product: Product }) => {
             <div
               onClick={async () => {
                 setDeleting(true);
-                await deleteProductAction(product?.id);
+                await deleteProduct(product.id);
                 setDeleting(false);
                 setConfirmDelete(false);
               }}

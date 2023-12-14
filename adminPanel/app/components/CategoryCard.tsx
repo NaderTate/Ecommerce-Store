@@ -2,8 +2,8 @@
 import { useState } from "react";
 import { Category } from "@prisma/client";
 import Image from "next/image";
-import { deleteCategoryAction } from "../_actions";
 import Link from "next/link";
+import { deleteCategory } from "../server_actions/categories";
 const CategoryCard = ({ category }: { category: Category }) => {
   const [confirmDelete, setConfirmDelete] = useState(false);
   return (
@@ -66,7 +66,7 @@ const CategoryCard = ({ category }: { category: Category }) => {
 
           <svg
             onClick={async () => {
-              await deleteCategoryAction(category?.id);
+              await deleteCategory(category?.id);
               setConfirmDelete(false);
             }}
             xmlns="http://www.w3.org/2000/svg"

@@ -1,4 +1,3 @@
-import React from "react";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]/route";
@@ -13,7 +12,7 @@ async function NavLayout({ children }: { children: React.ReactNode }) {
         email={session?.user?.email || ""}
         image={session?.user?.image || ""}
       />
-      <div>{children}</div>
+      {children}
     </div>
   );
 }
