@@ -32,6 +32,7 @@ type CategoryFormProps = {
     Image: string;
     Properties: CategoryProperty[] | any;
     ParentId: string | null;
+    ProductsIDs: string[];
   };
   allCategories:
     | {

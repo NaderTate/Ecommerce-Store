@@ -1,10 +1,8 @@
 import React from "react";
-import Link from "next/link";
 import prisma from "@/lib/prisma";
 import NavLayout from "@/app/components/NavLayout";
+import CategoryCard from "@/app/(protected)/categories/_components/CategoryCard";
 import CategoryForm from "./_components/CategoryForm";
-import CategoryCard from "@/app/components/CategoryCard";
-import CategoryPopup from "./_components/CategoryPopup";
 export const metadata = {
   title: "Categories",
   description: "Nader express categories",
@@ -44,7 +42,7 @@ async function page({ searchParams }: any) {
   return (
     <NavLayout>
       <div className="flex flex-col min-h-[90vh]">
-        <CategoryPopup allCategories={allCategories} />
+        <CategoryForm allCategories={allCategories} />
         <p className="mt-5">
           Displaying {(sk - 1) * itemsToShow}-
           {(number - (sk - 1) * itemsToShow) / itemsToShow > 1
@@ -55,7 +53,13 @@ async function page({ searchParams }: any) {
         <div className="grow">
           <div className="flex flex-wrap justify-center sm:justify-between gap-5 mt-5">
             {categories?.map((category) => {
-              return <CategoryCard key={category.id} category={category} />;
+              return (
+                <CategoryCard
+                  key={category.id}
+                  category={category}
+                  allCategories={allCategories}
+                />
+              );
             })}
           </div>
         </div>
