@@ -1,13 +1,17 @@
 "use client";
 import Image from "next/image";
 import CategoryForm from "./CategoryForm";
-import ConfirmDelete from "./ConfirmDeletePopup";
+import ConfirmDelete from "../../../components/ConfirmDeletePopup";
 import { Image as NUIImage } from "@nextui-org/react";
+import { deleteCategory } from "@/app/server_actions/categories";
 const CategoryCard = ({ category, allCategories }: CategoryFormProps) => {
   return (
     <div className=" border-divider border-2 rounded-md p-2 pt-0">
       <div className="flex justify-end">
-        <ConfirmDelete categoryId={category?.id as string} />
+        <ConfirmDelete
+          id={category?.id as string}
+          deleteAction={deleteCategory}
+        />
         <CategoryForm category={category} allCategories={allCategories} />
       </div>
       <NUIImage

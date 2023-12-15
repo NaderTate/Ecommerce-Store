@@ -1,13 +1,15 @@
-import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]/route";
-import Nav from "./Nav";
-async function NavLayout({ children }: { children: React.ReactNode }) {
+import { redirect } from "next/navigation";
+import SideNavMenu from "../components/SideNavMenu";
+
+type Props = { children: React.ReactNode };
+export default async function RootLayout({ children }: Props) {
   const session = await getServerSession(authOptions);
-  if (!session) redirect("/login?callbackUrl=/dashboard");
+  if (!session) redirect("/login");
   return (
-    <div className="sm:ml-[200px]  p-4 pb-0">
-      <Nav
+    <div className="sm:ml-[200px]  p-4 ">
+      <SideNavMenu
         name={session?.user?.name || ""}
         email={session?.user?.email || ""}
         image={session?.user?.image || ""}
@@ -16,5 +18,3 @@ async function NavLayout({ children }: { children: React.ReactNode }) {
     </div>
   );
 }
-
-export default NavLayout;

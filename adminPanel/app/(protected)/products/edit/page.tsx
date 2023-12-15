@@ -1,4 +1,3 @@
-import NavLayout from "@/app/components/NavLayout";
 import ProductForm from "@/app/(protected)/products/_components/ProductForm";
 import prisma from "@/lib/prisma";
 export async function generateMetadata({ searchParams }: any) {
@@ -56,12 +55,10 @@ async function page({ searchParams }: any) {
   });
   return (
     <div>
-      <NavLayout>
-        <div className="font-bold text-xl mb-5">Edit</div>
-        {productInfo && (
-          <ProductForm allCategories={categories || []} product={productInfo} />
-        )}
-      </NavLayout>
+      <div className="font-bold text-xl mb-5">Edit</div>
+      {productInfo && (
+        <ProductForm allCategories={categories || []} product={productInfo} />
+      )}
     </div>
   );
 }

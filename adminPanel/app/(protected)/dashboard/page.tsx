@@ -5,7 +5,6 @@ import {
   Download,
   Users,
 } from "lucide-react";
-import NavLayout from "@/app/components/NavLayout";
 import { Button } from "@/app/registry/new-york/ui/button";
 import {
   Card,
@@ -50,7 +49,7 @@ export default async function DashboardPage() {
   );
   return (
     <>
-      <NavLayout>
+      <>
         <div className="hiddesn flex-col md:flex">
           <div className="flex-1 space-y-4 p-8 pt-6">
             <div className="flex items-center justify-between space-y-2">
@@ -162,7 +161,7 @@ export default async function DashboardPage() {
             </Tabs>
           </div>
         </div>
-      </NavLayout>
+      </>
     </>
   );
 }

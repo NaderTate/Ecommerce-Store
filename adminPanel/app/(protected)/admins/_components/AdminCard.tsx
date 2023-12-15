@@ -2,56 +2,45 @@
 import React from "react";
 import { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { Product } from "@prisma/client";
-import { deleteProduct } from "../server_actions/products";
-
-const ProductCard = ({ product }: { product: Product }) => {
+import { deleteAdmin } from "../../../server_actions/admins";
+type Props = {
+  admin: {
+    id: string;
+    Name: string;
+    Email: string;
+    Image: string | null;
+  };
+};
+const ProductCard = ({ admin }: Props) => {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
   return (
     <div>
-      <div className="flex gap-3 relative border-2 pr-1 rounded-md max-w-[19rem]  ">
-        <Image
-          width={100}
-          height={100}
-          alt={product.Title}
-          src={product.mainImg}
-          className="object-contain rounded-l-md"
-        />
-
-        <div>
-          <p className="font-semibold  max-w-[11rem] overflow-ellipsis whitespace-nowrap overflow-hidden ">
-            {product?.Title}
-          </p>
-          <p className="description text-sm  max-w-[11rem] overflow-ellipsis whitespace-nowrap overflow-hidden ">
-            {product?.Description}
-          </p>
-          <p className="absolute bottom-1 font-bold">{product?.Price}$</p>
+      <div className="flex gap-3 relative border-2 pr-1 rounded-md w-[19rem]  ">
+        <div className="relative  min-w-[6rem] min-h-[6rem]">
+          <Image
+            alt={admin.Name}
+            src={
+              admin.Image ??
+              "https://upload.wikimedia.org/wikipedia/commons/9/9e/Placeholder_Person.jpg"
+            }
+            fill
+            className="object-cover rounded-l-md"
+          />
         </div>
 
-        <Link
-          href={{ pathname: "/products/edit", query: { id: product?.id } }}
+        <div>
+          <p className="mt-1  font-semibold  max-w-[11rem] overflow-ellipsis whitespace-nowrap overflow-hidden ">
+            {admin?.Name}
+          </p>
 
-          // href={`/products/edit?id=${product?.id}`}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-6 h-6 absolute right-1 bottom-1"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-            />
-          </svg>
-        </Link>
+          <p className="description text-sm  max-w-[11rem] overflow-ellipsis whitespace-nowrap overflow-hidden ">
+            {admin?.Email}
+          </p>
+        </div>
+
         {confirmDelete ? (
-          <div className="flex absolute bottom-1 right-8 gap-3">
+          <div className="flex absolute bottom-1 right-1 gap-3">
             <div
               onClick={() => {
                 setConfirmDelete(false);
@@ -64,7 +53,7 @@ const ProductCard = ({ product }: { product: Product }) => {
             <div
               onClick={async () => {
                 setDeleting(true);
-                await deleteProduct(product.id);
+                await deleteAdmin(admin?.id);
                 setDeleting(false);
                 setConfirmDelete(false);
               }}
@@ -83,7 +72,7 @@ const ProductCard = ({ product }: { product: Product }) => {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="red"
-            className="w-6 h-6 absolute bottom-1 right-8 cursor-pointer"
+            className="w-6 h-6 absolute bottom-1 right-1 cursor-pointer"
           >
             <path
               strokeLinecap="round"

@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 import { useEffect, useState } from "react";
 import { signOut } from "next-auth/react";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -11,14 +10,14 @@ import { FaChartLine } from "react-icons/fa";
 import { BsBoxes } from "react-icons/bs";
 import { PiCurrencyDollarBold, PiUsersThreeBold } from "react-icons/pi";
 import { BiCategoryAlt, BiCommentDetail } from "react-icons/bi";
-function Nav({
+function SideNavMenu({
   name,
   email,
   image,
 }: {
-  name: string;
-  email: string;
-  image: string;
+  name: string | null | undefined;
+  email: string | null | undefined;
+  image: string | null | undefined;
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -114,7 +113,7 @@ function Nav({
               <img
                 loading="lazy"
                 alt="User"
-                src={image}
+                src={image || ""}
                 className="h-10 w-10 rounded-full object-cover"
               />
               <div>
@@ -170,9 +169,9 @@ function Nav({
       </div>
       <div className="sm:hidden ">
         <MobileMenu
-          name={name}
-          email={email}
-          image={image}
+          name={name || ""}
+          email={email || ""}
+          image={image || ""}
           menuItems={menuItems}
         />
       </div>
@@ -180,4 +179,4 @@ function Nav({
   );
 }
 
-export default Nav;
+export default SideNavMenu;

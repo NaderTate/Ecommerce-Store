@@ -1,4 +1,3 @@
-import NavLayout from "@/app/components/NavLayout";
 import ProductForm from "@/app/(protected)/products/_components/ProductForm";
 import prisma from "@/lib/prisma";
 export const metadata = {
@@ -10,10 +9,10 @@ async function page() {
     select: { id: true, label: true, value: true, Properties: true },
   });
   return (
-    <NavLayout>
+    <>
       <div className="font-bold text-xl mb-5">Add new product</div>
       <ProductForm allCategories={categories || []} />
-    </NavLayout>
+    </>
   );
 }
 

@@ -7,13 +7,13 @@ import {
   Button,
   useDisclosure,
 } from "@nextui-org/react";
-import { deleteCategory } from "@/app/server_actions/categories";
 import { useState } from "react";
 import { MdDeleteOutline } from "react-icons/md";
 type Props = {
-  categoryId: string;
+  id: string;
+  deleteAction: Function;
 };
-export default function ConfirmDelete({ categoryId }: Props) {
+export default function ConfirmDelete({ id, deleteAction }: Props) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [deleting, setDeleting] = useState(false);
   return (
@@ -45,7 +45,7 @@ export default function ConfirmDelete({ categoryId }: Props) {
                     color="primary"
                     onPress={async () => {
                       setDeleting(true);
-                      await deleteCategory(categoryId);
+                      await deleteAction(id);
                       setDeleting(false);
                       onClose();
                     }}

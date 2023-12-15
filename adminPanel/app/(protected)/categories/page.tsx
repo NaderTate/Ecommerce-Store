@@ -1,6 +1,4 @@
-import React from "react";
 import prisma from "@/lib/prisma";
-import NavLayout from "@/app/components/NavLayout";
 import CategoryCard from "@/app/(protected)/categories/_components/CategoryCard";
 import CategoryForm from "./_components/CategoryForm";
 export const metadata = {
@@ -40,7 +38,7 @@ async function page({ searchParams }: any) {
   const number = count || 1;
 
   return (
-    <NavLayout>
+    <>
       <div className="flex flex-col min-h-[90vh]">
         <CategoryForm allCategories={allCategories} />
         <p className="mt-5">
@@ -64,7 +62,7 @@ async function page({ searchParams }: any) {
           </div>
         </div>
       </div>
-    </NavLayout>
+    </>
   );
 }
 

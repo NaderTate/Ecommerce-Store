@@ -22,7 +22,7 @@ async function OrderCard({ order }: Props) {
     PaymentMethod: string;
   }) => {
     return (
-      <div>
+      <>
         <div className="text-lg  lg:hidden">
           <h1>Payment method:</h1>
           <div>{PaymentMethod}</div>
@@ -61,7 +61,7 @@ async function OrderCard({ order }: Props) {
             </div>
           </div>
         </div>
-      </div>
+      </>
     );
   };
   return (

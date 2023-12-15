@@ -1,49 +1,34 @@
-import React from "react";
-import { Skeleton } from "@/components/ui/skeleton";
-import NavLayout from "@/app/components/NavLayout";
+import { Skeleton } from "@nextui-org/react";
 function loading() {
   return (
-    <NavLayout>
-      Edit Product
-      <form className="space-y-4 mt-5">
+    <>
+      <h4>Edit Product</h4>
+      <div className="space-y-4 mt-5">
         <div className="md:grid grid-cols-5 justify-between gap-5">
-          <div className="col-span-3">
-            <Skeleton className=" bg-gray-500 h-12 w-full my-1 md:m-0" />
-          </div>
-          <div className="col-span-2">
-            <Skeleton className=" bg-gray-500 h-12 full" />
-          </div>
+          <Skeleton
+            disableAnimation
+            className="h-12 w-full my-1 md:m-0 col-span-3"
+          />
+          <Skeleton disableAnimation className=" h-12 full col-span-2 " />
         </div>
         <div className="md:grid grid-cols-5 justify-between gap-5">
-          <div className="col-span-3">
-            <Skeleton className=" bg-gray-500 h-32 w-full" />
-          </div>
+          <Skeleton disableAnimation className="h-32 w-full col-span-3" />
           <div className="col-span-2">
-            <div className="mb-5">
-              <div className="text-black">
-                <Skeleton className=" bg-gray-500 h-12 w-full my-1 md:m-0" />
-              </div>
-            </div>
-            <div>
-              <div className="text-black">
-                <Skeleton className=" bg-gray-500 h-12 w-full" />
-              </div>
-            </div>
+            <Skeleton
+              disableAnimation
+              className="  h-12 w-full my-1 md:m-0 mb-5"
+            />
+            <Skeleton disableAnimation className="  h-12 w-full" />
           </div>
         </div>
-
         <h1>Images:</h1>
         <div className="flex flex-wrap gap-5 justify-around">
           {Array.from({ length: 7 }, (_, i) => i + 1).map((id) => (
-            <Skeleton key={id} className=" bg-gray-500 h-32 w-32" />
+            <Skeleton disableAnimation key={id} className="  h-32 w-32" />
           ))}
         </div>
-
-        <div className="flex gap-5 flex-wrap">
-          {/* ReactSortable allows us to rearrange images by dragging them */}
-        </div>
-      </form>
-    </NavLayout>
+      </div>
+    </>
   );
 }
 
