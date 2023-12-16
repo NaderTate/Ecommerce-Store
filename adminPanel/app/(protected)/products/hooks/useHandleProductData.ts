@@ -1,6 +1,7 @@
 // custom hook responsible for managing product form states and submitting the form
 "use client";
 import { createProduct, updateProduct } from "@/app/server_actions/products";
+import { CategoryProperty } from "@/typings";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

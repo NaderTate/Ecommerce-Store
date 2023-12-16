@@ -20,7 +20,7 @@ const SearchInput = ({ page }: Props) => {
   };
   return (
     <Input
-      className="w-64"
+      className="w-64 ml-10 sm:ml-0"
       variant="bordered"
       label="Search..."
       value={searchKeywords}

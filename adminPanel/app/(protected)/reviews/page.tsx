@@ -1,15 +1,15 @@
-import React from "react";
 import prisma from "@/lib/prisma";
 import ReviewCard from "@/app/(protected)/reviews/_components/ReviewCard";
+import ContentCountDisplay from "@/app/components/ContentCountDisplay";
+import { itemsPerPage } from "@/lib/global_variables";
+import Pagination from "@/app/components/Pagination";
 export const metadata = {
   title: "Reviews",
   description: "Newest reviews",
 };
 async function page({ searchParams }: any) {
-  const sk = searchParams.page || 1;
-  const itemsToShow = 30;
+  const pageNumber = searchParams.page || 1;
   const count = await prisma.review.count();
-
   const reviews = await prisma.review.findMany({
     orderBy: { id: "desc" },
     select: {
@@ -19,19 +19,18 @@ async function page({ searchParams }: any) {
       Product: { select: { mainImg: true, id: true } },
       User: { select: { Name: true, Image: true, id: true } },
     },
-    take: itemsToShow,
-    skip: (sk - 1) * itemsToShow,
+    take: itemsPerPage,
+    skip: (pageNumber - 1) * itemsPerPage,
   });
   return (
-    <div>
-      <p className="my-5">
-        Displaying {(sk - 1) * itemsToShow}-
-        {(count - (sk - 1) * itemsToShow) / itemsToShow > 1
-          ? sk * itemsToShow
-          : count}{" "}
-        of {count} reviews
-      </p>
-      <div className="space-y-5">
+    <div className="mt-10 sm:mt-0">
+      <ContentCountDisplay
+        count={count}
+        content="reviews"
+        itemsToShow={itemsPerPage}
+        pageNumber={pageNumber}
+      />
+      <div className="flex flex-wrap gap-5">
         {reviews.map(
           ({ Product: { mainImg, id }, Rating, Comment, User, createdAt }) => {
             return (
@@ -48,6 +47,7 @@ async function page({ searchParams }: any) {
           }
         )}
       </div>
+      <Pagination page="reviews" total={Math.ceil(count / itemsPerPage)} />
     </div>
   );
 }

@@ -1,40 +1,38 @@
 "use client";
-
-import * as React from "react";
-import { addDays, format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
-import { DateRange } from "react-day-picker";
-
-import { cn } from "@/lib/utils";
-import { Button } from "@/app/registry/new-york/ui/button";
-import { Calendar } from "@/app/registry/new-york/ui/calendar";
 import {
   Popover,
-  PopoverContent,
   PopoverTrigger,
-} from "@/app/registry/new-york/ui/popover";
+  PopoverContent,
+  Button,
+} from "@nextui-org/react";
+import { addDays, format } from "date-fns";
+import { DateRange } from "react-day-picker";
+import { CiCalendarDate } from "react-icons/ci";
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/app/(protected)/dashboard/_components/calendar";
+import { HTMLAttributes, useState } from "react";
 
 export function CalendarDateRangePicker({
   className,
-}: React.HTMLAttributes<HTMLDivElement>) {
-  const [date, setDate] = React.useState<DateRange | undefined>({
+}: HTMLAttributes<HTMLDivElement>) {
+  const [date, setDate] = useState<DateRange | undefined>({
     from: new Date(2023, 0, 20),
     to: addDays(new Date(2023, 0, 20), 20),
   });
 
   return (
     <div className={cn("grid gap-2", className)}>
-      <Popover>
-        <PopoverTrigger asChild>
+      <Popover placement="bottom-end">
+        <PopoverTrigger>
           <Button
             id="date"
-            variant={"outline"}
+            variant={"bordered"}
             className={cn(
               "w-[260px] justify-start text-left font-normal",
               !date && "text-muted-foreground"
             )}
           >
-            <CalendarIcon className="mr-2 h-4 w-4" />
+            <CiCalendarDate size={20} className="mr-2" />
             {date?.from ? (
               date.to ? (
                 <>
@@ -49,7 +47,7 @@ export function CalendarDateRangePicker({
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="end">
+        <PopoverContent className="w-auto p-0 bg-background">
           <Calendar
             initialFocus
             mode="range"

@@ -7,22 +7,28 @@ import ProductsCarousel from "./ProductsCarousel";
 import OrderAddress from "./OrderAddress";
 import OrderSummary from "./OrderSummary";
 import { markOrderAsComplete } from "@/app/server_actions/orders";
+import { useState } from "react";
+import { currencySymbol } from "@/lib/global_variables";
 
 type Props = {
   order: Order;
 };
 function OrderCard({ order }: Props) {
+  const [loading, setLoading] = useState(false);
   return (
-    <div className="border-2 border-divider rounded-md bg-white dark:bg-inherit">
+    <div className="border-2 border-divider rounded-md bg-white dark:bg-inherit my-3">
       <div className="border-b-2 border-divider p-5 ">
         <div className="flex flex-col xl:flex-row gap-5 items-start">
           <div className="flex flex-col flex-shrink-0">
-            <span>Placed on:</span>
+            <span>Placed on: </span>
             <span>{new Date(order.createdAt).toDateString()}</span>
           </div>
           <div className="flex flex-col flex-shrink-0">
             <span>Order total:</span>
-            <span>${order.OrderTotal}</span>
+            <span>
+              {currencySymbol}
+              {order.OrderTotal}
+            </span>
           </div>
           <div className="lg:flex flex-col flex-shrink-0 hidden">
             <span>Payment method:</span>
@@ -43,9 +49,13 @@ function OrderCard({ order }: Props) {
           </div>
           {!order.IsComplete && (
             <Button
-              className="mr-0 m-auto"
+              isLoading={loading}
+              isDisabled={loading}
+              className=" mr-0  "
               onPress={async () => {
+                setLoading(true);
                 await markOrderAsComplete(order.id);
+                setLoading(false);
               }}
             >
               Mark as complete
@@ -66,7 +76,7 @@ function OrderCard({ order }: Props) {
                 <h1>Payment method:</h1>
                 <div>{order.PaymentMethod}</div>
               </div>
-              <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-5 mt-5">
+              <div className="flex flex-col md:flex-row gap-5 mt-5">
                 <OrderAddress address={order.Address} />
                 <div className="border rounded-md p-5 space-y-2 text-lg mt-2 bg-gray-100 dark:bg-inherit">
                   <div className="w-full rounded-md">

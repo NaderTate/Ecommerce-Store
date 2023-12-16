@@ -41,7 +41,7 @@ const ProductsFilters = ({
       >
         Filters
       </Button>
-      <div className={`h-full fixed  z-30 `}>
+      <div className={`h-full fixed z-30 `}>
         <div
           className={`overflow-y-scroll h-[85vh] fixed no-scrollbar w-56 flex-shrink-0 bg-background rounded-md mt-7 md:mt-0 md:opacity-100  md:translate-x-0 transition-all ${
             showSideBar

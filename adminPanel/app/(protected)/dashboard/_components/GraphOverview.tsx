@@ -53,26 +53,30 @@ const data = [
   },
 ];
 
-export function Overview() {
+export function GraphOverview() {
   return (
-    <ResponsiveContainer width="100%" height={350}>
-      <BarChart data={data}>
-        <XAxis
-          dataKey="name"
-          stroke="#888888"
-          fontSize={12}
-          tickLine={false}
-          axisLine={false}
-        />
-        <YAxis
-          stroke="#888888"
-          fontSize={12}
-          tickLine={false}
-          axisLine={false}
-          tickFormatter={(value: any) => `$${value}`}
-        />
-        <Bar dataKey="total" fill="#adfa1d" radius={[4, 4, 0, 0]} />
-      </BarChart>
-    </ResponsiveContainer>
+    <div className="p-5 rounded-md border-2 border-divider">
+      <h2 className="font-bold mb-5">Overview</h2>
+
+      <ResponsiveContainer width="100%" height={350}>
+        <BarChart data={data}>
+          <XAxis
+            dataKey="name"
+            stroke="#888888"
+            fontSize={12}
+            tickLine={false}
+            axisLine={false}
+          />
+          <YAxis
+            stroke="#888888"
+            fontSize={12}
+            tickLine={false}
+            axisLine={false}
+            tickFormatter={(value: any) => `$${value}`}
+          />
+          <Bar dataKey="total" fill="#adfa1d" radius={[4, 4, 0, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
   );
 }

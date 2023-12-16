@@ -4,15 +4,16 @@ import CategoryForm from "./CategoryForm";
 import ConfirmDelete from "../../../components/ConfirmDeletePopup";
 import { Image as NUIImage } from "@nextui-org/react";
 import { deleteCategory } from "@/app/server_actions/categories";
+import { CategoryFormProps } from "@/typings";
 const CategoryCard = ({ category, allCategories }: CategoryFormProps) => {
   return (
     <div className=" border-divider border-2 rounded-md p-2 pt-0">
       <div className="flex justify-end">
+        <CategoryForm category={category} allCategories={allCategories} />
         <ConfirmDelete
           id={category?.id as string}
           deleteAction={deleteCategory}
         />
-        <CategoryForm category={category} allCategories={allCategories} />
       </div>
       <NUIImage
         as={Image}

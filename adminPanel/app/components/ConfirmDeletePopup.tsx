@@ -27,12 +27,17 @@ export default function ConfirmDelete({ id, deleteAction }: Props) {
       >
         <MdDeleteOutline size={20} />
       </Button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} defaultOpen>
+      <Modal placement="center" isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                <h1 className="text-2xl font-bold">Are you sure about that?</h1>
+                <h1 className="text-xl font-semibold">
+                  Are you sure about that?
+                </h1>
+                <h3 className="font-thin text-sm">
+                  This action is irreversible.
+                </h3>
               </ModalHeader>
               <ModalBody>
                 <div className="flex gap-10">

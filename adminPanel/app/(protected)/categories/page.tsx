@@ -1,13 +1,22 @@
 import prisma from "@/lib/prisma";
 import CategoryCard from "@/app/(protected)/categories/_components/CategoryCard";
 import CategoryForm from "./_components/CategoryForm";
+import ContentCountDisplay from "@/app/components/ContentCountDisplay";
+import { itemsPerPage } from "@/lib/global_variables";
+import SearchInput from "@/app/components/SearchInput";
+import Pagination from "@/app/components/Pagination";
 export const metadata = {
   title: "Categories",
   description: "Nader express categories",
 };
-async function page({ searchParams }: any) {
-  const itemsToShow = 30;
-  const sk = searchParams.page || 1;
+type Props = {
+  searchParams: {
+    page?: number;
+    search?: string;
+  };
+};
+async function page({ searchParams }: Props) {
+  const pageNumber = searchParams.page || 1;
   const search = searchParams.search ? searchParams.search : "";
   const categories = await prisma.category.findMany({
     where: {
@@ -16,8 +25,8 @@ async function page({ searchParams }: any) {
         mode: "insensitive",
       },
     },
-    skip: (sk - 1) * itemsToShow,
-    take: itemsToShow,
+    skip: (pageNumber - 1) * itemsPerPage,
+    take: itemsPerPage,
     orderBy: {
       createdAt: "desc",
     },
@@ -35,21 +44,22 @@ async function page({ searchParams }: any) {
       },
     },
   });
-  const number = count || 1;
 
   return (
     <>
       <div className="flex flex-col min-h-[90vh]">
-        <CategoryForm allCategories={allCategories} />
-        <p className="mt-5">
-          Displaying {(sk - 1) * itemsToShow}-
-          {(number - (sk - 1) * itemsToShow) / itemsToShow > 1
-            ? sk * itemsToShow
-            : number}{" "}
-          of {count} categories
-        </p>
+        <div className="flex  sm:flex-row flex-col-reverse items-start sm:items-center gap-5">
+          <CategoryForm allCategories={allCategories} />
+          <SearchInput page="categories" />
+        </div>
+        <ContentCountDisplay
+          content="categories"
+          count={count}
+          itemsToShow={itemsPerPage}
+          pageNumber={pageNumber}
+        />
         <div className="grow">
-          <div className="flex flex-wrap justify-center sm:justify-between gap-5 mt-5">
+          <div className="flex flex-wrap gap-5">
             {categories?.map((category) => {
               return (
                 <CategoryCard
@@ -61,6 +71,11 @@ async function page({ searchParams }: any) {
             })}
           </div>
         </div>
+        <Pagination
+          page="categories"
+          total={Math.ceil(count / itemsPerPage)}
+          queries={{ search }}
+        />
       </div>
     </>
   );

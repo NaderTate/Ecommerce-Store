@@ -1,17 +1,15 @@
 "use server";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-export const createNewAdmin = async (
-  Name: string,
-  Email: string,
-  Image?: string
-) => {
+export const createNewAdmin = async (adminData: {
+  Name: string;
+  Email: string;
+  Image?: string;
+}) => {
   try {
     const admin = await prisma.admin.create({
       data: {
-        Name,
-        Email,
-        Image,
+        ...adminData,
       },
     });
     revalidatePath("/admins");
@@ -23,17 +21,17 @@ export const createNewAdmin = async (
 
 export const updateAdmin = async (
   id: string,
-  Name: string,
-  Email: string,
-  Image?: string
+  adminData: {
+    Name: string;
+    Email: string;
+    Image?: string;
+  }
 ) => {
   try {
     const admin = await prisma.admin.update({
       where: { id },
       data: {
-        Name,
-        Email,
-        Image,
+        ...adminData,
       },
     });
     revalidatePath("/admins");

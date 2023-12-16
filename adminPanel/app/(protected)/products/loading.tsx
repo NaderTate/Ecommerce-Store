@@ -10,11 +10,14 @@ function loading() {
         {Array.from({ length: 15 }, (_, i) => i + 1).map((id) => (
           <div key={id}>
             <div className="flex gap-3 relative border-2 pr-1 rounded-md ">
-              <Skeleton disableAnimation className="w-[6rem] h-[6rem] " />
+              <Skeleton
+                disableAnimation
+                className="w-[6rem] h-[6rem] rounded-md"
+              />
               <div className="flex flex-col justify-around">
-                <Skeleton disableAnimation className="w-24 h-2  " />
-                <Skeleton disableAnimation className="w-36 h-2  " />
-                <Skeleton disableAnimation className="w-10 h-2  " />
+                <Skeleton disableAnimation className="w-24 h-2 rounded-md" />
+                <Skeleton disableAnimation className="w-36 h-2 rounded-md" />
+                <Skeleton disableAnimation className="w-10 h-2 rounded-md" />
               </div>
             </div>
           </div>

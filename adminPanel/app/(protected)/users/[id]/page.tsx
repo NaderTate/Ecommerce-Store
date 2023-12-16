@@ -35,10 +35,10 @@ async function page({ params: { id } }: { params: { id: string } }) {
   });
 
   return (
-    <div className="p-10 sm:p-5">
+    <div className="p-5">
       {user && (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div className="space-y-2">
               <div className="relative  w-36 h-36">
                 <Image
@@ -54,7 +54,7 @@ async function page({ params: { id } }: { params: { id: string } }) {
               </h1>
               <BanButton id={user.id} />
             </div>
-            <div className="pl-24">
+            <div className="">
               <UserInfoCard
                 user={{
                   BirthDate: user.BirthDate,

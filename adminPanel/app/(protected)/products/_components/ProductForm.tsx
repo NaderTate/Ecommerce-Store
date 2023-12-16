@@ -6,6 +6,7 @@ import { Button, Input, Spacer, Spinner, Textarea } from "@nextui-org/react";
 import { useHandleProductData } from "../hooks/useHandleProductData";
 import { colors } from "../colors";
 import ProductImageCard from "./ProductImageCard";
+import { ProductFormProps } from "@/typings";
 
 function ProductForm({ product, allCategories }: ProductFormProps) {
   const {
@@ -23,9 +24,9 @@ function ProductForm({ product, allCategories }: ProductFormProps) {
 
   return (
     <form className="space-y-4">
-      <div className="md:grid grid-cols-5 justify-between gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-5 justify-between gap-5">
         <Input
-          className="col-span-3"
+          className="md:col-span-3"
           variant="bordered"
           defaultValue={productData.Title}
           label="Product name"
@@ -34,7 +35,7 @@ function ProductForm({ product, allCategories }: ProductFormProps) {
           }}
         />
         <Input
-          className="col-span-2"
+          className="md:col-span-2"
           variant="bordered"
           defaultValue={String(productData.Price)}
           label="Price"
@@ -45,9 +46,9 @@ function ProductForm({ product, allCategories }: ProductFormProps) {
           }}
         />
       </div>
-      <div className="md:grid grid-cols-5 justify-between gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-5 justify-between gap-5">
         <Textarea
-          className="col-span-3"
+          className="md:col-span-3"
           variant="bordered"
           defaultValue={productData.Description}
           label="Description"
@@ -57,7 +58,7 @@ function ProductForm({ product, allCategories }: ProductFormProps) {
             setProductData({ ...productData, Description: e });
           }}
         />
-        <div className="col-span-2">
+        <div className="md:col-span-2">
           <Select
             styles={{
               control: (provided) => ({

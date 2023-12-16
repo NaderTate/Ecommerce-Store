@@ -13,7 +13,7 @@ type Props = {
 
 const UserAddressCard = ({ address }: Props) => {
   return (
-    <div className="border border-divider p-5 rounded-md w-96 space-y-5">
+    <div className="border border-divider p-5 rounded-md max-w-xs space-y-5">
       <div className="flex justify-between">
         <h1>Country:</h1>
         <h1>{address.Country}</h1>

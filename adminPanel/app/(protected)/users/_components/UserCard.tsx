@@ -6,36 +6,43 @@ function UserCard({
   Image: UserImage,
   Email,
   OrdersCount,
+  createdAt,
+  reviewsCount,
 }: {
   id: string;
   Name: string;
   Image: string;
   Email: string;
   OrdersCount: number;
+  createdAt: string;
+  reviewsCount: number;
 }) {
   return (
-    <div className="h-32">
-      <Link href={{ pathname: `/users/${id}` }}>
-        <div className="relative w-32 h-32 float-left mr-5">
-          <Image
-            fill
-            src={UserImage}
-            alt={"Product image"}
-            className="rounded-md object-cover "
-          />
+    <Link
+      href={{ pathname: `/users/${id}` }}
+      className="border-2 border-divider rounded-md p-2 w-80"
+    >
+      <div className="flex items-center gap-2">
+        <Image
+          width={60}
+          height={60}
+          src={UserImage}
+          alt={"User image"}
+          className="rounded-full object-cover aspect-square"
+        />
+        <div>
+          <h5 className="font-semibold">{Name}</h5>
+          <h6 className="text-xs">{Email}</h6>
         </div>
-      </Link>
-      <div className="space-y-2">
-        <h1 className="font-semibold">{Name}</h1>
-        <h1 className="text-xs">{Email}</h1>
-        <h1 className="font-bold">{OrdersCount} Orders</h1>
-        <Link href={{ pathname: `/users/${id}` }}>
-          <button className="block bg-blue-700 px-3 py-1 rounded-md text-white mt-2 font-semibold">
-            More details
-          </button>
-        </Link>
       </div>
-    </div>
+      <div className="space-y-2 mt-2">
+        <h6 className="text-sm ">
+          Joined on: {new Date(createdAt).toDateString()}
+        </h6>
+        <h1 className="">{OrdersCount} Orders</h1>
+        <h1 className="">{reviewsCount} Reviews</h1>
+      </div>
+    </Link>
   );
 }
 

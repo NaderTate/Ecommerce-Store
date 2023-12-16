@@ -10,11 +10,17 @@ export const metadata = {
   title: "Products",
   description: "Nader Express Products",
 };
-export default async function Home({ searchParams }: any) {
-  const sk = searchParams.page || 1;
-  const search = searchParams.search ? searchParams.search : "";
+type Props = {
+  searchParams: {
+    page?: number;
+    search?: string;
+  };
+};
+export default async function Home({ searchParams }: Props) {
+  const pageNumber = searchParams.page || 1;
+  const search = searchParams.search ?? "";
   const products = await prisma.product.findMany({
-    skip: (sk - 1) * itemsPerPage,
+    skip: (pageNumber - 1) * itemsPerPage,
     take: itemsPerPage,
     where: {
       Title: {
@@ -37,14 +43,14 @@ export default async function Home({ searchParams }: any) {
 
   return (
     <>
-      <div className="flex items-center gap-5">
-        <Button as={Link} color="primary" href="/products/new">
+      <div className="flex  sm:flex-row flex-col-reverse items-start sm:items-center gap-5">
+        <Button size="lg" as={Link} color="primary" href="/products/new">
           New
         </Button>
         <SearchInput page="products" />
       </div>
       <ContentCountDisplay
-        sk={sk}
+        pageNumber={pageNumber}
         itemsToShow={itemsPerPage}
         count={count}
         content="products"

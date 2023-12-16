@@ -17,6 +17,7 @@ import { LuUpload } from "react-icons/lu";
 import { FaRegEdit } from "react-icons/fa";
 import { useHandleCategoryData } from "../hooks/useHandleCateogoryData";
 import Image from "next/image";
+import { CategoryFormProps } from "@/typings";
 
 const CategoryForm = ({ category, allCategories }: CategoryFormProps) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -42,7 +43,7 @@ const CategoryForm = ({ category, allCategories }: CategoryFormProps) => {
         onPress={onOpen}
         isIconOnly={category ? false : true}
       >
-        {category ? <FaRegEdit size={18} /> : "New"}
+        {category ? <FaRegEdit size={16} /> : "New"}
       </Button>
       <Modal
         placement="center"
@@ -158,7 +159,7 @@ const CategoryForm = ({ category, allCategories }: CategoryFormProps) => {
                       placeholder="eg: Weight"
                       endContent={
                         <FaRegTrashAlt
-                          className="cursor-pointer"
+                          className="cursor-pointer m-auto"
                           onClick={() => removeProperty(index)}
                           fill="#ff4f4f"
                         />
