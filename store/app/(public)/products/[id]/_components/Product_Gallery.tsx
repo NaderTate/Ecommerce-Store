@@ -21,31 +21,33 @@ export default function Product_Gallery({ gallery }: Props) {
   return (
     <div className="md:sticky md:float-left md:top-20 md:w-[40vw] md:mr-10">
       <div className="flex flex-col-reverse md:flex-row">
-        <Swiper
-          // @ts-ignore
-          onSwiper={setThumbsSwiper}
-          spaceBetween={10}
-          slidesPerView={4}
-          freeMode={true}
-          watchSlidesProgress={true}
-          modules={[Navigation, Thumbs]}
-          className="thumbs"
-        >
-          {gallery?.map((item) => (
-            <SwiperSlide
-              key={`product-gallery-${item.id}`}
-              className="flex justify-center items-center"
-            >
-              <Image
-                src={item.img}
-                alt={`Product gallery ${item.id}`}
-                width={450}
-                height={450}
-                className="rounded-md"
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+        <div>
+          <Swiper
+            // @ts-ignore
+            onSwiper={setThumbsSwiper}
+            spaceBetween={10}
+            slidesPerView={4}
+            freeMode={true}
+            watchSlidesProgress={true}
+            modules={[Navigation, Thumbs]}
+            className="thumbs"
+          >
+            {gallery?.map((item) => (
+              <SwiperSlide
+                key={`product-gallery-${item.id}`}
+                className="flex justify-center items-center"
+              >
+                <Image
+                  src={item.img}
+                  alt={`Product gallery ${item.id}`}
+                  width={450}
+                  height={450}
+                  className="rounded-md"
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
 
         <Swiper
           spaceBetween={10}
