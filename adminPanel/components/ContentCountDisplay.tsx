@@ -9,6 +9,7 @@ type Props = {
     | "admins"
     | "reviews"
     | "orders";
+  className?: string;
 };
 
 const ContentCountDisplay = ({
@@ -16,9 +17,10 @@ const ContentCountDisplay = ({
   itemsToShow,
   count,
   content,
+  className,
 }: Props) => {
   return (
-    <p className="my-5">
+    <p className={className + " mb-5"}>
       Displaying{" "}
       {(pageNumber - 1) * itemsToShow == 0 ? 1 : (pageNumber - 1) * itemsToShow}{" "}
       -{" "}

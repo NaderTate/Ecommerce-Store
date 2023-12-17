@@ -1,15 +1,16 @@
 import { CiCreditCard1 } from "react-icons/ci";
 import Card from "./Card";
 import { FiActivity, FiUsers } from "react-icons/fi";
+import { currencySymbol } from "@/lib/global_variables";
 
 type Props = { totalRevenue: string; usersCount: string; ordersCount: string };
 
 const Cards = ({ totalRevenue, usersCount, ordersCount }: Props) => {
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
       <Card
         label="Total Revenue"
-        icon={"$"}
+        icon={currencySymbol}
         value={totalRevenue}
         percentage="+20.1 from last month"
       />

@@ -1,15 +1,18 @@
 import prisma from "@/lib/prisma";
+
+import Pagination from "@/components/Pagination";
+import ContentCountDisplay from "@/components/ContentCountDisplay";
 import ReviewCard from "@/app/(protected)/reviews/_components/ReviewCard";
-import ContentCountDisplay from "@/app/components/ContentCountDisplay";
+
 import { itemsPerPage } from "@/lib/global_variables";
-import Pagination from "@/app/components/Pagination";
+
 export const metadata = {
   title: "Reviews",
   description: "Newest reviews",
 };
 async function page({ searchParams }: any) {
   const pageNumber = searchParams.page || 1;
-  const count = await prisma.review.count();
+
   const reviews = await prisma.review.findMany({
     orderBy: { id: "desc" },
     select: {
@@ -22,6 +25,8 @@ async function page({ searchParams }: any) {
     take: itemsPerPage,
     skip: (pageNumber - 1) * itemsPerPage,
   });
+  const count = await prisma.review.count();
+
   return (
     <div className="mt-10 sm:mt-0">
       <ContentCountDisplay

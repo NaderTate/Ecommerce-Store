@@ -1,15 +1,19 @@
 "use client";
-import { useEffect, useState } from "react";
-import { signOut } from "next-auth/react";
-import { usePathname } from "next/navigation";
+
 import Link from "next/link";
-import ThemeSwitcher from "../ThemeSwitcher";
 import Image from "next/image";
+import { signOut } from "next-auth/react";
 import { Button } from "@nextui-org/react";
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+
+import { menuItems } from "./menuItems";
+import ThemeSwitcher from "../ThemeSwitcher";
+
+import { RxCross2 } from "react-icons/rx";
 import { HiOutlineMenuAlt4 } from "react-icons/hi";
 import { RiLogoutCircleLine } from "react-icons/ri";
-import { RxCross2 } from "react-icons/rx";
-import { menuItems } from "./menuItems";
+
 function Sidebar({
   name,
   email,
@@ -20,7 +24,6 @@ function Sidebar({
   image: string | null | undefined;
 }) {
   const pathname = usePathname();
-
   const [showSideBar, setShowSideBar] = useState(false);
   const handleClickOutside = (event: MouseEvent) => {
     if ((event.target as Element).closest("#sidebar") === null) {
@@ -58,11 +61,11 @@ function Sidebar({
               className="hidden sm:block"
               width={65}
               height={65}
-              src="https://res.cloudinary.com/dqkyatgoy/image/upload/v1685277800/Nader%20Express/logo_wjbyiz.svg"
+              src="/logo.svg"
               alt="Nader Express"
             />
 
-            <nav
+            <aside
               aria-label="Main Nav"
               className="mt-10 sm:mt-6 flex flex-col gap-1"
             >
@@ -94,7 +97,7 @@ function Sidebar({
                 Sign out
               </Button>
               <ThemeSwitcher />
-            </nav>
+            </aside>
           </div>
           <div className="flex items-center gap-2 border-t-2 border-divider p-4 absolute bottom-0">
             <img

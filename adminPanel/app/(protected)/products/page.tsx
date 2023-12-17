@@ -1,15 +1,20 @@
-import Link from "next/link";
 import prisma from "@/lib/prisma";
-import ProductCard from "@/app/(protected)/products/_components/ProductCard";
-import SearchInput from "@/app/components/SearchInput";
-import Pagination from "@/app/components/Pagination";
+
+import Link from "next/link";
 import { Button } from "@nextui-org/react";
-import ContentCountDisplay from "@/app/components/ContentCountDisplay";
+
+import Pagination from "@/components/Pagination";
+import SearchInput from "@/components/SearchInput";
+import ContentCountDisplay from "@/components/ContentCountDisplay";
+import ProductCard from "@/app/(protected)/products/_components/ProductCard";
+
 import { itemsPerPage } from "@/lib/global_variables";
+
 export const metadata = {
   title: "Products",
   description: "Nader Express Products",
 };
+
 type Props = {
   searchParams: {
     page?: number;
@@ -31,6 +36,13 @@ export default async function Home({ searchParams }: Props) {
     orderBy: {
       createdAt: "desc",
     },
+    select: {
+      id: true,
+      Price: true,
+      Title: true,
+      mainImg: true,
+      Description: true,
+    },
   });
   const count = await prisma.product.count({
     where: {
@@ -43,7 +55,7 @@ export default async function Home({ searchParams }: Props) {
 
   return (
     <>
-      <div className="flex  sm:flex-row flex-col-reverse items-start sm:items-center gap-5">
+      <div className="flex sm:flex-row flex-col-reverse items-start sm:items-center gap-5">
         <Button size="lg" as={Link} color="primary" href="/products/new">
           New
         </Button>
@@ -57,7 +69,7 @@ export default async function Home({ searchParams }: Props) {
       />
       <div className="flex flex-col min-h-[90vh]">
         <div className="grow">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-5 mt-4 gap-4 ">
+          <div className="flex flex-wrap gap-5 ">
             {products?.map((product) => {
               return <ProductCard key={product.id} product={product} />;
             })}

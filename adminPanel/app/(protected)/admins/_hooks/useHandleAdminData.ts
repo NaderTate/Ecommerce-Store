@@ -1,7 +1,8 @@
 "use client";
 
-import { KeyboardEvent, useState } from "react";
+import { useState } from "react";
 import { createNewAdmin, updateAdmin } from "@/app/server_actions/admins";
+
 export const useHandleAdminData = (admin?: {
   id?: string;
   Name?: string;
@@ -11,20 +12,23 @@ export const useHandleAdminData = (admin?: {
     Name: admin?.Name || "",
     Email: admin?.Email || "",
   });
+
   const [isSubmitting, setIsSubmitting] = useState(false);
+
   const onSubmit = async () => {
     setIsSubmitting(true);
+
     if (admin?.id) {
       await updateAdmin(admin.id, {
         ...adminData,
       });
-      setIsSubmitting(false);
     } else {
       await createNewAdmin({
         ...adminData,
       });
-      setIsSubmitting(false);
     }
+
+    setIsSubmitting(false);
   };
 
   return {

@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Modal,
   ModalContent,
@@ -10,9 +11,9 @@ import {
   Input,
 } from "@nextui-org/react";
 
-import { useHandleAdminData } from "../hooks/useHandleAdminData";
-
 import { FaRegEdit } from "react-icons/fa";
+
+import { useHandleAdminData } from "../_hooks/useHandleAdminData";
 
 type Props = {
   admin?: {
@@ -25,6 +26,7 @@ const AdminForm = ({ admin }: Props) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { adminData, setAdminData, isSubmitting, onSubmit } =
     useHandleAdminData({ ...admin });
+
   return (
     <>
       <Button

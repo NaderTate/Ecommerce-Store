@@ -1,5 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
+
 function UserCard({
   id,
   Name,
@@ -14,7 +15,7 @@ function UserCard({
   Image: string;
   Email: string;
   OrdersCount: number;
-  createdAt: string;
+  createdAt: Date;
   reviewsCount: number;
 }) {
   return (

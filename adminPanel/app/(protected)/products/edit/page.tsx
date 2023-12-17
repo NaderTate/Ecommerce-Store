@@ -1,6 +1,13 @@
-import ProductForm from "@/app/(protected)/products/_components/ProductForm";
 import prisma from "@/lib/prisma";
-export async function generateMetadata({ searchParams }: any) {
+
+import ProductForm from "@/app/(protected)/products/_components/ProductForm";
+
+type Props = {
+  searchParams: {
+    id: string;
+  };
+};
+export async function generateMetadata({ searchParams }: Props) {
   try {
     const id = searchParams.id;
     const product = await prisma.product.findUnique({
@@ -54,12 +61,12 @@ async function page({ searchParams }: any) {
     select: { id: true, label: true, value: true, Properties: true },
   });
   return (
-    <div>
-      <div className="font-bold text-xl mb-5">Edit</div>
+    <>
+      <div className="font-bold text-xl mb-5 mt-10 sm:mt-0">Edit</div>
       {productInfo && (
-        <ProductForm allCategories={categories || []} product={productInfo} />
+        <ProductForm allCategories={categories} product={productInfo} />
       )}
-    </div>
+    </>
   );
 }
 export default page;

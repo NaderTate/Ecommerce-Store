@@ -13,7 +13,7 @@ async function page() {
       <div className="font-bold text-xl mb-5 mt-10 sm:mt-0">
         Add new product
       </div>
-      <ProductForm allCategories={categories || []} />
+      <ProductForm allCategories={categories} />
     </>
   );
 }

@@ -1,10 +1,10 @@
 import prisma from "@/lib/prisma";
 import CategoryCard from "@/app/(protected)/categories/_components/CategoryCard";
 import CategoryForm from "./_components/CategoryForm";
-import ContentCountDisplay from "@/app/components/ContentCountDisplay";
+import ContentCountDisplay from "@/components/ContentCountDisplay";
 import { itemsPerPage } from "@/lib/global_variables";
-import SearchInput from "@/app/components/SearchInput";
-import Pagination from "@/app/components/Pagination";
+import SearchInput from "@/components/SearchInput";
+import Pagination from "@/components/Pagination";
 export const metadata = {
   title: "Categories",
   description: "Nader express categories",
@@ -17,7 +17,8 @@ type Props = {
 };
 async function page({ searchParams }: Props) {
   const pageNumber = searchParams.page || 1;
-  const search = searchParams.search ? searchParams.search : "";
+  const search = searchParams.search ?? "";
+
   const categories = await prisma.category.findMany({
     where: {
       label: {
@@ -31,11 +32,7 @@ async function page({ searchParams }: Props) {
       createdAt: "desc",
     },
   });
-  const allCategories = await prisma.category.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+
   const count = await prisma.category.count({
     where: {
       label: {
@@ -45,6 +42,11 @@ async function page({ searchParams }: Props) {
     },
   });
 
+  const allCategories = await prisma.category.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
   return (
     <>
       <div className="flex flex-col min-h-[90vh]">

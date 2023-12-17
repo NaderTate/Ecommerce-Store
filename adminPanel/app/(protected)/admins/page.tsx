@@ -1,10 +1,13 @@
-import AdminCard from "./_components/AdminCard";
 import prisma from "@/lib/prisma";
+
+import Pagination from "@/components/Pagination";
+import SearchInput from "@/components/SearchInput";
+import ContentCountDisplay from "@/components/ContentCountDisplay";
+
+import AdminCard from "./_components/AdminCard";
 import AdminForm from "./_components/AdminForm";
-import ContentCountDisplay from "@/app/components/ContentCountDisplay";
+
 import { itemsPerPage } from "@/lib/global_variables";
-import Pagination from "@/app/components/Pagination";
-import SearchInput from "@/app/components/SearchInput";
 export const metadata = {
   title: "Admins",
   description: "Manage nader express admins",
@@ -17,7 +20,7 @@ type Props = {
 };
 async function page({ searchParams }: Props) {
   const pageNumber = searchParams.page || 1;
-  const search = searchParams.search ? searchParams.search : "";
+  const search = searchParams.search ?? "";
   const admins = await prisma.admin.findMany({
     where: {
       Name: {
@@ -47,32 +50,31 @@ async function page({ searchParams }: Props) {
   });
 
   return (
-    <>
-      <div className="flex flex-col min-h-[90vh]">
-        <div className="flex  sm:flex-row flex-col-reverse items-start sm:items-center gap-5">
-          <AdminForm />
-          <SearchInput page="admins" />
-        </div>
-        <ContentCountDisplay
-          content="admins"
-          count={count}
-          itemsToShow={itemsPerPage}
-          pageNumber={pageNumber}
-        />
-        <div className="grow">
-          <div className="flex flex-wrap gap-5">
-            {admins?.map((admin) => {
-              return <AdminCard key={admin?.id} admin={admin} />;
-            })}
-          </div>
-        </div>
-        <Pagination
-          page="admins"
-          total={Math.ceil(count / itemsPerPage)}
-          queries={{ search }}
-        />
+    <div className="flex flex-col min-h-[90vh]">
+      <div className="flex flex-col-reverse sm:flex-row items-start sm:items-center gap-5">
+        <AdminForm />
+        <SearchInput page="admins" />
       </div>
-    </>
+      <ContentCountDisplay
+        content="admins"
+        count={count}
+        itemsToShow={itemsPerPage}
+        pageNumber={pageNumber}
+        className="mt-5"
+      />
+      <div className="grow">
+        <div className="flex flex-wrap gap-5">
+          {admins?.map((admin) => {
+            return <AdminCard key={admin?.id} admin={admin} />;
+          })}
+        </div>
+      </div>
+      <Pagination
+        page="admins"
+        total={Math.ceil(count / itemsPerPage)}
+        queries={{ search }}
+      />
+    </div>
   );
 }
 

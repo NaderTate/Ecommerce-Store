@@ -1,12 +1,16 @@
 import prisma from "@/lib/prisma";
-import OrderCard from "@/app/components/OrderCard";
-import Pagination from "@/app/components/Pagination";
+
+import OrderCard from "@/components/OrderCard";
+import Pagination from "@/components/Pagination";
+
 import { itemsPerPage } from "@/lib/global_variables";
+
 type Props = {
   searchParams: {
     page?: number;
   };
 };
+
 async function page({ searchParams }: Props) {
   const pageNumber = searchParams.page || 1;
   const orders = await prisma.order.findMany({
@@ -31,6 +35,7 @@ async function page({ searchParams }: Props) {
     orderBy: { createdAt: "desc" },
   });
   const count = await prisma.order.count();
+
   return (
     <>
       <div className="my-5 font-bold mt-10 sm:mt-0">

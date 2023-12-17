@@ -1,10 +1,10 @@
 // custom hook responsible for managing product form states and submitting the form
 "use client";
-import { createProduct, updateProduct } from "@/app/server_actions/products";
-import { CategoryProperty } from "@/typings";
-import axios from "axios";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+import { CategoryProperty } from "@/typings";
+import { createProduct, updateProduct } from "@/app/server_actions/products";
 
 export const useHandleProductData = (
   allCategories: { id: string; Properties: CategoryProperty[] }[],
@@ -29,10 +29,11 @@ export const useHandleProductData = (
     Colors: product?.Colors || [],
     Properties: product?.Properties || [],
   });
+
   const [submitting, setSubmitting] = useState(false);
   const [uploadingImages, setUploadingImages] = useState(false);
 
-  const missingData = !(
+  const isMissingData = !(
     productData.Title &&
     productData.Price &&
     productData.Images.length > 1
@@ -46,21 +47,20 @@ export const useHandleProductData = (
       .map((category) => category.Properties)
       .flat();
   // ⬆️⬆️ copilot saving my life here
+
   const onSubmit = async () => {
     setSubmitting(true);
     if (product?.id) {
       await updateProduct(product.id, {
         ...productData,
       });
-      setSubmitting(false);
-      router.push("/products");
     } else {
       await createProduct({
         ...productData,
       });
-      setSubmitting(false);
-      router.push("/products");
     }
+    setSubmitting(false);
+    router.push("/products");
   };
 
   const handleUploadImages = async (images: File[]) => {
@@ -69,20 +69,20 @@ export const useHandleProductData = (
       const formData = new FormData();
       formData.append("file", images[i]);
       formData.append("upload_preset", "etttajb9");
-      await axios
-        .post(
-          "https://api.cloudinary.com/v1_1//dqkyatgoy/image/upload",
-          formData
-        )
-        .then((response) => {
+      await fetch("/api/cloudinary", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
           setProductData((prev) => {
             return {
               ...prev,
               Images: [
                 ...prev.Images,
                 {
-                  id: response.data.original_filename,
-                  img: response.data.secure_url,
+                  id: data.id,
+                  img: data.Image,
                 },
               ],
             };
@@ -120,7 +120,7 @@ export const useHandleProductData = (
     setProductData,
     productCategoriesProperties,
     submitting,
-    missingData,
+    isMissingData,
     onSubmit,
     uploadingImages,
     handleUploadImages,

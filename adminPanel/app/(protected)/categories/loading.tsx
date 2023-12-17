@@ -8,17 +8,11 @@ function loading() {
             key={id}
             className="flex flex-col gap-1 relative border-2 rounded-md "
           >
-            <Skeleton disableAnimation className="  w-[10rem] h-[10rem]" />
-            <p className="font-semibold title text-center mb-1">
-              <Skeleton
-                disableAnimation
-                className="  w-[7rem] h-2 rounded-md"
-              />
-              <Skeleton
-                disableAnimation
-                className="  w-[4rem] h-2 rounded-md"
-              />
-            </p>
+            <Skeleton disableAnimation className="w-[10rem] h-[10rem]" />
+            <div className="mb-1">
+              <Skeleton disableAnimation className="w-[7rem] h-2 rounded-md" />
+              <Skeleton disableAnimation className="w-[4rem] h-2 rounded-md" />
+            </div>
           </div>
         ))}
       </div>

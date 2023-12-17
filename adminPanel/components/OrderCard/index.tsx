@@ -66,7 +66,7 @@ function OrderCard({ order }: Props) {
       <div className="ml-5 mt-5">
         {order.IsComplete && (
           <div className="font-bold text-2xl">
-            Delivered on:{new Date(order.CompletedOn).toDateString()}
+            Delivered on: {new Date(order.CompletedOn).toDateString()}
           </div>
         )}
         <Accordion isCompact>

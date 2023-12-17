@@ -35,14 +35,14 @@ export const menuItems: Array<{
     icon: <BiCommentDetail />,
   },
   {
+    label: "Users",
+    url: "/users",
+    icon: <PiUsersThreeBold />,
+  },
+  {
     label: "Admins",
     url: "/admins",
 
     icon: <GrUserAdmin />,
-  },
-  {
-    label: "Users",
-    url: "/users",
-    icon: <PiUsersThreeBold />,
   },
 ];

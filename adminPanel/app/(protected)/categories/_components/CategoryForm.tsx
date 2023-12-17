@@ -15,7 +15,7 @@ import {
 import { FaRegTrashAlt } from "react-icons/fa";
 import { LuUpload } from "react-icons/lu";
 import { FaRegEdit } from "react-icons/fa";
-import { useHandleCategoryData } from "../hooks/useHandleCateogoryData";
+import { useHandleCategoryData } from "../_hooks/useHandleCateogoryData";
 import Image from "next/image";
 import { CategoryFormProps } from "@/typings";
 
@@ -25,7 +25,7 @@ const CategoryForm = ({ category, allCategories }: CategoryFormProps) => {
     categoryData,
     setCategoryData,
     isSubmitting,
-    missingData,
+    isMissingData,
     addProperty,
     handlePropertyNameChange,
     removeProperty,
@@ -179,7 +179,7 @@ const CategoryForm = ({ category, allCategories }: CategoryFormProps) => {
                     await onSubmit();
                     onClose();
                   }}
-                  isDisabled={missingData || isSubmitting}
+                  isDisabled={isMissingData || isSubmitting}
                   isLoading={isSubmitting}
                 >
                   {category ? "Update" : "Add"}

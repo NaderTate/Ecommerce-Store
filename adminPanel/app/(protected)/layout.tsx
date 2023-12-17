@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "@/components/Sidebar";
+import { authOptions } from "../api/auth/[...nextauth]/authOptions";
 
 type Props = { children: React.ReactNode };
 export default async function RootLayout({ children }: Props) {

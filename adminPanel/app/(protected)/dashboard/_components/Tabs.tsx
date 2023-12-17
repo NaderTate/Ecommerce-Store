@@ -5,7 +5,7 @@ type Props = {};
 
 const Tabs = ({}: Props) => {
   return (
-    <NUITabs aria-label="Options">
+    <NUITabs aria-label="Options" className="max-w-[85vw]">
       <Tab key="Overview" title="Overview"></Tab>
       <Tab isDisabled key="Analytics" title="Analytics"></Tab>
       <Tab isDisabled key="Reports" title="Reports"></Tab>

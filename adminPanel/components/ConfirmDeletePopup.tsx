@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -7,12 +8,13 @@ import {
   Button,
   useDisclosure,
 } from "@nextui-org/react";
-import { useState } from "react";
 import { MdDeleteOutline } from "react-icons/md";
+
 type Props = {
   id: string;
   deleteAction: Function;
 };
+
 export default function ConfirmDelete({ id, deleteAction }: Props) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [deleting, setDeleting] = useState(false);

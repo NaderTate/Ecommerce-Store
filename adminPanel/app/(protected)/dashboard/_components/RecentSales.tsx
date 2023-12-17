@@ -16,7 +16,10 @@ export function RecentSales({
       <div className="space-y-5 my-auto mt-5">
         {data.map(({ Name, Email, Image, OrderTotal }) => {
           return (
-            <div className="flex items-center" key={Name + Email + OrderTotal}>
+            <div
+              className="flex gap-5 items-center"
+              key={Name + Email + OrderTotal}
+            >
               <Avatar
                 name={Name}
                 src={Image}
@@ -24,7 +27,7 @@ export function RecentSales({
                 // get the first letter of the first and second name
                 fallback={Name.split(" ")[0][0] + Name.split(" ")[1][0]}
               />
-              <div className="ml-4 space-y-1">
+              <div className="space-y-1">
                 <p className="text-sm font-medium leading-none">{Name}</p>
                 <p className="text-sm text-default-500">{Email}</p>
               </div>

@@ -1,6 +1,16 @@
-import Image from "next/image";
-import StarRating from "./StarRating";
 import Link from "next/link";
+import Image from "next/image";
+
+import StarRating from "./StarRating";
+
+type Props = {
+  id: string;
+  mainImg: string;
+  User: { Name: string; Img: string; id: string };
+  Rating: number;
+  Comment: string;
+  Date: Date;
+};
 function ReviewCard({
   id,
   mainImg,
@@ -8,14 +18,7 @@ function ReviewCard({
   Rating,
   Comment,
   Date,
-}: {
-  id: string;
-  mainImg: string;
-  User: { Name: string; Img: string; id: string };
-  Rating: number;
-  Comment: string;
-  Date: Date;
-}) {
+}: Props) {
   return (
     <div className="rounded-md p-2 border-divider border-2 w-96">
       <div className="flex gap-2 items-center">
@@ -42,7 +45,9 @@ function ReviewCard({
             </Link>
             <div>
               <span>{Name}</span>
-              <span className="text-xs block">({Date.toDateString()})</span>
+              <span className="text-xs block text-default-500">
+                ({Date.toDateString()})
+              </span>
             </div>
           </div>
           <StarRating rating={Rating} hideNumber />

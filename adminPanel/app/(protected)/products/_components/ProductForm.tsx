@@ -1,11 +1,13 @@
 "use client";
 import Select from "react-select";
+import Dropzone from "@/components/Dropzone";
 import { ReactSortable } from "react-sortablejs";
-import Dropzone from "../../../components/Dropzone";
 import { Button, Input, Spacer, Spinner, Textarea } from "@nextui-org/react";
-import { useHandleProductData } from "../hooks/useHandleProductData";
+
 import { colors } from "../colors";
 import ProductImageCard from "./ProductImageCard";
+import { useHandleProductData } from "../_hooks/useHandleProductData";
+
 import { ProductFormProps } from "@/typings";
 
 function ProductForm({ product, allCategories }: ProductFormProps) {
@@ -14,7 +16,7 @@ function ProductForm({ product, allCategories }: ProductFormProps) {
     setProductData,
     productCategoriesProperties,
     submitting,
-    missingData,
+    isMissingData,
     onSubmit,
     handleUploadImages,
     handleProductProperty,
@@ -23,7 +25,7 @@ function ProductForm({ product, allCategories }: ProductFormProps) {
   } = useHandleProductData(allCategories, { ...product });
 
   return (
-    <form className="space-y-4">
+    <form className="space-y-5">
       <div className="grid grid-cols-1 md:grid-cols-5 justify-between gap-5">
         <Input
           className="md:col-span-3"
@@ -34,6 +36,7 @@ function ProductForm({ product, allCategories }: ProductFormProps) {
             setProductData({ ...productData, Title: e });
           }}
         />
+
         <Input
           className="md:col-span-2"
           variant="bordered"
@@ -46,6 +49,7 @@ function ProductForm({ product, allCategories }: ProductFormProps) {
           }}
         />
       </div>
+
       <div className="grid grid-cols-1 md:grid-cols-5 justify-between gap-5">
         <Textarea
           className="md:col-span-3"
@@ -67,6 +71,17 @@ function ProductForm({ product, allCategories }: ProductFormProps) {
                 borderRadius: "0.65rem",
                 padding: "0.5rem",
                 color: "black",
+              }),
+              // chnage backround color of dropdown list
+              menu: (base) => ({
+                ...base,
+                backgroundColor: "#3f3f46",
+              }),
+              // remove the hover effect
+              option: (provided, state) => ({
+                ...provided,
+                backgroundColor: state.isFocused ? "#1f2937" : "#3f3f46",
+                color: "white",
               }),
             }}
             placeholder="Categories"
@@ -93,6 +108,17 @@ function ProductForm({ product, allCategories }: ProductFormProps) {
                 borderRadius: "0.65rem",
                 padding: "0.5rem",
                 color: "black",
+              }),
+              // chnage backround color of dropdown list
+              menu: (base) => ({
+                ...base,
+                backgroundColor: "#3f3f46",
+              }),
+              // remove the hover effect
+              option: (provided, state) => ({
+                ...provided,
+                backgroundColor: state.isFocused ? "#1f2937" : "#3f3f46",
+                color: "white",
               }),
             }}
             placeholder="Colors"
@@ -163,7 +189,7 @@ function ProductForm({ product, allCategories }: ProductFormProps) {
         color="primary"
         size="lg"
         className="mt-20"
-        isDisabled={missingData || submitting}
+        isDisabled={isMissingData || submitting}
         isLoading={submitting}
         type="submit"
         onPress={onSubmit}

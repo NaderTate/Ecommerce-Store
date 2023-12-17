@@ -1,9 +1,11 @@
 import prisma from "@/lib/prisma";
+
+import Pagination from "@/components/Pagination";
+import SearchInput from "@/components/SearchInput";
 import UserCard from "@/app/(protected)/users/_components/UserCard";
-import ContentCountDisplay from "@/app/components/ContentCountDisplay";
+import ContentCountDisplay from "@/components/ContentCountDisplay";
+
 import { itemsPerPage } from "@/lib/global_variables";
-import SearchInput from "@/app/components/SearchInput";
-import Pagination from "@/app/components/Pagination";
 export const metadata = {
   title: "Users",
   description: "Nader Express users",
@@ -46,41 +48,40 @@ async function page({ searchParams }: Props) {
     skip: (pageNumber - 1) * itemsPerPage,
   });
   return (
-    <div>
-      <div className="flex flex-col min-h-screen">
-        <SearchInput page="users" />
-        <ContentCountDisplay
-          count={count}
-          content="users"
-          itemsToShow={itemsPerPage}
-          pageNumber={pageNumber}
-        />
-        <div className="grow">
-          <div className="flex flex-wrap gap-5">
-            {users.map(
-              ({ id, Name, Email, Image, Orders, Review, createdAt }) => {
-                return (
-                  <UserCard
-                    key={id}
-                    id={id}
-                    Name={Name}
-                    Email={Email}
-                    Image={Image}
-                    OrdersCount={Orders.length}
-                    createdAt={createdAt}
-                    reviewsCount={Review.length}
-                  />
-                );
-              }
-            )}
-          </div>
+    <div className="flex flex-col min-h-screen">
+      <SearchInput page="users" />
+      <ContentCountDisplay
+        count={count}
+        content="users"
+        itemsToShow={itemsPerPage}
+        pageNumber={pageNumber}
+        className="mt-5"
+      />
+      <div className="grow">
+        <div className="flex flex-wrap gap-5">
+          {users.map(
+            ({ id, Name, Email, Image, Orders, Review, createdAt }) => {
+              return (
+                <UserCard
+                  key={id}
+                  id={id}
+                  Name={Name}
+                  Email={Email}
+                  Image={Image}
+                  OrdersCount={Orders.length}
+                  createdAt={createdAt}
+                  reviewsCount={Review.length}
+                />
+              );
+            }
+          )}
         </div>
-        <Pagination
-          page="users"
-          total={Math.ceil(itemsPerPage / count)}
-          queries={{ search }}
-        />
       </div>
+      <Pagination
+        page="users"
+        total={Math.ceil(count / itemsPerPage)}
+        queries={{ search }}
+      />
     </div>
   );
 }

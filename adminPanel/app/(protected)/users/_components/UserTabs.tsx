@@ -1,10 +1,12 @@
 "use client";
 import { Tabs, Tab } from "@nextui-org/react";
-import OrderCard from "@/app/components/OrderCard";
+
+import OrderCard from "@/components/OrderCard";
 import UserAddressCard from "./UserAddressCard";
+import ProductCard from "@/components/OrderCard/ProductCard";
 import ReviewCard from "../../reviews/_components/ReviewCard";
+
 import { ProductCardProps, Order } from "@/typings";
-import ProductCard from "@/app/components/OrderCard/ProductCard";
 
 type Props = {
   user: {
@@ -70,9 +72,9 @@ const UserTabs = ({ user }: Props) => {
             })}
       </Tab>
       <Tab key="reviews" title="Reviews">
-        <div className="flex flex-wrap gap-5 mt-4">
+        <div className="flex flex-wrap gap-5">
           {user.Review.length == 0
-            ? "This user hans't made any revies yet..."
+            ? "This user hans't made any reviews yet..."
             : user?.Review.map((review) => {
                 return (
                   <ReviewCard

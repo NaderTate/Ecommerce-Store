@@ -1,7 +1,9 @@
 import prisma from "@/lib/prisma";
+
 import Image from "next/image";
-import BanButton from "@/app/(protected)/users/_components/BanButton";
+
 import UserTabs from "../_components/UserTabs";
+import BanButton from "../_components/BanButton";
 import UserInfoCard from "../_components/UserInfoCard";
 
 async function page({ params: { id } }: { params: { id: string } }) {

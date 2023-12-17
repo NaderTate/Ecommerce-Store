@@ -1,30 +1,42 @@
-import Image from "next/image";
 import Link from "next/link";
-import { Product } from "@prisma/client";
-import { deleteProduct } from "../../../server_actions/products";
-import ConfirmDelete from "@/app/components/ConfirmDeletePopup";
-import { FaRegEdit } from "react-icons/fa";
+import Image from "next/image";
 import { Button } from "@nextui-org/react";
 
-const ProductCard = ({ product }: { product: Product }) => {
+import ConfirmDelete from "@/components/ConfirmDeletePopup";
+import { deleteProduct } from "@/app/server_actions/products";
+
+import { FaRegEdit } from "react-icons/fa";
+
+import { currencySymbol } from "@/lib/global_variables";
+
+type Props = {
+  product: {
+    id: string;
+    Price: number;
+    Title: string;
+    mainImg: string;
+    Description: string;
+  };
+};
+
+const ProductCard = ({ product }: Props) => {
   return (
-    <div className="flex gap-3 relative border-2 border-divider pr-1 rounded-md max-w-[19rem] p-2  ">
+    <div className="flex gap-3 relative border-2 border-divider pr-1 rounded-md w-80 p-2  ">
       <Image
         width={70}
         height={70}
         alt={product.Title}
         src={product.mainImg}
-        className="object-contain rounded-l-md"
+        className="object-contain rounded-md"
       />
-
       <div>
-        <h4 className="font-semibold  max-w-[11rem] overflow-ellipsis whitespace-nowrap overflow-hidden ">
-          {product?.Title}
-        </h4>
-        <p className="description text-sm  max-w-[11rem] overflow-ellipsis whitespace-nowrap overflow-hidden ">
+        <h4 className="font-semibold line-clamp-1">{product?.Title}</h4>
+        <p className="text-sm line-clamp-1 text-default-500">
           {product?.Description}
         </p>
-        <span className="absolute bottom-1 font-bold">{product?.Price}$</span>
+        <span className="absolute bottom-1 font-bold">
+          {currencySymbol + product?.Price}
+        </span>
       </div>
 
       <Button
