@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 
 import Image from "next/image";
+import { Image as NUIImage } from "@nextui-org/react";
 
 import UserTabs from "../_components/UserTabs";
 import BanButton from "../_components/BanButton";
@@ -37,42 +38,39 @@ async function page({ params: { id } }: { params: { id: string } }) {
   });
 
   return (
-    <div className="p-5">
-      {user && (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div className="space-y-2">
-              <div className="relative  w-36 h-36">
-                <Image
-                  fill
-                  src={user?.Image}
-                  alt={user?.Name}
-                  className="rounded-md object-cover"
-                />
-              </div>
-              <h1 className="text-3xl">{user.Name}</h1>
-              <h1 className="text-xl">
-                Joined on {user.createdAt.toDateString()}
-              </h1>
-              <BanButton id={user.id} />
-            </div>
-            <div className="">
-              <UserInfoCard
-                user={{
-                  BirthDate: user.BirthDate,
-                  Email: user.Email,
-                  Gender: user.Gender,
-                  Phone: user.Phone,
-                  OrdersCount: user.Orders.length,
-                  CommentsCount: user.Review.length,
-                }}
-              />
-            </div>
+    user && (
+      <>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="space-y-2">
+            <NUIImage
+              as={Image}
+              width={150}
+              height={150}
+              src={user?.Image}
+              fallbackSrc="https://upload.wikimedia.org/wikipedia/commons/9/9e/Placeholder_Person.jpg"
+              alt={user?.Name}
+              className="rounded-md object-cover"
+            />
+            <h1 className="text-3xl">{user.Name}</h1>
+            <h1 className="text-xl">
+              Joined on {user.createdAt.toDateString()}
+            </h1>
+            <BanButton id={user.id} />
           </div>
-          <UserTabs user={user} />
-        </>
-      )}
-    </div>
+          <UserInfoCard
+            user={{
+              BirthDate: user.BirthDate,
+              Email: user.Email,
+              Gender: user.Gender,
+              Phone: user.Phone,
+              OrdersCount: user.Orders.length,
+              CommentsCount: user.Review.length,
+            }}
+          />
+        </div>
+        <UserTabs user={user} />
+      </>
+    )
   );
 }
 

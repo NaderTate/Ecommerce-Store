@@ -38,7 +38,7 @@ function Sidebar({
     };
   });
   return (
-    <>
+    <div id="sidebar">
       <Button
         variant="light"
         className="sm:hidden fixed left-3 top-3 cursor-pointer z-50"
@@ -48,7 +48,7 @@ function Sidebar({
         {showSideBar ? <RxCross2 size={20} /> : <HiOutlineMenuAlt4 size={20} />}
       </Button>
 
-      <div className="h-full fixed z-30" id="sidebar">
+      <div className="h-full fixed z-30">
         <div
           className={`overflow-y-scroll no-scrollbar h-screen justify-between border-e-2 border-divider w-44 fixed left-0 top-0 bg-background sm:opacity-100 sm:translate-x-0 transition-all ${
             showSideBar
@@ -115,7 +115,7 @@ function Sidebar({
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

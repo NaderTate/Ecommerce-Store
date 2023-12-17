@@ -11,7 +11,10 @@ function loading() {
             <Skeleton disableAnimation className="w-[10rem] h-[10rem]" />
             <div className="mb-1">
               <Skeleton disableAnimation className="w-[7rem] h-2 rounded-md" />
-              <Skeleton disableAnimation className="w-[4rem] h-2 rounded-md" />
+              <Skeleton
+                disableAnimation
+                className="w-[4rem] h-2 rounded-md mt-2"
+              />
             </div>
           </div>
         ))}

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Avatar } from "@nextui-org/react";
 
 function UserCard({
   id,
@@ -24,13 +25,13 @@ function UserCard({
       className="border-2 border-divider rounded-md p-2 w-80"
     >
       <div className="flex items-center gap-2">
-        <Image
-          width={60}
-          height={60}
+        <Avatar
+          name={Name}
           src={UserImage}
-          alt={"User image"}
-          className="rounded-full object-cover aspect-square"
+          showFallback
+          fallback={Name?.split(" ")?.[0]?.[0] + Name.split(" ")?.[1]?.[0]}
         />
+
         <div>
           <h5 className="font-semibold">{Name}</h5>
           <h6 className="text-xs">{Email}</h6>

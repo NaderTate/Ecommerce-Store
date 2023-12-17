@@ -42,7 +42,7 @@ type Props = {
 
 const UserTabs = ({ user }: Props) => {
   return (
-    <Tabs className="mt-10 ">
+    <Tabs className="mt-5 max-w-[85vw]">
       <Tab key="Orders" title="Orders">
         {user.Orders.length == 0
           ? "This user has no order yet..."

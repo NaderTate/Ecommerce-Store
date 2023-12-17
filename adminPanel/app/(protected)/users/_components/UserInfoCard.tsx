@@ -11,7 +11,7 @@ type Props = {
 
 const UserInfoCard = ({ user }: Props) => {
   return (
-    <div className="border-2 border-dashed  border-divider rounded-md p-10 sm:p-5 space-y-3">
+    <div className="border-2 border-dashed  border-divider rounded-md p-5 space-y-3">
       <div className="flex justify-between">
         <h1>Email</h1>
         <h1>{user.Email}</h1>

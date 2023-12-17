@@ -25,7 +25,9 @@ export function RecentSales({
                 src={Image}
                 showFallback
                 // get the first letter of the first and second name
-                fallback={Name.split(" ")[0][0] + Name.split(" ")[1][0]}
+                fallback={
+                  Name?.split(" ")?.[0]?.[0] + Name.split(" ")?.[1]?.[0]
+                }
               />
               <div className="space-y-1">
                 <p className="text-sm font-medium leading-none">{Name}</p>

@@ -26,7 +26,7 @@ function BanButton({ id }: { id: string }) {
             <>
               <ModalHeader className="flex flex-col gap-1">
                 <h1 className="text-2xl font-bold">Are you sure about that?</h1>
-                <h3 className="font-thin">
+                <h3 className="font-light">
                   This will delete the user from the database, this action is
                   irreversible.
                 </h3>

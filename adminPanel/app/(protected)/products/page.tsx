@@ -66,6 +66,7 @@ export default async function Home({ searchParams }: Props) {
         itemsToShow={itemsPerPage}
         count={count}
         content="products"
+        className="mt-5"
       />
       <div className="flex flex-col min-h-[90vh]">
         <div className="grow">

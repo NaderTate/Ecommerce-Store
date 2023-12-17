@@ -59,6 +59,7 @@ async function page({ searchParams }: Props) {
           count={count}
           itemsToShow={itemsPerPage}
           pageNumber={pageNumber}
+          className="mt-5"
         />
         <div className="grow">
           <div className="flex flex-wrap gap-5">

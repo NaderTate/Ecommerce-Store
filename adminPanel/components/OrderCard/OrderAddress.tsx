@@ -10,7 +10,7 @@ type Props = {
 
 const OrderAddress = ({ address }: Props) => {
   return (
-    <div className="border rounded-md p-5 space-y-2 text-lg mt-2 bg-gray-100 dark:bg-inherit">
+    <div className="border rounded-md p-5 space-y-2 md:text-lg mt-2 bg-gray-100 dark:bg-inherit">
       <span className="font-bold">Shipped to:</span>
       <div className="flex gap-10 justify-between">
         <span>Street: </span>

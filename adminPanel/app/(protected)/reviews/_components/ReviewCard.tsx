@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 import StarRating from "./StarRating";
+import { Avatar } from "@nextui-org/react";
 
 type Props = {
   id: string;
@@ -35,12 +36,13 @@ function ReviewCard({
         <div className="space-y-3">
           <div className="flex items-center gap-3">
             <Link href={{ pathname: `/users/${userId}` }}>
-              <Image
-                width={40}
-                height={40}
+              <Avatar
+                name={Name}
                 src={Img}
-                alt={Name}
-                className="rounded-full object-cover"
+                showFallback
+                fallback={
+                  Name?.split(" ")?.[0]?.[0] + Name.split(" ")?.[1]?.[0]
+                }
               />
             </Link>
             <div>

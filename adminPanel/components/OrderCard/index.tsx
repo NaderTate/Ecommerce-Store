@@ -78,7 +78,7 @@ function OrderCard({ order }: Props) {
               </div>
               <div className="flex flex-col md:flex-row gap-5 mt-5">
                 <OrderAddress address={order.Address} />
-                <div className="border rounded-md p-5 space-y-2 text-lg mt-2 bg-gray-100 dark:bg-inherit">
+                <div className="border rounded-md p-5 space-y-2 md:text-lg mt-2 bg-gray-100 dark:bg-inherit">
                   <div className="w-full rounded-md">
                     <div className="space-y-2">
                       <span className="font-bold">Order Summary:</span>

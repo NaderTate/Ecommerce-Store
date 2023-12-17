@@ -1,8 +1,10 @@
-import { getServerSession } from "next-auth";
 import "./globals.css";
 import { Inter } from "next/font/google";
+import { getServerSession } from "next-auth";
+
+import { authOptions } from "@/lib/authOptions";
 import ClientProviders from "@/components/ClientProviders";
-import { authOptions } from "./api/auth/[...nextauth]/authOptions";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -19,7 +21,7 @@ export const metadata = {
     siteName: "Nader Express admin panel",
     images: [
       {
-        url: "https://res.cloudinary.com/dqkyatgoy/image/upload/v1628753046/Nader%20Express/Frame_1_a507eb.svg",
+        url: "/logo.svg",
         width: 800,
         height: 600,
         alt: "Nader Express admin panel",
