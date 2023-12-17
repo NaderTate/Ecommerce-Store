@@ -18,7 +18,7 @@ model Product {
   Categories  Category[]      @relation(fields: [CategoryIDs], references: [id])
   CategoryIDs String[]        @db.ObjectId
   Colors      String[]        @default([])
-  Properties  Json
+  Properties  Json[]          @default([])
   OrderIDs    String[]        @db.ObjectId
   Reviews     Review[]
   Rating      Float

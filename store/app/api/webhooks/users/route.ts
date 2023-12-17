@@ -1,9 +1,13 @@
-import { createUserAfterAuth } from "@/app/server_actions/users";
-import { IncomingHttpHeaders } from "http";
+import { prisma } from "@/lib/prisma";
+
 import { headers } from "next/headers";
+import { IncomingHttpHeaders } from "http";
 import { NextResponse } from "next/server";
+
 import { Webhook, WebhookRequiredHeaders } from "svix";
-const webhookSecret = process.env.WEBHOOK_SECRET || "";
+
+const webhookSecret = process.env.WEBHOOK_SECRET as string;
+
 async function handler(request: Request) {
   const payload = await request.json();
   const headersList = headers();
@@ -14,6 +18,7 @@ async function handler(request: Request) {
   };
   const wh = new Webhook(webhookSecret);
   let evt: Event | null = null;
+
   try {
     evt = wh.verify(
       JSON.stringify(payload),
@@ -23,17 +28,26 @@ async function handler(request: Request) {
     console.error((err as Error).message);
     return NextResponse.json({}, { status: 400 });
   }
+
   const eventType: EventType = evt.type;
+
   if (eventType === "user.created") {
     const { id, ...attributes } = evt.data;
-    await createUserAfterAuth(
-      id,
-      attributes.first_name + " " + attributes.last_name,
-      attributes.email_addresses[0].email_address,
-      attributes.image_url
-    );
+    await prisma.user.create({
+      data: {
+        UserId: id,
+        Name: attributes.first_name + " " + attributes.last_name,
+        Email: attributes.email_addresses[0].email_address,
+        Image: attributes.image_url,
+        Gender: "",
+        Phone: "",
+        BirthDate: "",
+      },
+    });
+    return NextResponse.json({}, { status: 200 });
   }
 }
+
 type EventType = "user.created" | "*";
 type Event = {
   data: Record<string, string | number | any>;

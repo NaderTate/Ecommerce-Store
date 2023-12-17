@@ -1,14 +1,19 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
 import "react-toastify/dist/ReactToastify.css";
-const inter = Inter({ subsets: ["latin"] });
-import { ClerkProvider } from "@clerk/nextjs";
+
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import ClientProviders from "@/components/ClientProviders";
+
 import { auth } from "@clerk/nextjs";
-import ClientProviders from "./components/ClientProviders";
-import { getCartItems } from "./server_actions/cart";
-import { getWishlistItems } from "./server_actions/wishlist";
+import { ClerkProvider } from "@clerk/nextjs";
+
+import { getCartItems } from "@/actions/cart";
+import { getWishlistItems } from "@/actions/wishlist";
+
+const inter = Inter({ subsets: ["latin"] });
+
 export const metadata = {
   metadataBase: new URL("https://naderexpress.vercel.app/"),
   title: { default: "Nader Express", template: "%s | Nader Express" },
@@ -20,7 +25,7 @@ export const metadata = {
     siteName: "Nader Express",
     images: [
       {
-        url: "https://res.cloudinary.com/dqkyatgoy/image/upload/v1628753046/Nader%20Express/Frame_1_a507eb.svg",
+        url: "/logo.svg",
         width: 800,
         height: 600,
         alt: "Nader Express",
@@ -34,14 +39,17 @@ export const metadata = {
     description: "We got this",
   },
 };
+
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const { userId } = auth();
+
   const cart = userId ? await getCartItems(userId, 7) : null;
   const wishlist = userId ? await getWishlistItems(userId, 7) : null;
+
   return (
     <html lang="en">
       <body className={inter.className}>
