@@ -1,34 +1,56 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Nader Express Admin Panel
 
-## Getting Started
+## This is the dashboard where the admin(s) can edit/add new products/categories, track the customers' orders, and check the revenue.
 
-First, run the development server:
+# Tech used:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+#### Next.JS 14 server actions, Prisma with MongoDB, Next-Auth (Auth.js), NextUI, Tailwind css and Typescript.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+# Design Priciples:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+#### I followed the `SOLID` principles as much as possible.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+# Folder Structure:
 
-## Learn More
+#### There are 2 grouped routes
 
-To learn more about Next.js, take a look at the following resources:
+- (Public) contains public pages like the login.
+- (Protected) contains the rest of the pages.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+#### The components folder in the root contains the components that are used in different places.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+#### The components that are used in one place are placed in a `_components` folder in the route where they're needed. like the product gallery that is used in the product page only.
 
-## Deploy on Vercel
+#### Every form has its own hook that is responsible for managing the form states and submitting to the database.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Authorization:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+#### There's currently only one way to login in (Google)
+
+#### In my database I have a list of emails that are allowed to access the website.
+
+#### Whenever someone tries to access the website, I check if his email is in my database, if so return a session, otherwise, get the hell outta here.
+
+# Admin privileges:
+
+#### The admins that are allowed to access the dashboard have access to:
+
+- View, edit and add new `products`/`categories`
+
+- See all the `orders` details (the `products` ordered, the `address` it was shipped to, the `payment` `method`, order placement and completion `dates`)
+
+- The ability to mark `orders` as complete.
+
+- View all the `comments` on the products.
+
+- View all the website `users` and their `details` (their names, emails, all the addresses and payment methods they added, all their orders and comments on products).
+
+- The ability to `ban` users from the website.
+
+- The ability to delete/add new `admins`.
+
+---
+
+#### Another thing I liked to share, when a new order is placed, the admin gets a Whatsapp message with a summary of the order, this ensures faster fullfillment.
+
+![message screenshot](https://res.cloudinary.com/dqkyatgoy/image/upload/v1703711280/Frame_26_hag6un.png)

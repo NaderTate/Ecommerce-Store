@@ -1,34 +1,45 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Nader Express Store
 
-## Getting Started
+## This is the store front where users can browse the products and place orders.
 
-First, run the development server:
+# Tech used:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+#### Next.JS 14 server actions, Prisma accelerate with MongoDB, Tailwind css, NextUI, and Typescript
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+# Design Priciples:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+#### I followed the `SOLID` principles as much as possible.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+# Folder Structure:
 
-## Learn More
+#### There are 3 grouped routes:
 
-To learn more about Next.js, take a look at the following resources:
+- (auth) for the sign in / sign up pages
+- (public) for the public pages that don't require login like the product / categories page.
+- (protected) for the pages that require login like the account, cart, checkout, etc...
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+#### The components folder in the root contains the components that are used in different places.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+#### The components that are used in one place are placed in a `_components` folder in the route where they're needed. like the product gallery that is used in the product page only.
 
-## Deploy on Vercel
+#### Same for any hooks and utility functions, the `hooks` folder at the root contains only 1 hook that is used in both the `search` page to get the search results and the `category` page to get the category products.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+#### Any forms like the user details or the user address forms have separate hooks in a `_hooks` folder at the same level.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+#### These hooks are resposible for managing the form states and submitting to the database, this way the form component only contains the form elements, making the code way cleaner.
+
+#### Any utility functions are placed in **`utils`** file where they're needed.
+
+# Server Actions:
+
+#### I placed the main server actions like adding items to cart, placing orders, updating the wishlist, etc... in the **`actions`** folder at the project root.
+
+#### Other functions that are more specific like getting related products or checking if the user has bought a product are placed in a `utils` file in the route where they're used.
+
+# Webhooks:
+
+#### Only 1 webhook is used here to sync `Clerk` data with my database.
+
+#### Meaning, whenever a new user signs up, a new record is created at `Clerk` database, but I want to create another record in my own database with the user's `name`, `email`, and `image`, and whenever the user adds an item to the cart or places an order, this will be stored in my database.
+
+#### The way this webhook works is that it listens to the `user.created` event from `clerk`, and whenever this event occurs, a server action is executed to submit the user's data in my DB.
