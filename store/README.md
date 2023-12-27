@@ -6,7 +6,7 @@
 
 #### Next.JS 14 server actions, Prisma accelerate with MongoDB, Tailwind css, NextUI, and Typescript
 
-# Design Priciples:
+# Design Principles:
 
 #### I followed the `SOLID` principles as much as possible.
 
@@ -26,7 +26,7 @@
 
 #### Any forms like the user details or the user address forms have separate hooks in a `_hooks` folder at the same level.
 
-#### These hooks are resposible for managing the form states and submitting to the database, this way the form component only contains the form elements, making the code way cleaner.
+#### These hooks are responsible for managing the form states and submitting to the database, this way the form component only contains the form elements, making the code way cleaner.
 
 #### Any utility functions are placed in **`utils`** file where they're needed.
 

@@ -6,7 +6,7 @@
 
 #### Next.JS 14 server actions, Prisma with MongoDB, Next-Auth (Auth.js), NextUI, Tailwind css and Typescript.
 
-# Design Priciples:
+# Design Principles:
 
 #### I followed the `SOLID` principles as much as possible.
 
@@ -37,7 +37,7 @@
 
 - View, edit and add new `products`/`categories`
 
-- See all the `orders` details (the `products` ordered, the `address` it was shipped to, the `payment` `method`, order placement and completion `dates`)
+- See all the `orders'` details (the `products` ordered, the `address` it was shipped to, the `payment` `method`, order placement and completion `dates`)
 
 - The ability to mark `orders` as complete.
 
@@ -51,6 +51,6 @@
 
 ---
 
-#### Another thing I liked to share, when a new order is placed, the admin gets a Whatsapp message with a summary of the order, this ensures faster fullfillment.
+#### Another thing I'd like to share, when a new order is placed, the admin gets a Whatsapp message with a summary of the order, this ensures faster fullfillment.
 
 ![message screenshot](https://res.cloudinary.com/dqkyatgoy/image/upload/v1703711280/Frame_26_hag6un.png)
