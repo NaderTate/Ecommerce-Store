@@ -4,7 +4,7 @@
 
 # Tech used:
 
-#### Next.JS 14 server actions, Prisma with MongoDB, Next-Auth (Auth.js), NextUI, Tailwind css and Typescript.
+#### Next.JS 14 server actions, Prisma with MongoDB, Next-Auth (Auth.js), NextUI, Tailwind CSS and Typescript.
 
 # Design Principles:
 
@@ -19,13 +19,13 @@
 
 #### The components folder in the root contains the components that are used in different places.
 
-#### The components that are used in one place are placed in a `_components` folder in the route where they're needed. like the product gallery that is used in the product page only.
+#### The components that are used in one place are placed in a `_components` folder in the route where they're needed. like the product gallery that is used on the product page only.
 
-#### Every form has its own hook that is responsible for managing the form states and submitting to the database.
+#### Every form has its hook that is responsible for managing the form states and submitting to the database.
 
 # Authorization:
 
-#### There's currently only one way to login in (Google)
+#### There's currently only one way to log in (Google)
 
 #### In my database I have a list of emails that are allowed to access the website.
 
@@ -35,22 +35,22 @@
 
 #### The admins that are allowed to access the dashboard have access to:
 
-- View, edit and add new `products`/`categories`
+- View, edit, and add new products/categories
 
-- See all the `orders'` details (the `products` ordered, the `address` it was shipped to, the `payment` `method`, order placement and completion `dates`)
+- See all the orders details (the products ordered, the address it was shipped to, the payment method, order placement, and completion `dates`)
 
-- The ability to mark `orders` as complete.
+- The ability to mark orders as complete.
 
-- View all the `comments` on the products.
+- View all the comments on the products.
 
-- View all the website `users` and their `details` (their names, emails, all the addresses and payment methods they added, all their orders and comments on products).
+- View all the website users and their details (their names, emails, all the addresses and payment methods they added, all their orders, and comments on products).
 
-- The ability to `ban` users from the website.
+- The ability to ban users from the website.
 
-- The ability to delete/add new `admins`.
+- The ability to delete/add new admins.
 
 ---
 
-#### Another thing I'd like to share, when a new order is placed, the admin gets a Whatsapp message with a summary of the order, this ensures faster fullfillment.
+#### Another thing I'd like to share, when a new order is placed, the admin gets a Whatsapp message with a summary of the order, this ensures faster fulfillment.
 
 ![message screenshot](https://res.cloudinary.com/dqkyatgoy/image/upload/v1703711280/Frame_26_hag6un.png)
