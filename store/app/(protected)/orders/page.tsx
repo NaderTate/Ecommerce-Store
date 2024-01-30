@@ -31,7 +31,6 @@ const page = async ({}: Props) => {
       OrderSummary: true,
     },
     orderBy: { createdAt: "desc" },
-    cacheStrategy: { ttl: 60 },
   });
 
   return (

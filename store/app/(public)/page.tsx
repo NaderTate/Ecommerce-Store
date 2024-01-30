@@ -22,7 +22,7 @@ const Home: NextPage = async () => {
   const womenFashion = await getProductsByCategoryID(womenFashionID, limit);
   const shoes = await getProductsByCategoryID(shoesID, limit);
   const bags = await getProductsByCategoryID(bagsID, limit);
-
+  console.log(menFashion);
   return (
     <main>
       <Featured />
